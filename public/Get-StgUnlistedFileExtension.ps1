@@ -6,14 +6,23 @@ function Get-StgUnlistedFileExtension {
     .DESCRIPTION
         Configure and verify Allow Unlisted File Extensions settings for vulnerability 76827.
 
-    .NOTES
-        Commented out Set-ConfigurationProperty, this setting breaks the Web GUI for SolarWinds.
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
 
     .NOTES
         Tags: V-76827
         Author: Chrissy LeMaire (@cl), netnerds.net
         Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
         License: MIT https://opensource.org/licenses/MIT
+        Caution: Commented out Set-ConfigurationProperty, this setting breaks the Web GUI for SolarWinds.
 
 #>
     [CmdletBinding()]
@@ -29,8 +38,6 @@ function Get-StgUnlistedFileExtension {
     process {
         $webnames = (Get-Website).Name
         $filterpath = 'system.webServer/security/requestFiltering/fileExtensions'
-
-
 
         foreach($webname in $webnames) {
 
