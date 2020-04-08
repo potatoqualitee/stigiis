@@ -24,24 +24,22 @@ function Get-StgUrlRequestLimit {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/security/requestFiltering/requestLimits'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/security/requestFiltering/requestLimits'
         $MaxUrl = 4096
 
+        foreach($webname in $webnames) {
 
+            $PreConfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
 
-        foreach($WebName in $WebNames) {
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
 
-            $PreConfigMaxUrl = Get-WebConfigurationProperty -Filter $FilterPath -Name MaxUrl
-
-            Set-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name MaxUrl -Value $MaxUrl -Force
-
-            $PostConfigurationMaxUrl = Get-WebConfigurationProperty -Filter $FilterPath -Name MaxUrl
+            $PostConfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
 
             [pscustomobject] @{
                 Vulnerability = "V-76817"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfiugrationMaxUrl = $PreConfigMaxUrl.Value
                 PostConfiugrationMaxUrl = $PostConfigurationMaxUrl.Value
                 Compliant = if ($PostConfigurationMaxUrl.Value -le $MaxUrl) {

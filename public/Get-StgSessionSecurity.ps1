@@ -23,16 +23,16 @@ function Get-StgSessionSecurity {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/asp/session'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/asp/session'
 
 
 
-        $PreConfigSessionID = Get-WebConfigurationProperty -Filter $FilterPath  -Name KeepSessionIdSecure
+        $PreConfigSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
-        Set-WebConfigurationProperty -Filter $FilterPath -Name KeepSessionIdSecure -Value $true
+        Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
 
-        $PostConfigurationSessionID = Get-WebConfigurationProperty -Filter $FilterPath  -Name KeepSessionIdSecure
+        $PostConfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
         [pscustomobject] @{
             Vulnerability = "V-76757"
@@ -47,18 +47,18 @@ function Get-StgSessionSecurity {
             }
         }
 
-        foreach($WebName in $WebName) {
+        foreach($webname in $webname) {
 
-            $PreConfigSessionID = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath  -Name KeepSessionIdSecure
+            $PreConfigSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
-            Set-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name KeepSessionIdSecure -Value $true
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
 
-            $PostConfigurationSessionID = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath  -Name KeepSessionIdSecure
+            $PostConfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
             [pscustomobject] @{
                 Vulnerability = "V-76855"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfigSessionID = $PreConfigSessionID.Value
                 PostConfigurationSessionID = $PostConfigurationSessionID.Value
                 Compliant = if ($PostConfigurationSessionID.Value -eq "True") {

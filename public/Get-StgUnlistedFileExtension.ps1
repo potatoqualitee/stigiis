@@ -27,23 +27,23 @@ function Get-StgUnlistedFileExtension {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/security/requestFiltering/fileExtensions'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/security/requestFiltering/fileExtensions'
 
 
 
-        foreach($WebName in $WebNames) {
+        foreach($webname in $webnames) {
 
-            $PreConfigUnlistedExtensions = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name allowUnlisted
+            $PreConfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
 
-            #Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name allowUnlisted -Value "False"
+            #Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
 
-            $PostConfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name allowUnlisted
+            $PostConfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
 
             [pscustomobject] @{
                 Vulnerability = "V-76827"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfigUnlistedExtensions = $PreConfigUnlistedExtensions.Value
                 PostConfigurationUnlistedExtensions = $PostConfigurationUnlistedExtensions.Value
                 Compliant = if ($PostConfigurationUnlistedExtensions.Value -eq $false) {

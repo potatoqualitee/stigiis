@@ -19,7 +19,7 @@ function Get-StgLogSetting {
         [PSFComputer[]]$ComputerName,
         [PSCredential]$Credential,
         $WebPath = 'MACHINE/WEBROOT/APPHOST',
-        $FilterPath = "system.applicationHost/sites/sitedefaults/logfile",
+        $filterpath = "system.applicationHost/sites/sitedefaults/logfile",
         $LogTarget = "logTargetW3C",
         $LogValues = "File,ETW",
         [switch]$EnableException
@@ -31,7 +31,7 @@ function Get-StgLogSetting {
 
 
         #Get pre-configuration values
-        $PreWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $FilterPath -Name $LogTarget
+        $PreWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
         $PreWeb = $PreWeb.Split(",")
 
         #Output which radio buttons are set
@@ -54,11 +54,11 @@ function Get-StgLogSetting {
         )
 
         #Set Logging options to log file and ETW events (both)
-        Set-WebConfigurationProperty -PSPath $WebPath -Filter $FilterPath -Name $LogTarget -Value $LogValues
+        Set-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget -Value $LogValues
 
         Start-Sleep -Seconds 2
         #Get pre-configuration values
-        $PostWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $FilterPath -Name $LogTarget
+        $PostWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
         $PostWeb = $PostWeb.Split(",")
 
         #Output which radio buttons are set

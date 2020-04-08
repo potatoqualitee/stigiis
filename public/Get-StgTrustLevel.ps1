@@ -24,27 +24,27 @@ function Get-StgTrustLevel {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.web/trust'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.web/trust'
 
 
 
-        foreach($Webname in $WebNames) {
+        foreach($webname in $webnames) {
 
-            $PreConfigTrustLevel = (Get-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name Level).Value
+            $PreConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
             if ($PostConfigTrustLevel -ne "Full" -or $PostConfigTrustLevel -ne "Medium" -or $PostConfigTrustLevel -ne "Low" -or $PostConfigTrustLevel -ne "Minimal") {
 
-                Set-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name Level -Value "Full"
+                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
             }
 
-            $PostConfigTrustLevel = (Get-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name Level).Value
+            $PostConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
             [pscustomobject] @{
 
                 Vulnerability = "V-76805"
                 Computername = $env:COMPUTERNAME
-                SiteName = $WebName
+                SiteName = $webname
                 PreConfigTrustLevel = $PreConfigTrustLevel
                 PostConfigTrustLevel = $PreConfigTrustLevel
                 SuggestedTrustLevel = "Full or less"

@@ -23,12 +23,12 @@ function Get-StgMaxConnection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $PSPath = 'MACHINE/WEBROOT/APPHOST'
-        $FilterPath = 'system.applicationHost/sites/siteDefaults'
+        $pspath = 'MACHINE/WEBROOT/APPHOST'
+        $filterpath = 'system.applicationHost/sites/siteDefaults'
 
 
 
-        $MaxConnections = Get-WebConfigurationProperty -Filter $FilterPath -Name Limits
+        $MaxConnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
 
         [pscustomobject] @{
             Vulnerability = "V-76773"

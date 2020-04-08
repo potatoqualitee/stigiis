@@ -24,24 +24,24 @@ function Get-StgMaxQueryString {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/security/requestFiltering/requestLimits'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/security/requestFiltering/requestLimits'
         [Int]$MaxQueryString = 2048
 
 
 
-        foreach($WebName in $WebNames) {
+        foreach($webname in $webnames) {
 
-            $PreConfigMaxQueryString = Get-WebConfigurationProperty -Filter $FilterPath -Name maxQueryString
+            $PreConfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
 
-            Set-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name maxQueryString -Value $MaxQueryString -Force
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxQueryString -Value $MaxQueryString -Force
 
-            $PostConfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $FilterPath -Name maxQueryString
+            $PostConfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
 
             [pscustomobject] @{
                 Vulnerability = "V-76821"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfiugrationMaxQueryString = $PreConfigMaxQueryString.Value
                 PostConfiugrationMaxQueryString = $PostConfigurationMaxQueryString.Value
                 Compliant = if ($PostConfigurationMaxQueryString.Value -le $MaxQueryString) {

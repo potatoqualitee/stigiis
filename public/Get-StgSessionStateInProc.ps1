@@ -25,16 +25,16 @@ function Get-StgSessionStateInProc {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.web/sessionState'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.web/sessionState'
 
 
 
-        $PreConfigMode = Get-WebConfigurationProperty -Filter $FilterPath -Name Mode
+        $PreConfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
-        Set-WebConfigurationProperty -Filter $FilterPath -Name Mode -Value "InProc"
+        Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
 
-        $PostConfigurationMode = Get-WebConfigurationProperty -Filter $FilterPath -Name Mode
+        $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
         [pscustomobject] @{
             Vulnerability = "V-76775"
@@ -49,15 +49,15 @@ function Get-StgSessionStateInProc {
             }
         }
 
-        foreach($Webname in $WebNames) {
-            $PreConfigMode = Get-WebConfigurationProperty -Filter $FilterPath -Name Mode
-            Set-WebConfigurationProperty -Filter $FilterPath -Name Mode -Value "InProc"
-            $PostConfigurationMode = Get-WebConfigurationProperty -Filter $FilterPath -Name Mode
+        foreach($webname in $webnames) {
+            $PreConfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+            Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
+            $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
             [pscustomobject] @{
                 Vulnerability = "V-76813"
                 Computername = $env:COMPUTERNAME
-                Sitename = $Webname
+                Sitename = $webname
                 PreConfigMode = $PreConfigMode
                 PostConfigurationMode = $PostConfigurationMode
                 Compliant = if ($PostConfigurationMode -eq "InProc") {

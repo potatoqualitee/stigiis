@@ -24,17 +24,17 @@ function Get-StgV-76877 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'processModel.pingingEnabled'
+        $filterpath = 'processModel.pingingEnabled'
 
         $AppPools = (Get-IISAppPool).Name
 
         foreach($Pool in $AppPools) {
 
-            $PreConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PreConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $true
+            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $true
 
-            $PostConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PostConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
             [pscustomobject] @{
 

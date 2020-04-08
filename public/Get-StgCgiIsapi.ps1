@@ -29,18 +29,18 @@ function Get-StgCgiIsapi {
             "notListedCgisAllowed",
             "notListedIsapisAllowed"
         )
-        $FilterPath = 'system.webserver/security/isapiCgiRestriction'
+        $filterpath = 'system.webserver/security/isapiCgiRestriction'
 
 
 
-        $PreConfigCGIExtension = Get-WebConfigurationProperty -Filter $FilterPath -Name "notListedCgisAllowed"
-        $PreConfigISAPIExtension = Get-WebConfigurationProperty -Filter $FilterPath -Name "notListedIsapisAllowed"
+        $PreConfigCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+        $PreConfigISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
-        Set-WebConfigurationProperty -Filter $FilterPath -Name notListedCgisAllowed -Value "False" -Force
-        Set-WebConfigurationProperty -Filter $FilterPath -Name notListedIsapisAllowed -Value "False" -Force
+        Set-WebConfigurationProperty -Filter $filterpath -Name notListedCgisAllowed -Value "False" -Force
+        Set-WebConfigurationProperty -Filter $filterpath -Name notListedIsapisAllowed -Value "False" -Force
 
-        $PostConfigurationCGIExtension = Get-WebConfigurationProperty -Filter $FilterPath -Name "notListedCgisAllowed"
-        $PostConfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $FilterPath -Name "notListedIsapisAllowed"
+        $PostConfigurationCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+        $PostConfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
         [pscustomobject] @{
             Vulnerability = "V-76769"

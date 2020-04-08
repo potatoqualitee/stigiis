@@ -24,22 +24,22 @@ function Get-StgDirectoryBrowsing {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/directoryBrowse'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/directoryBrowse'
 
 
-        foreach($WebName in $Webnames) {
+        foreach($webname in $webnames) {
 
-            $PreDirectoryBrowsing = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Enabled
+            $PreDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
-            Set-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name Enabled -Value "False"
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
 
-            $PostDirectoryBrowsing = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Enabled
+            $PostDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
             [pscustomobject] @{
                 Vulnerability = "V-76829"
                 Computername = $env:COMPUTERNAME
-                SiteName = $WebName
+                SiteName = $webname
                 PreConfigBrowsingEnabled = $PreDirectoryBrowsing.Value
                 PostConfigurationBrowsingEnabled = $PostDirectoryBrowsing.Value
                 Compliant = if ($PostDirectoryBrowsing.Value -eq $false) {
@@ -50,11 +50,11 @@ function Get-StgDirectoryBrowsing {
             }
         }
 
-        $PreDirectoryBrowsing = Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter $FilterPath -Name Enabled
+        $PreDirectoryBrowsing = Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter $filterpath -Name Enabled
 
-        Set-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name Enabled -Value "False"
+        Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
 
-        $PostDirectoryBrowsing = Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter $FilterPath -Name Enabled
+        $PostDirectoryBrowsing = Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter $filterpath -Name Enabled
 
         [pscustomobject] @{
             Vulnerability = "V-76733"

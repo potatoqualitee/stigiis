@@ -24,23 +24,23 @@ function Get-StgDoubleEscape {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/security/requestFiltering'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/security/requestFiltering'
 
 
 
-        foreach($WebName in $WebNames) {
+        foreach($webname in $webnames) {
 
-            $PreConfigDoubleEscaping = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name allowDoubleEscaping
+            $PreConfigDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
 
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name allowDoubleEscaping -Value "False"
+            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowDoubleEscaping -Value "False"
 
-            $PostConfigurationDoubleEscaping = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name allowDoubleEscaping
+            $PostConfigurationDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
 
             [pscustomobject] @{
                 Vulnerability = "V-76825"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfigDoubleEscaping = $PreConfigDoubleEscaping.Value
                 PostConfigurationDoubleEscaping = $PostConfigurationDoubleEscaping.Value
                 Compliant = if ($PostConfigurationDoubleEscaping.Value -eq $false) {

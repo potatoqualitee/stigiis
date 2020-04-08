@@ -24,29 +24,29 @@ function Get-StgSessionStateCookie {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.web/sessionState'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.web/sessionState'
 
 
 
-        foreach($WebName in $WebNames) {
+        foreach($webname in $webnames) {
 
-            $PreCookieConfig = Get-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name CookieLess
-            $PreSessionConfig = Get-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name RegenerateExpiredSessionID
-            $PreTimeoutConfig = Get-WebConfigurationProperty -Location $WebName -Filter "/system.webserver/asp/session" -Name Timeout
+            $PreCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
+            $PreSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
+            $PreTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
 
-            Set-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name CookieLess -Value 'UseCookies'
-            Set-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name RegenerateExpiredSessionID -Value 'True'
-            Set-WebConfigurationProperty -Location $Webname -Filter 'system.webServer/asp/session' -Name TimeOut -Value '00:20:00'
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess -Value 'UseCookies'
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID -Value 'True'
+            Set-WebConfigurationProperty -Location $webname -Filter 'system.webServer/asp/session' -Name TimeOut -Value '00:20:00'
 
-            $PostCookieConfig = Get-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name CookieLess
-            $PostSessionConfig = Get-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name RegenerateExpiredSessionID
-            $PostTimeoutConfig = Get-WebConfigurationProperty -Location $WebName -Filter "/system.webserver/asp/session" -Name Timeout
+            $PostCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
+            $PostSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
+            $PostTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
 
             [pscustomobject] @{
                 Vulnerability = "V-76725, V-76727, V-76777"
                 Computername = $env:COMPUTERNAME
-                SiteName = $WebName
+                SiteName = $webname
                 PreConfigCookiesLess = $PreCookieConfig
                 PreConfigSessionID = $PreSessionConfig.Value
                 PreConfigTimeout = $PreTimeoutConfig.Value

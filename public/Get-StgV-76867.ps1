@@ -24,7 +24,7 @@ function Get-StgV-76867 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'recycling.periodicRestart.requests'
+        $filterpath = 'recycling.periodicRestart.requests'
         $RequestsDefault = 100000
 
 
@@ -33,14 +33,14 @@ function Get-StgV-76867 {
 
         foreach($Pool in $AppPools) {
 
-            $PreConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PreConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
             if ($PreConfigRecycle -eq 0) {
 
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $RequestsDefault
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $RequestsDefault
             }
 
-            $PostConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PostConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
             [pscustomobject] @{
                 Vulnerability = "V-76867"

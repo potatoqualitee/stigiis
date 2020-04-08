@@ -26,18 +26,18 @@ function Get-StgV-76737-76835 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/httpErrors'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/httpErrors'
 
 
-        foreach($WebName in $Webnames) {
-            $PreErrorMode = Get-WebConfigurationProperty -Filter $FilterPath -Name ErrorMode
-            Set-WebConfigurationProperty -Filter $FilterPath -Name ErrorMode -Value "DetailedLocalOnly"
-            $PostErrorMode = Get-WebConfigurationProperty -Filter $FilterPath -Name ErrorMode
+        foreach($webname in $webnames) {
+            $PreErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
+            Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
+            $PostErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
             [pscustomobject] @{
                 Vulnerability = "V-76733, V-76835"
                 Computername = $env:COMPUTERNAME
-                SiteName = $WebName
+                SiteName = $webname
                 PreConfigBrowsingEnabled = $PreErrorMode
                 PostConfigurationBrowsingEnabled = $PostErrorMode
                 Compliant = if ($PostErrorMode -eq "DetailedLocalOnly") {

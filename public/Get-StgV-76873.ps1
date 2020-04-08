@@ -24,7 +24,7 @@ function Get-StgV-76873 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'recycling.logEventOnRecycle'
+        $filterpath = 'recycling.logEventOnRecycle'
 
 
 
@@ -40,7 +40,7 @@ function Get-StgV-76873 {
         )
 
         #Current log fields
-        $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Split(",")
+        $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Split(",")
 
         #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
         [String[]]$PoolCollection = @(
@@ -52,11 +52,11 @@ function Get-StgV-76873 {
 
         $PoolReplace = $PoolCollectionString.Replace(' ',",")
 
-            $PreConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PreConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $PoolReplace
+            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $PoolReplace
 
-            $PostConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PostConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
             [pscustomobject] @{
                 Vulnerability = "V-76873"

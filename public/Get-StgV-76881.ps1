@@ -24,7 +24,7 @@ function Get-StgV-76881 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'failure.rapidFailProtectionInterval'
+        $filterpath = 'failure.rapidFailProtectionInterval'
         $ProtectionInterval = "00:05:00"
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
@@ -33,14 +33,14 @@ function Get-StgV-76881 {
 
         foreach($Pool in $AppPools) {
 
-            $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
             if ([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
 
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $ProtectionInterval
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $ProtectionInterval
             }
 
-            $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
             [pscustomobject] @{
                 Vulnerability = "V-76881"

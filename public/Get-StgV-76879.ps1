@@ -24,7 +24,7 @@ function Get-StgV-76879 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'failure.rapidFailProtection'
+        $filterpath = 'failure.rapidFailProtection'
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
@@ -32,11 +32,11 @@ function Get-StgV-76879 {
 
         foreach($Pool in $AppPools) {
 
-            $PreConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PreConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $true
+            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $true
 
-            $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
             [pscustomobject] @{
                 Vulnerability = "V-76877"

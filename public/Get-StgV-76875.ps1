@@ -24,7 +24,7 @@ function Get-StgV-76875 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'queueLength'
+        $filterpath = 'queueLength'
         [Int]$QLength = 1000
 
 
@@ -33,14 +33,14 @@ function Get-StgV-76875 {
 
         foreach($Pool in $AppPools) {
 
-            $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
             if ($PreConfigQLength.Value -gt 1000) {
 
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $QLength
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $QLength
             }
 
-            $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
             [pscustomobject] @{
                 Vulnerability = "V-76875"

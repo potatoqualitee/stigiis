@@ -24,10 +24,10 @@ function Get-StgArrProxy {
     }
     process {
         $WebPath = 'MACHINE/WEBROOT/APPHOST',
-        $WebNames = (Get-Website).Name
+        $webnames = (Get-Website).Name
 
 
-        foreach($Webname in $WebNames) {
+        foreach($webname in $webnames) {
 
             try {
 

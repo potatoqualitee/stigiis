@@ -24,24 +24,24 @@ function Get-StgContentLength {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/security/requestFiltering/requestLimits'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/security/requestFiltering/requestLimits'
         $MaxContentLength = 30000000
 
 
 
-        foreach($WebName in $WebNames) {
+        foreach($webname in $webnames) {
 
-            $PreConfigMaxContentLength = Get-WebConfigurationProperty -Filter $FilterPath -Name maxAllowedContentLength
+            $PreConfigMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
-            Set-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name maxAllowedContentLength -Value $MaxContentLength -Force
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxAllowedContentLength -Value $MaxContentLength -Force
 
-            $PostConfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $FilterPath -Name maxAllowedContentLength
+            $PostConfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
             [pscustomobject] @{
                 Vulnerability = "V-76819"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfiugrationMaxContentLength = $PreConfigMaxContentLength.Value
                 PostConfiugrationMaxContentLength = $PostConfigurationMaxContentLength.Value
                 Compliant = if ($PostConfigurationMaxContentLength.Value -le $MaxContentLength) {

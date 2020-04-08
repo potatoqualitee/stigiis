@@ -23,17 +23,17 @@ function Get-StgAuthRule {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'system.web/authorization/allow'
+        $filterpath = 'system.web/authorization/allow'
         $Settings = "[@roles='' and @users='*' and @verbs='']"
 
 
 
-        $PreConfigUsers = Get-WebConfigurationProperty -Filter $FilterPath -Name Users
+        $PreConfigUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
-        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter "$($FilterPath)$($Settings)" -Name Users -Value "Administrators"
+        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
         Add-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter "system.web/authorization" -Name "." -Value @{users='?'} -Type deny
 
-        $PostConfigurationUsers = Get-WebConfigurationProperty -Filter $FilterPath -Name Users
+        $PostConfigurationUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
         [pscustomobject] @{
             Vulnerability = "V-76771"

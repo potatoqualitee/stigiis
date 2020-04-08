@@ -24,7 +24,7 @@ function Get-StgV-76871 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'recycling.periodicRestart.privateMemory'
+        $filterpath = 'recycling.periodicRestart.privateMemory'
         $MemoryDefault = 1GB
 
 
@@ -33,14 +33,14 @@ function Get-StgV-76871 {
 
         foreach($Pool in $AppPools) {
 
-            $PreConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PreConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
             if ($PreConfigMemory -eq 0) {
 
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $MemoryDefault
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $MemoryDefault
             }
 
-            $PostConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PostConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
             [pscustomobject] @{
                 Vulnerability = "V-76871"

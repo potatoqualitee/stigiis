@@ -1,4 +1,4 @@
-function Get-StgV-76837 {
+function Get-StgDebugSetting {
 <#
 .SYNOPSIS
     Configure and verify Debug Behavior settings for vulnerability 76837.
@@ -23,24 +23,20 @@ function Get-StgV-76837 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.web/compilation'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.web/compilation'
+        foreach($webname in $webnames) {
 
+            $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
 
+            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Debug -Value "False"
 
-
-        foreach($WebName in $WebNames) {
-
-            $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Debug
-
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name Debug -Value "False"
-
-            $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Debug
+            $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
 
             [pscustomobject] @{
                 Vulnerability = "V-76837"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
                 PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
                 Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {

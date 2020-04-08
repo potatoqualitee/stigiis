@@ -26,19 +26,19 @@ function Get-StgSSLSetting {
     process {
 
 
-        foreach($Webname in $WebNames) {
+        foreach($webname in $webnames) {
 
             #Pre-configuration SSL values
-            $PreFlags = Get-WebConfigurationProperty -Location $Webname -Filter 'system.webserver/security/access' -Name SSLFlags
+            $PreFlags = Get-WebConfigurationProperty -Location $webname -Filter 'system.webserver/security/access' -Name SSLFlags
 
             if ($PreFlags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $PreFlags -ne "Ssl,SslNegotiateCert") {
 
                 #Set SSL requirements
-                Set-WebConfiguration -Location $Webname -Filter 'system.webserver/security/access' -Value 'Ssl,SslNegotiateCert'
+                Set-WebConfiguration -Location $webname -Filter 'system.webserver/security/access' -Value 'Ssl,SslNegotiateCert'
             }
 
             #Post-configuration SSL values
-            $PostFlags = Get-WebConfigurationProperty -Location $Webname -Filter 'system.webserver/security/access' -Name SSLFlags
+            $PostFlags = Get-WebConfigurationProperty -Location $webname -Filter 'system.webserver/security/access' -Name SSLFlags
 
             #Pre-configuration data results
             $PreConfig = @(
@@ -132,7 +132,7 @@ function Get-StgSSLSetting {
             [pscustomobject] @{
 
                 Vulnerability = "V-76679, V-76779, V-76781"
-                SiteName = $Webname
+                SiteName = $webname
                 PreConfigFlags = "$PreConfig"
                 PostConfigurationFlags = "$PostConfig"
                 Compliant = "$Compliant"

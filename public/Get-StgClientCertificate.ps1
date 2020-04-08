@@ -29,22 +29,22 @@ function Get-StgClientCertificate {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
+        $webnames = (Get-Website).Name
 
 
-        foreach($Webname in $WebNames) {
+        foreach($webname in $webnames) {
 
             #Pre-configuration SSL values for sites
-            $PreFlags = Get-WebConfigurationProperty -Location $Webname -Filter 'system.webserver/security/access' -Name SSLFlags
+            $PreFlags = Get-WebConfigurationProperty -Location $webname -Filter 'system.webserver/security/access' -Name SSLFlags
 
             if ($PreFlags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $PreFlags -ne "Ssl,SslNegotiateCert" -or $PreFlags -ne "Ssl,SslNegotiateCert,Ssl128" -or $PreFlags -ne "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
 
                 #Set SSL requirements
-                Set-WebConfiguration -Location $Webname -Filter 'system.webserver/security/access' -Value 'Ssl,SslNegotiateCert,Ssl128'
+                Set-WebConfiguration -Location $webname -Filter 'system.webserver/security/access' -Value 'Ssl,SslNegotiateCert,Ssl128'
             }
 
             #Post-configuration SSL values
-            $PostFlags = Get-WebConfigurationProperty -Location $Webname -Filter 'system.webserver/security/access' -Name SSLFlags
+            $PostFlags = Get-WebConfigurationProperty -Location $webname -Filter 'system.webserver/security/access' -Name SSLFlags
 
             #Pre-configuration data results
             $PreConfig = @(
@@ -212,7 +212,7 @@ function Get-StgClientCertificate {
 
                 Vulnerability = "V-76861"
                 Computername = $env:COMPUTERNAME
-                SiteName = $Webname
+                SiteName = $webname
                 PreConfigFlags = "$PreConfig"
                 PostConfigurationFlags = "$PostConfig"
                 Compliant = "$Compliant"

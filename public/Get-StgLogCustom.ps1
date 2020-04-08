@@ -73,15 +73,15 @@ function Get-StgLogCustom {
 
 
         #All website names
-        $WebNames = (Get-Website).Name
+        $webnames = (Get-Website).Name
 
         foreach($Custom in $CustomFields) {
 
-            foreach($WebName in $WebNames) {
+            foreach($webname in $webnames) {
 
                 try {
                     #Set custom logging fields
-                    New-ItemProperty "IIS:\Sites\$($WebName)" -Name "logfile.customFields.collection" -Value $Custom -ErrorAction Stop
+                    New-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection" -Value $Custom -ErrorAction Stop
                 }
                 catch {
                     # usually duplication errors
@@ -90,15 +90,15 @@ function Get-StgLogCustom {
             }
         }
 
-        foreach($WebName in $WebNames) {
+        foreach($webname in $webnames) {
 
             #Post-Configuration custom fields
-            $PostConfig = (Get-ItemProperty "IIS:\Sites\$($WebName)" -Name "logfile.customFields.collection")
+            $PostConfig = (Get-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection")
 
             [pscustomobject] @{
 
                 Vulnerability = "V-76687, V-76689, V-76789, V-76791"
-                SiteName = $WebName
+                SiteName = $webname
                 CustomFields = $($PostConfig.logFieldName)
                 Compliant = if ($PostConfig.logFieldName -contains "Connection" -and $PostConfig.logFieldName -contains "Warning" -and $PostConfig.logFieldName -contains "HTTPConnection" -and $PostConfig.logFieldName -contains "User-Agent" -and $PostConfig.logFieldName -contains "Content-Type" -and $PostConfig.logFieldName -contains "HTTP_USER_AGENT") {
 

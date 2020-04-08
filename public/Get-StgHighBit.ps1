@@ -24,22 +24,22 @@ function Get-StgHighBit {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/security/requestFiltering'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/security/requestFiltering'
 
 
 
-        foreach($WebName in $WebNames) {
-            $PreConfigHighBit = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name allowHighBitCharacters
+        foreach($webname in $webnames) {
+            $PreConfigHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name "allowHighBitCharacters" -Value "False"
+            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name "allowHighBitCharacters" -Value "False"
 
-            $PostConfigurationHighBit = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name allowHighBitCharacters
+            $PostConfigurationHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
             [pscustomobject] @{
                 Vulnerability = "V-76823"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfigHighBit = $PreConfigHighBit.Value
                 PostConfigurationHighBit = $PostConfigurationHighBit.Value
                 Compliant = if ($PostConfigurationHighBit.Value -eq $false) {

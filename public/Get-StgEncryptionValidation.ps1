@@ -24,18 +24,18 @@ function Get-StgEncryptionValidation {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $FilterPath = 'system.web/machineKey'
+        $filterpath = 'system.web/machineKey'
 
 
 
-        $PreConfigValidation = Get-WebConfigurationProperty -Filter $FilterPath -Name Validation
-        $PreConfigEncryption = Get-WebConfigurationProperty -Filter $FilterPath -Name Decryption
+        $PreConfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+        $PreConfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
-        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter $FilterPath -Name "Validation" -Value "HMACSHA256"
-        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter $FilterPath -Name "Decryption" -Value "Auto"
+        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
+        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter $filterpath -Name "Decryption" -Value "Auto"
 
-        $PostConfigurationValidation = Get-WebConfigurationProperty -Filter $FilterPath -Name Validation
-        $PostConfigurationEncryption = Get-WebConfigurationProperty -Filter $FilterPath -Name Decryption
+        $PostConfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+        $PostConfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
         [pscustomobject] @{
             Vulnerability = "V-76731"

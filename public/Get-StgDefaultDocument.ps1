@@ -1,4 +1,4 @@
-function Get-StgV-76831 {
+function Get-StgDefaultDocument {
 <#
     .SYNOPSIS
         Configure and verify Default Document settings for vulnerability 76831.
@@ -24,35 +24,31 @@ function Get-StgV-76831 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webServer/defaultDocument'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webServer/defaultDocument'
+        foreach($webname in $webnames) {
 
-
-
-        foreach($WebName in $WebNames) {
-
-            $PreConfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Enabled
+            $PreConfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
             if ($PreConfigDefaultDocumentEnabled -eq $false) {
 
-                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name Enabled -Value "True"
+                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Enabled -Value "True"
             }
 
-            $PreConfigDefaultDocumentFiles = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Files
+            $PreConfigDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
             if ($PreConfigDefaultDocumentFiles.Count -eq 0) {
 
-                Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value='Default.aspx'}
+                Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value='Default.aspx'}
             }
 
-            $PostConfigurationDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Enabled
-            $PostConfigurationDefaultDocumentFiles = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Files
+            $PostConfigurationDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+            $PostConfigurationDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
             [pscustomobject] @{
-
                 Vulnerability = "V-76831"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfigDefaultDocumentEnabled = $PreConfigDefaultDocumentEnabled.Value
                 PreConfigDefaultDocumentFiles = $PreConfigDefaultDocumentFiles.Count
                 PostConfigurationDefaultDocumentEnabled = $PostConfigurationDefaultDocumentEnabled.Value

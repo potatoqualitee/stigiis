@@ -23,16 +23,16 @@ function Get-StgAnonymousAuth {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $PSPath = 'MACHINE/WEBROOT/APPHOST'
-        $FilterPath = 'system.webServer/security/authentication/anonymousAuthentication'
+        $pspath = 'MACHINE/WEBROOT/APPHOST'
+        $filterpath = 'system.webServer/security/authentication/anonymousAuthentication'
 
 
 
-        $PreConfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $FilterPath -Name Enabled
+        $PreConfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
-        Set-WebConfigurationProperty -PSPath $PSPath -Filter $FilterPath -Name Enabled -Value "False"
+        Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
 
-        $PostConfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $FilterPath -Name Enabled
+        $PostConfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
         [pscustomobject] @{
             Vulnerability = "V-76811"

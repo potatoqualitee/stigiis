@@ -24,29 +24,29 @@ function Get-StgV-76883 {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $PSpath = 'MACHINE/WEBROOT/APPHOST'
-        $WebNames = (Get-Website).Name
-        $FilterPath = 'system.webserver/serverRuntime'
+        $pspath = 'MACHINE/WEBROOT/APPHOST'
+        $webnames = (Get-Website).Name
+        $filterpath = 'system.webserver/serverRuntime'
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-        foreach($WebName in $WebNames) {
+        foreach($webname in $webnames) {
 
-            $PreConfigHostname = (Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name alternateHostname).Value
+            $PreConfigHostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
 
             if ([string]::IsNullOrWhiteSpace($PreConfigHostname)) {
 
-                [string]$AlternateHostName = "$(($WebName).Replace(' ','')).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
+                [string]$AlternateHostName = "$(($webname).Replace(' ','')).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
 
-                Set-WebConfigurationProperty -PSPath $PSPath/$($WebName) -Filter $FilterPath -Name alternateHostname -Value $AlternateHostName
+                Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name alternateHostname -Value $AlternateHostName
             }
 
-            $PostConfigHostname = (Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name alternateHostname).Value
+            $PostConfigHostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
 
             [pscustomobject] @{
                 Vulnerability = "V-76883"
                 Computername = $env:COMPUTERNAME
-                Sitename = $WebName
+                Sitename = $webname
                 PreConfigHostname = $PreConfigHostname
                 PostConfigHostname = $PostConfigHostname
                 Compliant = if (-not ([string]::IsNullOrWhiteSpace($PostConfigHostname))) {
