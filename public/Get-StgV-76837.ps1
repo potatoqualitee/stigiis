@@ -1,54 +1,54 @@
 function Get-StgV-76837 {
-
-    .NOTES
-        Tags: V-76837
-        Author: Chrissy LeMaire (@cl), netnerds.net
-        Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
-        License: MIT https://opensource.org/licenses/MIT
-
 <#
 .SYNOPSIS
     Configure and verify Debug Behavior settings for vulnerability 76837.
 
 .DESCRIPTION
     Configure and verify Debug Behavior settings for vulnerability 76837.
+
+    .NOTES
+        Tags: V-76837
+        Author: Chrissy LeMaire (@cl), netnerds.net
+        Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
+        License: MIT https://opensource.org/licenses/MIT
 #>
-    param(
-
-        [Parameter(DontShow)]
-        $WebNames = (Get-Website).Name,
-
-        [Parameter(DontShow)]
-        [string]$FilterPath = 'system.web/compilation'
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $WebNames = (Get-Website).Name
+        $FilterPath = 'system.web/compilation'
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    foreach($WebName in $WebNames) {
+        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-        $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Debug
+        foreach($WebName in $WebNames) {
 
-        Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name Debug -Value "False"
+            $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Debug
 
-        $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Debug
+            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name Debug -Value "False"
 
-        [pscustomobject] @{
+            $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Debug
 
-            Vulnerability = "V-76837"
-            Computername = $env:COMPUTERNAME
-            Sitename = $WebName
-            PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
-            PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
-            Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {
-
-                "Yes"
-            }
-
-            else {
-
-                "No"
+            [pscustomobject] @{
+                Vulnerability = "V-76837"
+                Computername = $env:COMPUTERNAME
+                Sitename = $WebName
+                PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
+                PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
+                Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {
+                    "Yes"
+                } else {
+                    "No"
+                }
             }
         }
     }
-
 }

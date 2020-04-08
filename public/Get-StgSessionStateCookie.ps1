@@ -1,4 +1,4 @@
-function Get-StgSessionState {
+function Get-StgSessionStateCookie {
 <#
     .SYNOPSIS
         Configure and verify cookieLess & regenerateExpiredSessionID properties for vulnerability 76725, 76727, & 76777.
