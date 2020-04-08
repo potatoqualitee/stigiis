@@ -34,8 +34,8 @@ function Get-StgAnonymousAuth {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $pspath = 'MACHINE/WEBROOT/APPHOST'
-        $filterpath = 'system.webServer/security/authentication/anonymousAuthentication'
+        $pspath = "MACHINE/WEBROOT/APPHOST"
+        $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
         $PreConfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
         Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"

@@ -36,7 +36,7 @@ function Get-StgSessionTimeout {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.web/sessionState'
+        $filterpath = "system.web/sessionState"
         foreach($webname in $webnames) {
 
             $PreConfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut

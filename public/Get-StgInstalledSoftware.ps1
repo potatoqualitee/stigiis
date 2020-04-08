@@ -44,12 +44,12 @@ function Get-StgInstalledSoftware {
 
         else {
 
-        $Keys = '','\Wow6432Node'
+        $Keys = "","\Wow6432Node"
 
             foreach ($Key in $keys) {
                 try {
 
-                    $Apps = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine',$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall").GetSubKeyNames()
+                    $Apps = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall").GetSubKeyNames()
                 }
                 catch {
 
@@ -58,19 +58,19 @@ function Get-StgInstalledSoftware {
 
                 foreach ($App in $Apps) {
 
-                    $Program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine',$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
-                    $Name = $Program.GetValue('DisplayName')
+                    $Program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
+                    $Name = $Program.GetValue("DisplayName")
 
                     if ($Name -and $Name -match $NameRegex) {
 
                         [pscustomobject]@{
                             Computername = $Computer
                             Software = $Name
-                            Version = $Program.GetValue('DisplayVersion')
-                            Publisher = $Program.GetValue('Publisher')
-                            InstallDate = $Program.GetValue('InstallDate')
-                            UninstallString = $Program.GetValue('UninstallString')
-                            Bits = $(if ($Key -eq '\Wow6432Node') {'64'} else {'32'})
+                            Version = $Program.GetValue("DisplayVersion")
+                            Publisher = $Program.GetValue("Publisher")
+                            InstallDate = $Program.GetValue("InstallDate")
+                            UninstallString = $Program.GetValue("UninstallString")
+                            Bits = $(if ($Key -eq "\Wow6432Node") {"64"} else {"32"})
                             Path = $Program.name
                         }
                     }

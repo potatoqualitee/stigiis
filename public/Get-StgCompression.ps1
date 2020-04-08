@@ -35,9 +35,9 @@ function Get-StgCompression {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $pspath = 'MACHINE/WEBROOT'
-        $filerpathCookies = 'system.web/httpCookies'
-        $filerpathCompression = 'system.web/sessionState'
+        $pspath = "MACHINE/WEBROOT"
+        $filerpathCookies = "system.web/httpCookies"
+        $filerpathCompression = "system.web/sessionState"
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 

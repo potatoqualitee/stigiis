@@ -35,9 +35,9 @@ function Get-StgAltHostname {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $pspath = 'MACHINE/WEBROOT/APPHOST'
+        $pspath = "MACHINE/WEBROOT/APPHOST"
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webserver/serverRuntime'
+        $filterpath = "system.webserver/serverRuntime"
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
@@ -47,7 +47,7 @@ function Get-StgAltHostname {
 
             if ([string]::IsNullOrWhiteSpace($PreConfigHostname)) {
 
-                [string]$AlternateHostName = "$(($webname).Replace(' ','')).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
+                [string]$AlternateHostName = "$(($webname).Replace(" ","")).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
 
                 Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name alternateHostname -Value $AlternateHostName
             }

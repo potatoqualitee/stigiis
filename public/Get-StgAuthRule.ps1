@@ -34,15 +34,15 @@ function Get-StgAuthRule {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'system.web/authorization/allow'
-        $Settings = "[@roles='' and @users='*' and @verbs='']"
+        $filterpath = "system.web/authorization/allow"
+        $Settings = "[@roles="" and @users="*" and @verbs=""]"
 
 
 
         $PreConfigUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
-        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
-        Add-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter "system.web/authorization" -Name "." -Value @{users='?'} -Type deny
+        Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
+        Add-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "system.web/authorization" -Name "." -Value @{users="?"} -Type deny
 
         $PostConfigurationUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 

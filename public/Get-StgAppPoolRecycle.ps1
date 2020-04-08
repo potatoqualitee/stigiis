@@ -35,7 +35,7 @@ function Get-StgAppPoolRecycle {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'recycling.periodicRestart.requests'
+        $filterpath = "recycling.periodicRestart.requests"
         $RequestsDefault = 100000
         $AppPools = (Get-IISAppPool).Name
 

@@ -35,7 +35,7 @@ function Get-StgAppPoolQueueLength {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'queueLength'
+        $filterpath = "queueLength"
         [Int]$QLength = 1000
         $AppPools = (Get-IISAppPool).Name
 

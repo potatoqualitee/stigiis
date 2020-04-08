@@ -40,7 +40,7 @@ function Get-StgCgiIsapi {
             "notListedCgisAllowed",
             "notListedIsapisAllowed"
         )
-        $filterpath = 'system.webserver/security/isapiCgiRestriction'
+        $filterpath = "system.webserver/security/isapiCgiRestriction"
 
 
 

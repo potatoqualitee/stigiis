@@ -38,7 +38,7 @@ function Get-StgV-76737-76835 {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/httpErrors'
+        $filterpath = "system.webServer/httpErrors"
 
 
         foreach($webname in $webnames) {

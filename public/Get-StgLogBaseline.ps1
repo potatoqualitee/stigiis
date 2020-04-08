@@ -34,7 +34,7 @@ function Get-StgLogBaseline {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $LogFilePath = 'C:\inetpub\logs\LogFiles\W3SVC2'
+        $LogFilePath = "C:\inetpub\logs\LogFiles\W3SVC2"
         $WebIP = (Get-NetIPAddress | Where-Object { $_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
 
 
@@ -48,23 +48,23 @@ function Get-StgLogBaseline {
 
             [pscustomobject] @{
 
-                Date = $Tail.Split(' ')[0]
-                Time = $Tail.Split(' ')[1]
+                Date = $Tail.Split(" ")[0]
+                Time = $Tail.Split(" ")[1]
                 WebServerIP = $WebIP
-                SourceIP = $Tail.Split(' ')[2]
-                Method = $Tail.Split(' ')[3]
-                URIStem =$Tail.Split(' ')[4]
-                URIQuery = $Tail.Split(' ')[5]
-                SourcePort =$Tail.Split(' ')[6]
-                UserName = $Tail.Split(' ')[7]
-                ClientIP = $Tail.Split(' ')[8]
-                UserAgent = $Tail.Split(' ')[9]
-                Referer = $Tail.Split(' ')[10]
-                HTTPstatus = $Tail.Split(' ')[11]
-                HTTPSstatus = $Tail.Split(' ')[12]
-                Win32status = $Tail.Split(' ')[13]
-                TimeTaken = $Tail.Split(' ')[14]
-                Compliant = if ($WebIP -match $Tail.Split(' ')[2]) {
+                SourceIP = $Tail.Split(" ")[2]
+                Method = $Tail.Split(" ")[3]
+                URIStem =$Tail.Split(" ")[4]
+                URIQuery = $Tail.Split(" ")[5]
+                SourcePort =$Tail.Split(" ")[6]
+                UserName = $Tail.Split(" ")[7]
+                ClientIP = $Tail.Split(" ")[8]
+                UserAgent = $Tail.Split(" ")[9]
+                Referer = $Tail.Split(" ")[10]
+                HTTPstatus = $Tail.Split(" ")[11]
+                HTTPSstatus = $Tail.Split(" ")[12]
+                Win32status = $Tail.Split(" ")[13]
+                TimeTaken = $Tail.Split(" ")[14]
+                Compliant = if ($WebIP -match $Tail.Split(" ")[2]) {
 
                     "Yes"
                 }

@@ -35,7 +35,7 @@ function Get-StgDebugSetting {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.web/compilation'
+        $filterpath = "system.web/compilation"
         foreach($webname in $webnames) {
 
             $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug

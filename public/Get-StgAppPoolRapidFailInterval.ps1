@@ -35,7 +35,7 @@ function Get-StgAppPoolRapidFailInterval {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'failure.rapidFailProtectionInterval'
+        $filterpath = "failure.rapidFailProtectionInterval"
         $ProtectionInterval = "00:05:00"
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"

@@ -35,7 +35,7 @@ function Get-StgAppPoolRecyclePrivateMemory {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'recycling.periodicRestart.privateMemory'
+        $filterpath = "recycling.periodicRestart.privateMemory"
         $MemoryDefault = 1GB
         $AppPools = (Get-IISAppPool).Name
 

@@ -36,7 +36,7 @@ function Get-StgLogSetting {
     }
     process {
 
-        $WebPath = 'MACHINE/WEBROOT/APPHOST'
+        $WebPath = "MACHINE/WEBROOT/APPHOST"
         $filterpath = "system.applicationHost/sites/sitedefaults/logfile"
         $LogTarget = "logTargetW3C"
         $LogValues = "File,ETW"
@@ -93,7 +93,7 @@ function Get-StgLogSetting {
 
         [pscustomobject] @{
 
-            Vulnerability = 'V-76683, V-76785'
+            Vulnerability = "V-76683, V-76785"
             PreConfig = "$PreWeb"
             PostConfiguration = "$PostWeb"
             Compliant = if ($PostWeb -eq "Both log file and ETW Event") {

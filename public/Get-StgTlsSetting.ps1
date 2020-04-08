@@ -39,26 +39,26 @@ function Get-StgTlsSetting {
     process {
         #TLS registry keys
         $RegKeys0 = @(
-            'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server',
-            'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server'
+            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server"
         )
 
         #SSL registry keys
         $RegKeys1 = @(
-            'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 1.0\Server',
-            'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server',
-            'HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server'
+            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 1.0\Server",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server"
         )
 
         #STIG required key name
-        $SubKeyName = 'DisabledByDefault'
+        $SubKeyName = "DisabledByDefault"
 
 
         foreach($Key0 in $RegKeys0) {
 
-            $STIGValue0 = '0'
+            $STIGValue0 = "0"
 
-            #If key doesn't exist, create key
+            #If key doesn"t exist, create key
             if (-not (Test-Path $Key0)) {
 
                 New-Item $Key0 -Force | Out-Null
@@ -98,7 +98,7 @@ function Get-StgTlsSetting {
 
             [pscustomobject] @{
 
-                Vulnerability = 'V-76759'
+                Vulnerability = "V-76759"
                 Computername = $env:COMPUTERNAME
                 Key = $Key0
                 KeyPropertyName = $SubKeyName
@@ -111,9 +111,9 @@ function Get-StgTlsSetting {
 
         foreach($Key1 in $RegKeys1) {
 
-            $STIGValue1 = '1'
+            $STIGValue1 = "1"
 
-            #If key doesn't exist, create key
+            #If key doesn"t exist, create key
             if (-not (Test-Path $Key1)) {
 
                 New-Item $Key1 -Force | Out-Null
@@ -144,7 +144,7 @@ function Get-StgTlsSetting {
             )
 
             [pscustomobject] @{
-                Vulnerability = 'V-76759'
+                Vulnerability = "V-76759"
                 Computername = $env:COMPUTERNAME
                 Key = $Key1
                 KeyPropertyName = $SubKeyName

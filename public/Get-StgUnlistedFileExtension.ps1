@@ -37,7 +37,7 @@ function Get-StgUnlistedFileExtension {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/security/requestFiltering/fileExtensions'
+        $filterpath = "system.webServer/security/requestFiltering/fileExtensions"
 
         foreach($webname in $webnames) {
 

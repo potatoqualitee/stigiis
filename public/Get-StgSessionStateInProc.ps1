@@ -37,7 +37,7 @@ function Get-StgSessionStateInProc {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.web/sessionState'
+        $filterpath = "system.web/sessionState"
 
 
 

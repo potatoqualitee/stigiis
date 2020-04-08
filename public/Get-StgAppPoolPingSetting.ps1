@@ -35,7 +35,7 @@ function Get-StgAppPoolPingSetting {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'processModel.pingingEnabled'
+        $filterpath = "processModel.pingingEnabled"
 
         $AppPools = (Get-IISAppPool).Name
 

@@ -36,7 +36,7 @@ function Get-StgContentLength {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/security/requestFiltering/requestLimits'
+        $filterpath = "system.webServer/security/requestFiltering/requestLimits"
         $MaxContentLength = 30000000
 
 

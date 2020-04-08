@@ -35,7 +35,7 @@ function Get-StgAppPoolEventLog {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'recycling.logEventOnRecycle'
+        $filterpath = "recycling.logEventOnRecycle"
         $AppPools = (Get-IISAppPool).Name
 
         foreach($Pool in $AppPools) {
@@ -58,7 +58,7 @@ function Get-StgAppPoolEventLog {
 
         [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
 
-        $PoolReplace = $PoolCollectionString.Replace(' ',",")
+        $PoolReplace = $PoolCollectionString.Replace(" ",",")
 
             $PreConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 

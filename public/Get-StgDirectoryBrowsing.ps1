@@ -36,7 +36,7 @@ function Get-StgDirectoryBrowsing {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/directoryBrowse'
+        $filterpath = "system.webServer/directoryBrowse"
 
         foreach($webname in $webnames) {
 
@@ -60,11 +60,11 @@ function Get-StgDirectoryBrowsing {
             }
         }
 
-        $PreDirectoryBrowsing = Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter $filterpath -Name Enabled
+        $PreDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
 
         Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
 
-        $PostDirectoryBrowsing = Get-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT/APPHOST' -Filter $filterpath -Name Enabled
+        $PostDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
 
         [pscustomobject] @{
             Vulnerability = "V-76733"

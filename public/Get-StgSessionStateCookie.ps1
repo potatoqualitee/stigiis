@@ -36,7 +36,7 @@ function Get-StgSessionStateCookie {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.web/sessionState'
+        $filterpath = "system.web/sessionState"
 
 
 
@@ -46,9 +46,9 @@ function Get-StgSessionStateCookie {
             $PreSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
             $PreTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
 
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess -Value 'UseCookies'
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID -Value 'True'
-            Set-WebConfigurationProperty -Location $webname -Filter 'system.webServer/asp/session' -Name TimeOut -Value '00:20:00'
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess -Value "UseCookies"
+            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID -Value "True"
+            Set-WebConfigurationProperty -Location $webname -Filter "system.webServer/asp/session" -Name TimeOut -Value "00:20:00"
 
             $PostCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
             $PostSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
@@ -64,7 +64,7 @@ function Get-StgSessionStateCookie {
                 PostConfigurationCookiesLess = $PostCookieConfig
                 PostConfigurationSessionID = $PostSessionConfig.Value
                 PostConfigurationTimeout = $PreTimeoutConfig.Value
-                Compliant = if ($PostCookieConfig -eq 'UseCookies' -and $PostSessionConfig.Value -eq "True" -and $PostTimeoutConfig.Value -eq '00:20:00') {
+                Compliant = if ($PostCookieConfig -eq "UseCookies" -and $PostSessionConfig.Value -eq "True" -and $PostTimeoutConfig.Value -eq "00:20:00") {
 
                     "Yes"
                 } else {

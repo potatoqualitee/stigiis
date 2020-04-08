@@ -36,8 +36,8 @@ function Get-StgLogAcl {
     process {
         Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
 
-        $WebPath = 'MACHINE/WEBROOT/APPHOST'
-        $LogDirectory = (Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.applicationHost/sites/sitedefaults/logfile" -Name Directory).Value.Replace('%SystemDrive%',"$env:SystemDrive")
+        $WebPath = "MACHINE/WEBROOT/APPHOST"
+        $LogDirectory = (Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.applicationHost/sites/sitedefaults/logfile" -Name Directory).Value.Replace("%SystemDrive%","$env:SystemDrive")
 
         #Child directories of IIS log directory
         $LogDirectoryChildren = (Get-ChildItem -Path $LogDirectory -Directory -Recurse -Force)
@@ -49,7 +49,7 @@ function Get-StgLogAcl {
             foreach($Access in $ACL) {
                 [pscustomobject] @{
                     Directory = $LDC.FullName
-                    'User/Group' = $Access.IdentityReference
+                    "User/Group" = $Access.IdentityReference
                     Permissions = $Access.FileSystemRights
                     Inherited = $Access.IsInherited
                 }

@@ -35,7 +35,7 @@ function Get-StgSessionSecurity {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/asp/session'
+        $filterpath = "system.webServer/asp/session"
 
 
 

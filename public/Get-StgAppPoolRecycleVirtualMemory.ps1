@@ -35,7 +35,7 @@ function Get-StgAppPoolRecycleVirtualMemory {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'recycling.periodicRestart.memory'
+        $filterpath = "recycling.periodicRestart.memory"
         $VMemoryDefault = 1GB
         $AppPools = (Get-IISAppPool).Name
 

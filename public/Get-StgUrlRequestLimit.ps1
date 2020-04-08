@@ -36,7 +36,7 @@ function Get-StgUrlRequestLimit {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/security/requestFiltering/requestLimits'
+        $filterpath = "system.webServer/security/requestFiltering/requestLimits"
         $MaxUrl = 4096
 
         foreach($webname in $webnames) {

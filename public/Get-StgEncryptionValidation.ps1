@@ -35,15 +35,15 @@ function Get-StgEncryptionValidation {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'system.web/machineKey'
+        $filterpath = "system.web/machineKey"
 
 
 
         $PreConfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
         $PreConfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
-        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
-        Set-WebConfigurationProperty -PSPath 'MACHINE/WEBROOT' -Filter $filterpath -Name "Decryption" -Value "Auto"
+        Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
+        Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
 
         $PostConfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
         $PostConfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
@@ -55,7 +55,7 @@ function Get-StgEncryptionValidation {
             PreConfigEncryption = $PreConfigEncryption.Value
             PostConfigurationValidation = $PostConfigurationValidation
             PostConfigurationEncryption = $PostConfigurationEncryption.Value
-            Compliant = if ($PostConfigurationValidation -eq 'HMACSHA256' -and $PostConfigurationEncryption.Value -eq 'Auto') {
+            Compliant = if ($PostConfigurationValidation -eq "HMACSHA256" -and $PostConfigurationEncryption.Value -eq "Auto") {
                 "Yes"
             } else {
                 "No"

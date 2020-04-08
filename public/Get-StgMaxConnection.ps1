@@ -34,8 +34,8 @@ function Get-StgMaxConnection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $pspath = 'MACHINE/WEBROOT/APPHOST'
-        $filterpath = 'system.applicationHost/sites/siteDefaults'
+        $pspath = "MACHINE/WEBROOT/APPHOST"
+        $filterpath = "system.applicationHost/sites/siteDefaults"
 
 
 

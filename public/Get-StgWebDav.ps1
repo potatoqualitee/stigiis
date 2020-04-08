@@ -35,13 +35,13 @@ function Get-StgWebDav {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $DAVFeature = 'Web-DAV-Publishing'
+        $DAVFeature = "Web-DAV-Publishing"
 
         #Remove Web-DAV-Publishing feature
         $RemoveFeature = Remove-WindowsFeature -Name $DAVFeature
 
         [pscustomobject] @{
-            Vulnerability = 'V-76713, V-76803'
+            Vulnerability = "V-76713, V-76803"
             Computername = $env:COMPUTERNAME
             FeatureName = $DAVFeature
             RemovedFeatures = $RemoveFeature.FeatureResult

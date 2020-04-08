@@ -36,7 +36,7 @@ function Get-StgDefaultDocument {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/defaultDocument'
+        $filterpath = "system.webServer/defaultDocument"
         foreach($webname in $webnames) {
 
             $PreConfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
@@ -50,7 +50,7 @@ function Get-StgDefaultDocument {
 
             if ($PreConfigDefaultDocumentFiles.Count -eq 0) {
 
-                Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value='Default.aspx'}
+                Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value="Default.aspx"}
             }
 
             $PostConfigurationDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled

@@ -36,7 +36,7 @@ function Get-StgHighBit {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/security/requestFiltering'
+        $filterpath = "system.webServer/security/requestFiltering"
 
 
 

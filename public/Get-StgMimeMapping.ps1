@@ -39,7 +39,7 @@ function Get-StgMimeMapping {
         $PreMimeConfig = (Get-WebConfiguration //staticcontent).Collection
 
         #Adjusted MIM map collection
-        $NewCollection = ($PreMimeConfig | where {$_.fileextension -ne '.exe' -and $_.fileextension -ne '.dll' -and $_.fileextension -ne '.com' -and $_.fileextension -ne '.bat' -and $_.fileextension -ne '.csh'})
+        $NewCollection = ($PreMimeConfig | where {$_.fileextension -ne ".exe" -and $_.fileextension -ne ".dll" -and $_.fileextension -ne ".com" -and $_.fileextension -ne ".bat" -and $_.fileextension -ne ".csh"})
 
         #Set new configurations
         Set-WebConfigurationProperty //staticContent -Name Collection -InputObject $NewCollection
@@ -47,7 +47,7 @@ function Get-StgMimeMapping {
         $PostMimeConfig = (Get-WebConfiguration //staticcontent).Collection
 
         [pscustomobject] @{
-            Vulnerability = 'V-76711, V-76797'
+            Vulnerability = "V-76711, V-76797"
             Computername = $env:COMPUTERNAME
             PreConfigExtenstions = $PreMimeConfig.FileExtension
             PreConfigCount = $PreMimeConfig.Count

@@ -62,17 +62,17 @@ function Get-StgLogDataField {
 
         $CollectionString = ($Collection | Select-Object -Unique)
 
-        $Replace = $CollectionString.Replace(' ',",")
+        $Replace = $CollectionString.Replace(" ",",")
 
         #Set all necessary log fields
-        Set-WebConfigurationProperty -Filter 'System.Applicationhost/Sites/SiteDefaults/logfile' -Name 'LogExtFileFlags' -Value $Replace
+        Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $Replace
 
         #All fields presented after new properties have been set
         $PostFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
 
         [pscustomobject] @{
 
-            Vulnerability = 'V-76681, V-76783'
+            Vulnerability = "V-76681, V-76783"
             PreConfigFields = "$CurrentFields"
             Date = ($PostFields -contains "Date")
             Time = ($PostFields -contains "Time")

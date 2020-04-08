@@ -35,7 +35,7 @@ function Get-StgAppPoolRapidFailProtection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $filterpath = 'failure.rapidFailProtection'
+        $filterpath = "failure.rapidFailProtection"
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 

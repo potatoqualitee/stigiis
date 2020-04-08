@@ -38,7 +38,7 @@ function Get-StgInstalledFeature {
         Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
 
         #Get all installed Windows Features
-        $Features = Get-WindowsFeature | Where-Object {$_.InstallState -eq 'Installed' -or $_.InstallState -eq 'InstallPending'}
+        $Features = Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending"}
 
         foreach($Feature in $Features) {
             [pscustomobject] @{

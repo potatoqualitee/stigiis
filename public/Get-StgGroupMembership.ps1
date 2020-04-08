@@ -38,7 +38,7 @@ function Get-StgGroupMembership {
 
 
         #Get Local administrators and groups
-        $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ''} | select -Skip 6 | ForEach-Object {$_.Replace('*','')}
+        $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ""} | select -Skip 6 | ForEach-Object {$_.Replace("*","")}
         $LocalAdmin = net localgroup Administrators | where {$_ -notmatch "command completed successfully"} | select -Skip 6
 
         foreach($LA in $LocalAdmin) {
@@ -46,11 +46,11 @@ function Get-StgGroupMembership {
                 [pscustomobject] @{
                     Vulnerability = "V-76707, V-76719"
                     Computername = $env:COMPUTERNAME
-                    AccessType = 'Local Administrator'
+                    AccessType = "Local Administrator"
                     User = $LA
-                    SecurityGroup = ''
-                    ObjectClass = ''
-                    DistinguishedName = 'N/A'
+                    SecurityGroup = ""
+                    ObjectClass = ""
+                    DistinguishedName = "N/A"
                 }
             }
         }
@@ -75,7 +75,7 @@ function Get-StgGroupMembership {
                         [pscustomobject] @{
                             Vulnerability = "V-76707, V-76719"
                             Computername = $env:COMPUTERNAME
-                            AccessType = 'Group Membership'
+                            AccessType = "Group Membership"
                             User = $Member.SamAccountName
                             SecurityGroup = $LG
                             ObjectClass = $Member.objectClass.ToUpper()

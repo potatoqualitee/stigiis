@@ -35,8 +35,8 @@ function Get-StgAppPoolTimeout {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $pspath = 'MACHINE/WEBROOT/APPHOST'
-        $filterpath = 'system.applicationHost/applicationPools/applicationPoolDefaults/processModel'
+        $pspath = "MACHINE/WEBROOT/APPHOST"
+        $filterpath = "system.applicationHost/applicationPools/applicationPoolDefaults/processModel"
 
 
 

@@ -36,7 +36,7 @@ function Get-StgMaxQueryString {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.webServer/security/requestFiltering/requestLimits'
+        $filterpath = "system.webServer/security/requestFiltering/requestLimits"
         [Int]$MaxQueryString = 2048
 
 

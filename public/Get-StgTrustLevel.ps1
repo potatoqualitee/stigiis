@@ -36,7 +36,7 @@ function Get-StgTrustLevel {
     }
     process {
         $webnames = (Get-Website).Name
-        $filterpath = 'system.web/trust'
+        $filterpath = "system.web/trust"
 
 
 

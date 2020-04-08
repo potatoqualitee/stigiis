@@ -37,39 +37,39 @@ function Get-StgLogCustom {
     process {
         #Custom logging fields
         $Connection = [pscustomobject] @{
-            LogFieldName = 'Connection'
-            SourceType = 'RequestHeader'
-            SourceName = 'Connection'
+            LogFieldName = "Connection"
+            SourceType = "RequestHeader"
+            SourceName = "Connection"
         }
 
         $Warning = [pscustomobject] @{
-            LogFieldName = 'Warning'
-            SourceType = 'RequestHeader'
-            SourceName = 'Warning'
+            LogFieldName = "Warning"
+            SourceType = "RequestHeader"
+            SourceName = "Warning"
         }
 
         $HTTPConnection = [pscustomobject] @{
-            LogFieldName = 'HTTPConnection'
-            SourceType = 'ServerVariable'
-            SourceName = 'HTTPConnection'
+            LogFieldName = "HTTPConnection"
+            SourceType = "ServerVariable"
+            SourceName = "HTTPConnection"
         }
 
         $UserAgent = [pscustomobject] @{
-            LogFieldName = 'User-Agent'
-            SourceType = 'RequestHeader'
-            SourceName = 'User-Agent'
+            LogFieldName = "User-Agent"
+            SourceType = "RequestHeader"
+            SourceName = "User-Agent"
         }
 
         $ContentType = [pscustomobject] @{
-            LogFieldName = 'Content-Type'
-            SourceType = 'RequestHeader'
-            SourceName = 'Content-Type'
+            LogFieldName = "Content-Type"
+            SourceType = "RequestHeader"
+            SourceName = "Content-Type"
         }
 
         $HTTPUserAgent = [pscustomobject] @{
-            LogFieldName = 'HTTP_USER_AGENT'
-            SourceType = 'ServerVariable'
-            SourceName = 'HTTP_USER_AGENT'
+            LogFieldName = "HTTP_USER_AGENT"
+            SourceType = "ServerVariable"
+            SourceName = "HTTP_USER_AGENT"
         }
 
         $CustomFields = @(
