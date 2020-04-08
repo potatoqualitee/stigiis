@@ -31,7 +31,7 @@ function Get-StgV-76883 {
 
         $PreConfigHostname = (Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name alternateHostname).Value
 
-        if([string]::IsNullOrWhiteSpace($PreConfigHostname)) {
+        if ([string]::IsNullOrWhiteSpace($PreConfigHostname)) {
 
             [string]$AlternateHostName = "$(($WebName).Replace(' ','')).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
 
@@ -47,7 +47,7 @@ function Get-StgV-76883 {
             Sitename = $WebName
             PreConfigHostname = $PreConfigHostname
             PostConfigHostname = $PostConfigHostname
-            Compliant = if(!([string]::IsNullOrWhiteSpace($PostConfigHostname))) {
+            Compliant = if (-not ([string]::IsNullOrWhiteSpace($PostConfigHostname))) {
 
                 "Yes"
             }

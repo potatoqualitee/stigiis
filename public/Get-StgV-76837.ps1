@@ -39,7 +39,7 @@ function Get-StgV-76837 {
             Sitename = $WebName
             PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
             PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
-            Compliant = if($PostConfigurationDebugBehavior.Value -eq $false) {
+            Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {
 
                 "Yes"
             }

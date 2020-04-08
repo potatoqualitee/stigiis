@@ -28,14 +28,14 @@ function Get-StgV-76831 {
 
         $PreConfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Enabled
 
-        if($PreConfigDefaultDocumentEnabled -eq $false) {
+        if ($PreConfigDefaultDocumentEnabled -eq $false) {
 
             Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter $FilterPath -Name Enabled -Value "True"
         }
 
         $PreConfigDefaultDocumentFiles = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name Files
 
-        if($PreConfigDefaultDocumentFiles.Count -eq 0) {
+        if ($PreConfigDefaultDocumentFiles.Count -eq 0) {
 
             Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($WebName)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value='Default.aspx'}
         }
@@ -52,7 +52,7 @@ function Get-StgV-76831 {
             PreConfigDefaultDocumentFiles = $PreConfigDefaultDocumentFiles.Count
             PostConfigurationDefaultDocumentEnabled = $PostConfigurationDefaultDocumentEnabled.Value
             PostConfigurationDefaultDocumentFiles = $PostConfigurationDefaultDocumentFiles.Count
-            Compliant = if($PostConfigurationDefaultDocumentEnabled.Value -eq $true -and $PostConfigurationDefaultDocumentFiles.Count -gt 0) {
+            Compliant = if ($PostConfigurationDefaultDocumentEnabled.Value -eq $true -and $PostConfigurationDefaultDocumentFiles.Count -gt 0) {
 
                 "Yes"
             }

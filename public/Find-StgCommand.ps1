@@ -176,7 +176,7 @@ function Find-DbsCommand {
     process {
         $Pattern = $Pattern.TrimEnd("s")
         $idxFile = Resolve-Path "$script:ModuleRoot\bin\stigiis-index.json"
-        if (!(Test-Path $idxFile) -or $Rebuild) {
+        if (-not (Test-Path $idxFile) -or $Rebuild) {
             Write-PSFMessage -Level Verbose -Message "Rebuilding index into $idxFile"
             $swRebuild = [system.diagnostics.stopwatch]::StartNew()
             Get-DbaIndex

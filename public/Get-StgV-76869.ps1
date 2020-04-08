@@ -30,7 +30,7 @@ function Get-StgV-76869 {
 
         $PreConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-        if($PreConfigVMemory -eq 0) {
+        if ($PreConfigVMemory -eq 0) {
 
             Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $VMemoryDefault
         }
@@ -44,7 +44,7 @@ function Get-StgV-76869 {
             ApplicationPool = $Pool
             PreConfigVMemory = [string]$PreConfigVMemory.Value
             PostConfigVMemory = [string]$PostConfigVMemory.Value
-            Compliant = if($PostConfigVMemory.Value -gt 0) {
+            Compliant = if ($PostConfigVMemory.Value -gt 0) {
 
                 "Yes"
             }

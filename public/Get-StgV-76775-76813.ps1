@@ -37,7 +37,7 @@ function Get-StgV-76775-76813 {
         Sitename = $env:COMPUTERNAME
         PreConfigMode = $PreConfigMode
         PostConfigurationMode = $PostConfigurationMode
-        Compliant = if($PostConfigurationMode -eq "InProc") {
+        Compliant = if ($PostConfigurationMode -eq "InProc") {
 
             "Yes"
         }
@@ -63,7 +63,7 @@ function Get-StgV-76775-76813 {
             Sitename = $Webname
             PreConfigMode = $PreConfigMode
             PostConfigurationMode = $PostConfigurationMode
-            Compliant = if($PostConfigurationMode -eq "InProc") {
+            Compliant = if ($PostConfigurationMode -eq "InProc") {
 
                 "Yes"
             }

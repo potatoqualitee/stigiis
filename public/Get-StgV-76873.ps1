@@ -59,7 +59,7 @@ function Get-StgV-76873 {
             ApplicationPool = $Pool
             PreConfigPool = $PreConfigPool
             PostConfigPool = $PostConfigPool
-            Compliant = if($PostConfigPool -like "*Time*" -and $PostConfigPool -like "*Schedule*") {
+            Compliant = if ($PostConfigPool -like "*Time*" -and $PostConfigPool -like "*Schedule*") {
 
                 "Yes"
             }

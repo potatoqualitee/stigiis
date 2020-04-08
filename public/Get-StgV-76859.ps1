@@ -46,7 +46,7 @@ function Get-StgV-76859 {
         PostConfigCookiesSSL = $PostConfigCookies.Value
         PreConfigCompressionEnabled = $PreConfigCompression.Value
         PostConfigCompressionEnabled = $PostConfigCompression.Value
-        Compliant = if($PostConfigCookies.Value -eq $true -and $PostConfigCompression.Value -eq $false) {
+        Compliant = if ($PostConfigCookies.Value -eq $true -and $PostConfigCompression.Value -eq $false) {
 
             "Yes"
         }

@@ -30,7 +30,7 @@ function Get-StgV-76867 {
 
         $PreConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-        if($PreConfigRecycle -eq 0) {
+        if ($PreConfigRecycle -eq 0) {
 
             Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $RequestsDefault
         }
@@ -44,7 +44,7 @@ function Get-StgV-76867 {
             ApplicationPool = $Pool
             PreConfigRecycle = $PreConfigRecycle.Value
             PostConfigRecycle = $PostConfigRecycle.Value
-            Compliant = if($PostConfigRecycle.Value -gt 0) {
+            Compliant = if ($PostConfigRecycle.Value -gt 0) {
 
                 "Yes"
             }

@@ -41,7 +41,7 @@ function Get-StgV-76817 {
             Sitename = $WebName
             PreConfiugrationMaxUrl = $PreConfigMaxUrl.Value
             PostConfiugrationMaxUrl = $PostConfigurationMaxUrl.Value
-            Compliant = if($PostConfigurationMaxUrl.Value -le $MaxUrl) {
+            Compliant = if ($PostConfigurationMaxUrl.Value -le $MaxUrl) {
 
                 "Yes"
             }

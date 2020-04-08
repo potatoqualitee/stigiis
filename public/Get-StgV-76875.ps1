@@ -30,7 +30,7 @@ function Get-StgV-76875 {
 
         $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-        if($PreConfigQLength.Value -gt 1000) {
+        if ($PreConfigQLength.Value -gt 1000) {
 
             Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $QLength
         }
@@ -44,7 +44,7 @@ function Get-StgV-76875 {
             ApplicationPool = $Pool
             PreConfigQLength = $PreConfigQLength
             PostConfigQLength = $PostConfigQLength
-            Compliant = if($PostConfigQLength -le 1000) {
+            Compliant = if ($PostConfigQLength -le 1000) {
 
                 "Yes"
             }

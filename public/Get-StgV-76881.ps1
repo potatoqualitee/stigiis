@@ -31,7 +31,7 @@ function Get-StgV-76881 {
 
         $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-        if([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
+        if ([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
 
             Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $ProtectionInterval
         }
@@ -45,7 +45,7 @@ function Get-StgV-76881 {
             ApplicationPool = $Pool
             PreConfigProtectionInterval = [Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes
             PostConfigProtectionInterval = [Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes
-            Compliant = if([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
+            Compliant = if ([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
 
                 "Yes"
             }

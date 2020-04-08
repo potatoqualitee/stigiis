@@ -100,7 +100,7 @@ function Get-StgLogCustom {
                 Vulnerability = "V-76687, V-76689, V-76789, V-76791"
                 SiteName = $WebName
                 CustomFields = $($PostConfig.logFieldName)
-                Compliant = if($PostConfig.logFieldName -contains "Connection" -and $PostConfig.logFieldName -contains "Warning" -and $PostConfig.logFieldName -contains "HTTPConnection" -and $PostConfig.logFieldName -contains "User-Agent" -and $PostConfig.logFieldName -contains "Content-Type" -and $PostConfig.logFieldName -contains "HTTP_USER_AGENT") {
+                Compliant = if ($PostConfig.logFieldName -contains "Connection" -and $PostConfig.logFieldName -contains "Warning" -and $PostConfig.logFieldName -contains "HTTPConnection" -and $PostConfig.logFieldName -contains "User-Agent" -and $PostConfig.logFieldName -contains "Content-Type" -and $PostConfig.logFieldName -contains "HTTP_USER_AGENT") {
 
                     "Yes"
                 }

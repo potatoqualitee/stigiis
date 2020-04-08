@@ -41,7 +41,7 @@ function Get-StgV-76821 {
             Sitename = $WebName
             PreConfiugrationMaxQueryString = $PreConfigMaxQueryString.Value
             PostConfiugrationMaxQueryString = $PostConfigurationMaxQueryString.Value
-            Compliant = if($PostConfigurationMaxQueryString.Value -le $MaxQueryString) {
+            Compliant = if ($PostConfigurationMaxQueryString.Value -le $MaxQueryString) {
 
                 "Yes"
             }

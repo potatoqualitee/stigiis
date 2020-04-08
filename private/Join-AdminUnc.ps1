@@ -14,7 +14,7 @@ function Join-AdminUnc {
 
     )
 
-    if (!$filepath) { return }
+    if (-not $filepath) { return }
     if ($filepath.StartsWith("\\")) { return $filepath }
 
     $servername = $servername.Split("\")[0]

@@ -28,7 +28,7 @@ function Get-StgV-76805 {
 
         $PreConfigTrustLevel = (Get-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name Level).Value
 
-        if($PostConfigTrustLevel -ne "Full" -or $PostConfigTrustLevel -ne "Medium" -or $PostConfigTrustLevel -ne "Low" -or $PostConfigTrustLevel -ne "Minimal") {
+        if ($PostConfigTrustLevel -ne "Full" -or $PostConfigTrustLevel -ne "Medium" -or $PostConfigTrustLevel -ne "Low" -or $PostConfigTrustLevel -ne "Minimal") {
 
             Set-WebConfigurationProperty -Location $Webname -Filter $FilterPath -Name Level -Value "Full"
         }
@@ -43,7 +43,7 @@ function Get-StgV-76805 {
             PreConfigTrustLevel = $PreConfigTrustLevel
             PostConfigTrustLevel = $PreConfigTrustLevel
             SuggestedTrustLevel = "Full or less"
-            Compliant = if($PostConfigTrustLevel -eq "Full" -or $PostConfigTrustLevel -eq "Medium" -or $PostConfigTrustLevel -eq "Low" -or $PostConfigTrustLevel -eq "Minimal") {
+            Compliant = if ($PostConfigTrustLevel -eq "Full" -or $PostConfigTrustLevel -eq "Medium" -or $PostConfigTrustLevel -eq "Low" -or $PostConfigTrustLevel -eq "Minimal") {
 
                 "Yes"
             }

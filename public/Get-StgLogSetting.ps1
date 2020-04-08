@@ -37,12 +37,12 @@ function Get-StgLogSetting {
         #Output which radio buttons are set
         $PreWeb = @(
 
-            if($PreWeb -notcontains "ETW") {
+            if ($PreWeb -notcontains "ETW") {
 
                 "Log File Only"
             }
 
-            elseif($PreWeb -notcontains "File") {
+            elseif ($PreWeb -notcontains "File") {
 
                 "ETW Event Only"
             }
@@ -64,12 +64,12 @@ function Get-StgLogSetting {
         #Output which radio buttons are set
         $PostWeb = @(
 
-            if($PostWeb -notcontains "ETW") {
+            if ($PostWeb -notcontains "ETW") {
 
                 "Log File Only"
             }
 
-            elseif($PostWeb -notcontains "File") {
+            elseif ($PostWeb -notcontains "File") {
 
                 "ETW Event Only"
             }
@@ -85,7 +85,7 @@ function Get-StgLogSetting {
             Vulnerability = 'V-76683, V-76785'
             PreConfig = "$PreWeb"
             PostConfiguration = "$PostWeb"
-            Compliant = if($PostWeb -eq "Both log file and ETW Event") {
+            Compliant = if ($PostWeb -eq "Both log file and ETW Event") {
 
                 "Yes"
             }

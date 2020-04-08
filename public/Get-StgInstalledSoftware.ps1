@@ -26,7 +26,7 @@ function Get-StgInstalledSoftware {
     process {
         Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
 
-        if($PSVersionTable.PSVersion -ge "5.0") {
+        if ($PSVersionTable.PSVersion -ge "5.0") {
 
             Get-Package
         }

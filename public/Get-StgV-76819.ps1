@@ -41,7 +41,7 @@ function Get-StgV-76819 {
             Sitename = $WebName
             PreConfiugrationMaxContentLength = $PreConfigMaxContentLength.Value
             PostConfiugrationMaxContentLength = $PostConfigurationMaxContentLength.Value
-            Compliant = if($PostConfigurationMaxContentLength.Value -le $MaxContentLength) {
+            Compliant = if ($PostConfigurationMaxContentLength.Value -le $MaxContentLength) {
 
                 "Yes"
             }

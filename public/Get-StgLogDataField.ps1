@@ -72,7 +72,7 @@ function Get-StgLogDataField {
             ProtocolStatus = ($PostFields -contains "HTTPstatus")
             Referer = ($PostFields -contains "Referer")
             PostConfigurationFields = "$PostFields"
-            Compliant = if($PostFields -contains "Date" -and $PostFields -contains "Time" -and $PostFields -contains "ClientIP" -and $PostFields -contains "UserName" -and $PostFields -contains "Method" -and $PostFields -contains "UriQuery" -and $PostFields -contains "HTTPstatus" -and $PostFields -contains "Referer") {
+            Compliant = if ($PostFields -contains "Date" -and $PostFields -contains "Time" -and $PostFields -contains "ClientIP" -and $PostFields -contains "UserName" -and $PostFields -contains "Method" -and $PostFields -contains "UriQuery" -and $PostFields -contains "HTTPstatus" -and $PostFields -contains "Referer") {
 
                 "Yes"
             }

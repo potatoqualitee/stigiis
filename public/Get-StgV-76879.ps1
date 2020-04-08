@@ -38,7 +38,7 @@ function Get-StgV-76879 {
             ApplicationPool = $Pool
             PreConfigRapidFailEnabled = $PreConfigRapidFailEnabled
             PostConfigRapidFailEnabled = $PostConfigRapidFailEnabled
-            Compliant = if($PostConfigRapidFailEnabled -eq $true) {
+            Compliant = if ($PostConfigRapidFailEnabled -eq $true) {
 
                 "Yes"
             }

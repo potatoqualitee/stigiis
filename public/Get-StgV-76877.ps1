@@ -38,7 +38,7 @@ function Get-StgV-76877 {
             ApplicationPool = $Pool
             PreConfigPing = $PreConfigPing
             PostConfigPing = $PostConfigPing
-            Compliant = if($PostConfigPing -eq $true) {
+            Compliant = if ($PostConfigPing -eq $true) {
 
                 "Yes"
             }

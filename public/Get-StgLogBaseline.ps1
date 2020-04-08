@@ -53,7 +53,7 @@ function Get-StgLogBaseline {
                 HTTPSstatus = $Tail.Split(' ')[12]
                 Win32status = $Tail.Split(' ')[13]
                 TimeTaken = $Tail.Split(' ')[14]
-                Compliant = if($WebIP -match $Tail.Split(' ')[2]) {
+                Compliant = if ($WebIP -match $Tail.Split(' ')[2]) {
 
                     "Yes"
                 }

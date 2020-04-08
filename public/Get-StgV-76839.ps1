@@ -26,7 +26,7 @@ function Get-StgV-76839 {
 
     $PreConfigTimeOut = Get-WebConfigurationProperty -Filter $FilterPath -Name idleTimeOut
 
-    if(!([Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes -le 20)) {
+    if (-not ([Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes -le 20)) {
 
         Set-WebConfigurationProperty -PSPath $PSPath -Filter $FilterPath -Name idleTimeout -Value "00:20:00"
     }
@@ -40,7 +40,7 @@ function Get-StgV-76839 {
         Sitename = $env:COMPUTERNAME
         PreConfigTimeOut = [Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes
         PostConfigTimeOut = [Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes
-        Compliant = if([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
+        Compliant = if ([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
 
             "Yes"
         }

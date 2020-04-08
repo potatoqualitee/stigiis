@@ -35,7 +35,7 @@ function Get-StgV-76811 {
         Computername = $env:COMPUTERNAME
         PreConfigAnonymousAuthentication = $PreConfigAnonymousAuthentication.Value
         PostConfigurationAnonymousAuthentication = $PostConfigurationAnonymousAuthentication.Value
-        Compliant = if($PostConfigurationAnonymousAuthentication.Value -eq $false) {
+        Compliant = if ($PostConfigurationAnonymousAuthentication.Value -eq $false) {
 
             "Yes"
         }

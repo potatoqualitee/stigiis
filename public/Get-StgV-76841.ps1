@@ -28,7 +28,7 @@ function Get-StgV-76841 {
 
         $PreConfigSessionTimeOut = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name TimeOut
 
-        if(!([Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes -le 20)) {
+        if (-not ([Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes -le 20)) {
 
             Set-WebConfigurationProperty -PSPath $PSPath/$($WebName) -Filter $FilterPath -Name Timeout -Value "00:20:00"
         }
@@ -42,7 +42,7 @@ function Get-StgV-76841 {
             Sitename = $WebName
             PreConfigSessionTimeOut = [Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes
             PostConfigSessionTimeOut = [Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes
-            Compliant = if([Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes -le 20) {
+            Compliant = if ([Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes -le 20) {
 
                 "Yes"
             }

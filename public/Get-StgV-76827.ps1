@@ -42,7 +42,7 @@ function Get-StgV-76827 {
             Sitename = $WebName
             PreConfigUnlistedExtensions = $PreConfigUnlistedExtensions.Value
             PostConfigurationUnlistedExtensions = $PostConfigurationUnlistedExtensions.Value
-            Compliant = if($PostConfigurationUnlistedExtensions.Value -eq $false) {
+            Compliant = if ($PostConfigurationUnlistedExtensions.Value -eq $false) {
 
                 "Yes"
             }

@@ -39,7 +39,7 @@ function Get-StgV-76825 {
             Sitename = $WebName
             PreConfigDoubleEscaping = $PreConfigDoubleEscaping.Value
             PostConfigurationDoubleEscaping = $PostConfigurationDoubleEscaping.Value
-            Compliant = if($PostConfigurationDoubleEscaping.Value -eq $false) {
+            Compliant = if ($PostConfigurationDoubleEscaping.Value -eq $false) {
 
                 "Yes"
             }

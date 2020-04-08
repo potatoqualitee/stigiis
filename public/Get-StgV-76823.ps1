@@ -39,7 +39,7 @@ function Get-StgV-76823 {
             Sitename = $WebName
             PreConfigHighBit = $PreConfigHighBit.Value
             PostConfigurationHighBit = $PostConfigurationHighBit.Value
-            Compliant = if($PostConfigurationHighBit.Value -eq $false) {
+            Compliant = if ($PostConfigurationHighBit.Value -eq $false) {
 
                 "Yes"
             }
