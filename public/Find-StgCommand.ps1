@@ -41,24 +41,24 @@ function Find-DbsCommand {
         License: MIT https://opensource.org/licenses/MIT
 
     .EXAMPLE
-        PS C:\> Find-DbsCommand V-79355
+        PS C:\> Find-DbsCommand V-76883
 
-        For lazy typers: finds all commands searching the entire help for V-79355
-
-    .EXAMPLE
-        PS C:\> Find-DbsCommand -Pattern audit
-
-        For rigorous typers: finds all commands searching the entire help for the word audit
+        For lazy typers: finds all commands searching the entire help for V-76883
 
     .EXAMPLE
-        PS C:\> Find-DbsCommand -Tag V-79355
+        PS C:\> Find-DbsCommand -Pattern hostname
 
-        Finds all commands tagged with V-79355
+        For rigorous typers: finds all commands searching the entire help for the word hostname
 
     .EXAMPLE
-        PS C:\> Find-DbsCommand -Tag V-79313, V-79315
+        PS C:\> Find-DbsCommand -Tag V-76883
 
-        Finds all commands tagged with BOTH V-79355 and V-79061
+        Finds all commands tagged with V-76883
+
+    .EXAMPLE
+        PS C:\> Find-DbsCommand -Tag V-76811, V-76883
+
+        Finds all commands tagged with BOTH V-76811 and V-76883
     #>
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -71,7 +71,7 @@ function Find-DbsCommand {
         [switch]$EnableException
     )
     begin {
-        function Get-DbaTrimmedString($Text) {
+        function Get-StgTrimmedString($Text) {
             return $Text.Trim() -replace '(\r\n){2,}', "`n"
         }
 
@@ -80,7 +80,7 @@ function Find-DbsCommand {
         $minverRex = ([regex]'(?m)^[\s]{0,15}MinimumVersion:(.*)$')
         $maxverRex = ([regex]'(?m)^[\s]{0,15}MaximumVersion:(.*)$')
 
-        function Get-DbaHelp([string]$commandName) {
+        function Get-StgHelp([string]$commandName) {
             $availability = 'Windows, Linux, macOS'
             if ($commandName -in $script:noncoresmo -or $commandName -in $script:windowsonly) {
                 $availability = 'Windows only'
@@ -104,7 +104,7 @@ function Find-DbsCommand {
             $thebase.Description = $thishelp.Description.Text
 
             ## fetch examples
-            $thebase.Examples = Get-DbaTrimmedString -Text ($thishelp.Examples | Out-String -Width 200)
+            $thebase.Examples = Get-StgTrimmedString -Text ($thishelp.Examples | Out-String -Width 200)
 
             ## fetch help link
             $thebase.Links = ($thishelp.relatedLinks).NavigationLink.Uri
@@ -113,7 +113,7 @@ function Find-DbsCommand {
             $thebase.Synopsis = $thishelp.Synopsis
 
             ## fetch the syntax
-            $thebase.Syntax = Get-DbaTrimmedString -Text ($thishelp.Syntax | Out-String -Width 600)
+            $thebase.Syntax = Get-StgTrimmedString -Text ($thishelp.Syntax | Out-String -Width 600)
 
             ## store notes
             $as = $thishelp.AlertSet | Out-String -Width 600
@@ -148,7 +148,7 @@ function Find-DbsCommand {
             $params = @()
             foreach ($p in $parameters) {
                 $paramAlias = $command.parameters[$p.Name].Aliases
-                $paramDescr = Get-DbaTrimmedString -Text ($p.Description | Out-String -Width 200)
+                $paramDescr = Get-StgTrimmedString -Text ($p.Description | Out-String -Width 200)
                 $params += , @($p.Name, $paramDescr, ($paramAlias -Join ','), ($p.Required -eq $true), $p.PipelineInput, $p.DefaultValue)
             }
 
@@ -157,15 +157,15 @@ function Find-DbsCommand {
             [pscustomobject]$thebase
         }
 
-        function Get-DbaIndex() {
+        function Get-StgIndex() {
             if ($Pscmdlet.ShouldProcess($dest, "Recreating index")) {
-                $dbamodule = Get-Module -Name stigiis
-                $allCommands = $dbamodule.ExportedCommands.Values | Where-Object CommandType -In 'Function', 'Cmdlet' | Sort-Object -Property Name | Select-Object -Unique | Where-Object Name -notin 'Find-DbsCommand'
-                #Had to add Unique because Select-DbaObject was getting populated twice once written to the index file
+                $Stgmodule = Get-Module -Name stigiis
+                $allCommands = $Stgmodule.ExportedCommands.Values | Where-Object CommandType -In 'Function', 'Cmdlet' | Sort-Object -Property Name | Select-Object -Unique | Where-Object Name -notin 'Find-DbsCommand'
+                #Had to add Unique because Select-StgObject was getting populated twice once written to the index file
 
                 $helpcoll = New-Object System.Collections.Generic.List[System.Object]
                 foreach ($command in $allCommands) {
-                    $x = Get-DbaHelp "$command"
+                    $x = Get-StgHelp "$command"
                     $helpcoll.Add($x)
                 }
                 $dest = Resolve-Path "$script:ModuleRoot\bin\stigiis-index.json"
@@ -179,7 +179,7 @@ function Find-DbsCommand {
         if (-not (Test-Path $idxFile) -or $Rebuild) {
             Write-PSFMessage -Level Verbose -Message "Rebuilding index into $idxFile"
             $swRebuild = [system.diagnostics.stopwatch]::StartNew()
-            Get-DbaIndex
+            Get-StgIndex
             Write-PSFMessage -Level Verbose -Message "Rebuild done in $($swRebuild.ElapsedMilliseconds)ms"
         }
         $consolidated = Get-Content -Raw $idxFile | ConvertFrom-Json

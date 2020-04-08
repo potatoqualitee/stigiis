@@ -29,20 +29,67 @@
     # "xml\dbatools.Format.ps1xml"
     FormatsToProcess       = @("bin\xml\stigiis.Format.ps1xml")
 
-    # Modules that must be imported into the global environment prior to importing this module
-    RequiredAssemblies = @('bin\Microsoft.Web.Administration.dll')
-
     # Assemblies that must be imported into the global environment prior to importing this module
     RequiredModules    = @(
-        @{ ModuleName = 'PSFramework'; ModuleVersion = '1.0.19' },
-        @{ ModuleName = 'IISAdministration'; ModuleVersion = '1.1.0.0' }
+        @{ ModuleName = 'PSFramework'; ModuleVersion = '1.0.19' }
     )
 
     # Script module or binary module file associated with this manifest.
     RootModule        = 'stigiis.psm1'
 
     FunctionsToExport = @(
-        'Find-DbsCommand'
+        'Find-StgCommand',
+        'Get-StgAltHostname',
+        'Get-StgAnonymousAuth',
+        'Get-StgAppPoolEventLog',
+        'Get-StgAppPoolPingSetting',
+        'Get-StgAppPoolQueueLength',
+        'Get-StgAppPoolRapidFailInterval',
+        'Get-StgAppPoolRapidFailProtection',
+        'Get-StgAppPoolRecycle',
+        'Get-StgAppPoolRecyclePrivateMemory',
+        'Get-StgAppPoolRecycleVirtualMemory',
+        'Get-StgAppPoolTimeout',
+        'Get-StgArrProxy',
+        'Get-StgAuthRule',
+        'Get-StgCertificate',
+        'Get-StgCgiIsapi',
+        'Get-StgClientCertificate',
+        'Get-StgCompression',
+        'Get-StgContentLength',
+        'Get-StgDebugSetting',
+        'Get-StgDefaultDocument',
+        'Get-StgDirectoryBrowsing',
+        'Get-StgDoubleEscape',
+        'Get-StgEncryptionValidation',
+        'Get-StgErrorDetail',
+        'Get-StgFso',
+        'Get-StgGroupMembership',
+        'Get-StgHighBit',
+        'Get-StgIndexConfiguration',
+        'Get-StgInstalledFeature',
+        'Get-StgInstalledSoftware',
+        'Get-StgJavaFile',
+        'Get-StgLogAcl',
+        'Get-StgLogBaseline',
+        'Get-StgLogCustom',
+        'Get-StgLogDataField',
+        'Get-StgLogSetting',
+        'Get-StgMaxConnection',
+        'Get-StgMaxQueryString',
+        'Get-StgMimeMapping',
+        'Get-StgPrintService',
+        'Get-StgSessionSecurity',
+        'Get-StgSessionStateCookie',
+        'Get-StgSessionStateInProc',
+        'Get-StgSessionTimeout',
+        'Get-StgSSLSetting',
+        'Get-StgTlsSetting',
+        'Get-StgTrustLevel',
+        'Get-StgUnlistedFileExtension',
+        'Get-StgUriRegistry',
+        'Get-StgUrlRequestLimit',
+        'Get-StgWebDav'
     )
 
     CmdletsToExport   = @( )

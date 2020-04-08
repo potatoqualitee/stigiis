@@ -36,7 +36,7 @@ function Get-StgLogAcl {
     process {
         Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
 
-        $WebPath = 'MACHINE/WEBROOT/APPHOST',
+        $WebPath = 'MACHINE/WEBROOT/APPHOST'
         $LogDirectory = (Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.applicationHost/sites/sitedefaults/logfile" -Name Directory).Value.Replace('%SystemDrive%',"$env:SystemDrive")
 
         #Child directories of IIS log directory

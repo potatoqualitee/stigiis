@@ -34,7 +34,7 @@ function Get-StgLogBaseline {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $LogFilePath = 'C:\inetpub\logs\LogFiles\W3SVC2',
+        $LogFilePath = 'C:\inetpub\logs\LogFiles\W3SVC2'
         $WebIP = (Get-NetIPAddress | Where-Object { $_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
 
 

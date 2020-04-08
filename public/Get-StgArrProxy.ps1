@@ -34,10 +34,8 @@ function Get-StgArrProxy {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        $WebPath = 'MACHINE/WEBROOT/APPHOST',
+        $WebPath = 'MACHINE/WEBROOT/APPHOST'
         $webnames = (Get-Website).Name
-
-
         foreach($webname in $webnames) {
 
             try {
