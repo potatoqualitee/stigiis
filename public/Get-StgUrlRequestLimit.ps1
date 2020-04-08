@@ -28,7 +28,7 @@ function Get-StgUrlRequestLimit {
         $FilterPath = 'system.webServer/security/requestFiltering/requestLimits'
         $MaxUrl = 4096
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $WebNames) {
 

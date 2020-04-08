@@ -24,7 +24,7 @@ function Get-StgJavaFile {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $JavaFiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp,*.java -Recurse -Force -ErrorAction SilentlyContinue
 

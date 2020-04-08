@@ -13,50 +13,48 @@ function Get-StgV-76883 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        [string]$PSpath = 'MACHINE/WEBROOT/APPHOST',
-
-        [Parameter(DontShow)]
-        $WebNames = (Get-Website).Name,
-
-        [Parameter(DontShow)]
-        [string]$FilterPath = 'system.webserver/serverRuntime'
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $PSpath = 'MACHINE/WEBROOT/APPHOST'
+        $WebNames = (Get-Website).Name
+        $FilterPath = 'system.webserver/serverRuntime'
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    foreach($WebName in $WebNames) {
+        foreach($WebName in $WebNames) {
 
-        $PreConfigHostname = (Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name alternateHostname).Value
+            $PreConfigHostname = (Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name alternateHostname).Value
 
-        if ([string]::IsNullOrWhiteSpace($PreConfigHostname)) {
+            if ([string]::IsNullOrWhiteSpace($PreConfigHostname)) {
 
-            [string]$AlternateHostName = "$(($WebName).Replace(' ','')).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
+                [string]$AlternateHostName = "$(($WebName).Replace(' ','')).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
 
-            Set-WebConfigurationProperty -PSPath $PSPath/$($WebName) -Filter $FilterPath -Name alternateHostname -Value $AlternateHostName
-        }
-
-        $PostConfigHostname = (Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name alternateHostname).Value
-
-        [pscustomobject] @{
-
-            Vulnerability = "V-76883"
-            Computername = $env:COMPUTERNAME
-            Sitename = $WebName
-            PreConfigHostname = $PreConfigHostname
-            PostConfigHostname = $PostConfigHostname
-            Compliant = if (-not ([string]::IsNullOrWhiteSpace($PostConfigHostname))) {
-
-                "Yes"
+                Set-WebConfigurationProperty -PSPath $PSPath/$($WebName) -Filter $FilterPath -Name alternateHostname -Value $AlternateHostName
             }
 
-            else {
+            $PostConfigHostname = (Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name alternateHostname).Value
 
-                "No"
+            [pscustomobject] @{
+                Vulnerability = "V-76883"
+                Computername = $env:COMPUTERNAME
+                Sitename = $WebName
+                PreConfigHostname = $PreConfigHostname
+                PostConfigHostname = $PostConfigHostname
+                Compliant = if (-not ([string]::IsNullOrWhiteSpace($PostConfigHostname))) {
+                    "Yes"
+                } else {
+                    "No"
+                }
             }
         }
     }
-
 }

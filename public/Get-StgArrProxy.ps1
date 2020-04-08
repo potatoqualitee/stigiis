@@ -25,7 +25,7 @@ function Get-StgArrProxy {
     process {
         $WebPath = 'MACHINE/WEBROOT/APPHOST',
         $WebNames = (Get-Website).Name
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($Webname in $WebNames) {
 

@@ -24,7 +24,7 @@ function Get-StgLogDataField {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         #STIG required log fields
         $RequiredFields = @(

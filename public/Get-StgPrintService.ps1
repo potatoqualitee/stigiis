@@ -27,7 +27,7 @@ function Get-StgPrintService {
         $PrintPath = "$($env:windir)\web\printers"
         $PrintServices = @("Print-Services", "Print-Internet")
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $PrintFeatures = Get-WindowsFeature -Name $PrintServices
 

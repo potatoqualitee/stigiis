@@ -30,7 +30,7 @@ function Get-StgClientCertificate {
     }
     process {
         $WebNames = (Get-Website).Name
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($Webname in $WebNames) {
 

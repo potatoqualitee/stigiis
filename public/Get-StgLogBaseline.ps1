@@ -25,7 +25,7 @@ function Get-StgLogBaseline {
     process {
         $LogFilePath = 'C:\inetpub\logs\LogFiles\W3SVC2',
         $WebIP = (Get-NetIPAddress | Where-Object { $_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         #Retrieve most recent log file
         $CurrentLog = Get-ChildItem $LogFilePath -Force | Sort-Object LastWriteTime -Descending | Select-Object -First 1

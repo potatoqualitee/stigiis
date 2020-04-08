@@ -26,7 +26,7 @@ function Get-StgMaxConnection {
         $PSPath = 'MACHINE/WEBROOT/APPHOST'
         $FilterPath = 'system.applicationHost/sites/siteDefaults'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $MaxConnections = Get-WebConfigurationProperty -Filter $FilterPath -Name Limits
 

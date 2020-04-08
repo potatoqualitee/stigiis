@@ -26,7 +26,7 @@ function Get-StgAnonymousAuth {
         $PSPath = 'MACHINE/WEBROOT/APPHOST'
         $FilterPath = 'system.webServer/security/authentication/anonymousAuthentication'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $PreConfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $FilterPath -Name Enabled
 

@@ -24,7 +24,7 @@ function Get-StgSSLSetting {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($Webname in $WebNames) {
 

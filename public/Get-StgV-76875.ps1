@@ -13,47 +13,47 @@ function Get-StgV-76875 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        $FilterPath = 'queueLength',
-
-        [Parameter(DontShow)]
-        [Int]$QLength = 1000
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'queueLength'
+        [Int]$QLength = 1000
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    $AppPools = (Get-IISAppPool).Name
 
-    foreach($Pool in $AppPools) {
+        $AppPools = (Get-IISAppPool).Name
 
-        $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+        foreach($Pool in $AppPools) {
 
-        if ($PreConfigQLength.Value -gt 1000) {
+            $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $QLength
-        }
+            if ($PreConfigQLength.Value -gt 1000) {
 
-        $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
-
-        [pscustomobject] @{
-
-            Vulnerability = "V-76875"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigQLength = $PreConfigQLength
-            PostConfigQLength = $PostConfigQLength
-            Compliant = if ($PostConfigQLength -le 1000) {
-
-                "Yes"
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $QLength
             }
 
-            else {
+            $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-                "No: Value must be 1000 or less"
+            [pscustomobject] @{
+                Vulnerability = "V-76875"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigQLength = $PreConfigQLength
+                PostConfigQLength = $PostConfigQLength
+                Compliant = if ($PostConfigQLength -le 1000) {
+                    "Yes"
+                } else {
+                    "No: Value must be 1000 or less"
+                }
             }
         }
     }
-
 }

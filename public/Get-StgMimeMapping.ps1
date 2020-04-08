@@ -24,7 +24,7 @@ function Get-StgMimeMapping {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         #Pre-Configuration MIME map collection
         $PreMimeConfig = (Get-WebConfiguration //staticcontent).Collection

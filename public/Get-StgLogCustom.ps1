@@ -70,7 +70,7 @@ function Get-StgLogCustom {
             $HTTPUserAgent
         )
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         #All website names
         $WebNames = (Get-Website).Name

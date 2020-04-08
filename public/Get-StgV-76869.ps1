@@ -13,47 +13,46 @@ function Get-StgV-76869 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        $FilterPath = 'recycling.periodicRestart.memory',
-
-        [Parameter(DontShow)]
-        [Int64]$VMemoryDefault = 1GB
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'recycling.periodicRestart.memory'
+        $VMemoryDefault = 1GB
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    $AppPools = (Get-IISAppPool).Name
 
-    foreach($Pool in $AppPools) {
+        $AppPools = (Get-IISAppPool).Name
 
-        $PreConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+        foreach($Pool in $AppPools) {
+            $PreConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-        if ($PreConfigVMemory -eq 0) {
+            if ($PreConfigVMemory -eq 0) {
 
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $VMemoryDefault
-        }
-
-        $PostConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
-
-        [pscustomobject] @{
-
-            Vulnerability = "V-76869"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigVMemory = $PreConfigVMemory.Value
-            PostConfigVMemory = $PostConfigVMemory.Value
-            Compliant = if ($PostConfigVMemory.Value -gt 0) {
-
-                "Yes"
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $VMemoryDefault
             }
 
-            else {
+            $PostConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-                "No: Value must be set higher than 0"
+            [pscustomobject] @{
+                Vulnerability = "V-76869"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigVMemory = $PreConfigVMemory.Value
+                PostConfigVMemory = $PostConfigVMemory.Value
+                Compliant = if ($PostConfigVMemory.Value -gt 0) {
+                    "Yes"
+                } else {
+                    "No: Value must be set higher than 0"
+                }
             }
         }
     }
-
 }

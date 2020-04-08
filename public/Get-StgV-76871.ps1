@@ -13,47 +13,47 @@ function Get-StgV-76871 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        [string]$FilterPath = 'recycling.periodicRestart.privateMemory',
-
-        [Parameter(DontShow)]
-        [Int64]$MemoryDefault = 1GB
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'recycling.periodicRestart.privateMemory'
+        $MemoryDefault = 1GB
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    $AppPools = (Get-IISAppPool).Name
 
-    foreach($Pool in $AppPools) {
+        $AppPools = (Get-IISAppPool).Name
 
-        $PreConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+        foreach($Pool in $AppPools) {
 
-        if ($PreConfigMemory -eq 0) {
+            $PreConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $MemoryDefault
-        }
+            if ($PreConfigMemory -eq 0) {
 
-        $PostConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
-
-        [pscustomobject] @{
-
-            Vulnerability = "V-76871"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigMemory = [string]$PreConfigMemory.Value
-            PostConfigMemory = [string]$PostConfigMemory.Value
-            Compliant = if ($PostConfigMemory.Value -gt 0) {
-
-                "Yes"
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $MemoryDefault
             }
 
-            else {
+            $PostConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-                "No: Value must be set higher than 0"
+            [pscustomobject] @{
+                Vulnerability = "V-76871"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigMemory = [string]$PreConfigMemory.Value
+                PostConfigMemory = [string]$PostConfigMemory.Value
+                Compliant = if ($PostConfigMemory.Value -gt 0) {
+                    "Yes"
+                } else {
+                    "No: Value must be set higher than 0"
+                }
             }
         }
     }
-
 }

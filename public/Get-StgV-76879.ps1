@@ -13,41 +13,43 @@ function Get-StgV-76879 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        $FilterPath = 'failure.rapidFailProtection'
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'failure.rapidFailProtection'
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    $AppPools = (Get-IISAppPool).Name
+        $AppPools = (Get-IISAppPool).Name
 
-    foreach($Pool in $AppPools) {
+        foreach($Pool in $AppPools) {
 
-        $PreConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PreConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-        Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $true
+            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $true
 
-        $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-        [pscustomobject] @{
-
-            Vulnerability = "V-76877"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigRapidFailEnabled = $PreConfigRapidFailEnabled
-            PostConfigRapidFailEnabled = $PostConfigRapidFailEnabled
-            Compliant = if ($PostConfigRapidFailEnabled -eq $true) {
-
-                "Yes"
-            }
-
-            else {
-
-                "No"
+            [pscustomobject] @{
+                Vulnerability = "V-76877"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigRapidFailEnabled = $PreConfigRapidFailEnabled
+                PostConfigRapidFailEnabled = $PostConfigRapidFailEnabled
+                Compliant = if ($PostConfigRapidFailEnabled -eq $true) {
+                    "Yes"
+                } else {
+                    "No"
+                }
             }
         }
     }
-
 }

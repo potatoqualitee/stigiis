@@ -13,62 +13,63 @@ function Get-StgV-76873 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        [string]$FilterPath = 'recycling.logEventOnRecycle'
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'recycling.logEventOnRecycle'
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    $AppPools = (Get-IISAppPool).Name
 
-    foreach($Pool in $AppPools) {
+        $AppPools = (Get-IISAppPool).Name
 
-    #STIG required log fields
-    $RequiredPoolFields = @(
+        foreach($Pool in $AppPools) {
 
-        "Time",
-        "Schedule"
-    )
+        #STIG required log fields
+        $RequiredPoolFields = @(
 
-    #Current log fields
-    $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Split(",")
+            "Time",
+            "Schedule"
+        )
 
-    #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
-    [String[]]$PoolCollection = @(
+        #Current log fields
+        $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Split(",")
 
-        $RequiredPoolFields
-        $CurrentPoolFields
-    )
+        #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
+        [String[]]$PoolCollection = @(
+            $RequiredPoolFields
+            $CurrentPoolFields
+        )
 
-    [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
+        [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
 
-    $PoolReplace = $PoolCollectionString.Replace(' ',",")
+        $PoolReplace = $PoolCollectionString.Replace(' ',",")
 
-        $PreConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PreConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-        Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $PoolReplace
+            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $PoolReplace
 
-        $PostConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+            $PostConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-        [pscustomobject] @{
-
-            Vulnerability = "V-76873"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigPool = $PreConfigPool
-            PostConfigPool = $PostConfigPool
-            Compliant = if ($PostConfigPool -like "*Time*" -and $PostConfigPool -like "*Schedule*") {
-
-                "Yes"
-            }
-
-            else {
-
-                "No: Time and Scheduled logging must be turned on"
+            [pscustomobject] @{
+                Vulnerability = "V-76873"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigPool = $PreConfigPool
+                PostConfigPool = $PostConfigPool
+                Compliant = if ($PostConfigPool -like "*Time*" -and $PostConfigPool -like "*Schedule*") {
+                    "Yes"
+                } else {
+                    "No: Time and Scheduled logging must be turned on"
+                }
             }
         }
     }
-
 }

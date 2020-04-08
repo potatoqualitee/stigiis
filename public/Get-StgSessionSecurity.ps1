@@ -26,7 +26,7 @@ function Get-StgSessionSecurity {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.webServer/asp/session'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $PreConfigSessionID = Get-WebConfigurationProperty -Filter $FilterPath  -Name KeepSessionIdSecure
 

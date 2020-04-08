@@ -30,7 +30,7 @@ function Get-StgUnlistedFileExtension {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.webServer/security/requestFiltering/fileExtensions'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $WebNames) {
 

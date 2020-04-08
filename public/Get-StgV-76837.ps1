@@ -27,7 +27,7 @@ function Get-StgV-76837 {
         $FilterPath = 'system.web/compilation'
 
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $WebNames) {
 

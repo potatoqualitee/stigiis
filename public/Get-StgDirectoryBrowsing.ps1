@@ -26,7 +26,7 @@ function Get-StgDirectoryBrowsing {
     process {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.webServer/directoryBrowse'
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $Webnames) {
 

@@ -27,7 +27,7 @@ function Get-StgV-76839 {
         $PSPath = 'MACHINE/WEBROOT/APPHOST'
         $FilterPath = 'system.applicationHost/applicationPools/applicationPoolDefaults/processModel'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $PreConfigTimeOut = Get-WebConfigurationProperty -Filter $FilterPath -Name idleTimeOut
 

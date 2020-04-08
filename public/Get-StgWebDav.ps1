@@ -25,13 +25,11 @@ function Get-StgWebDav {
     }
     process {
         $DAVFeature = 'Web-DAV-Publishing'
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
         #Remove Web-DAV-Publishing feature
         $RemoveFeature = Remove-WindowsFeature -Name $DAVFeature
 
         [pscustomobject] @{
-
             Vulnerability = 'V-76713, V-76803'
             Computername = $env:COMPUTERNAME
             FeatureName = $DAVFeature
@@ -39,12 +37,8 @@ function Get-StgWebDav {
             ExitCode = $RemoveFeature.ExitCode
             RestartNeeded = $RemoveFeature.RestartNeeded
             Compliant = if ($RemoveFeature.Success -eq $true) {
-
                 "Yes"
-            }
-
-            else {
-
+            } else {
                 "No"
             }
         }

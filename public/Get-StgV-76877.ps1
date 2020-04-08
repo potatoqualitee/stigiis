@@ -13,41 +13,46 @@ function Get-StgV-76877 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        $FilterPath = 'processModel.pingingEnabled'
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'processModel.pingingEnabled'
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+        $AppPools = (Get-IISAppPool).Name
 
-    $AppPools = (Get-IISAppPool).Name
+        foreach($Pool in $AppPools) {
 
-    foreach($Pool in $AppPools) {
+            $PreConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-        $PreConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $true
 
-        Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $true
+            $PostConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-        $PostConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            [pscustomobject] @{
 
-        [pscustomobject] @{
+                Vulnerability = "V-76877"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigPing = $PreConfigPing
+                PostConfigPing = $PostConfigPing
+                Compliant = if ($PostConfigPing -eq $true) {
 
-            Vulnerability = "V-76877"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigPing = $PreConfigPing
-            PostConfigPing = $PostConfigPing
-            Compliant = if ($PostConfigPing -eq $true) {
+                    "Yes"
+                }
 
-                "Yes"
-            }
+                else {
 
-            else {
-
-                "No"
+                    "No"
+                }
             }
         }
     }
-
 }

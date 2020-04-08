@@ -28,7 +28,7 @@ function Get-StgV-76737-76835 {
     process {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.webServer/httpErrors'
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $Webnames) {
             $PreErrorMode = Get-WebConfigurationProperty -Filter $FilterPath -Name ErrorMode

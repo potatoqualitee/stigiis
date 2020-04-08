@@ -27,7 +27,7 @@ function Get-StgHighBit {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.webServer/security/requestFiltering'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $WebNames) {
             $PreConfigHighBit = Get-WebConfigurationProperty -Location $WebName -Filter $FilterPath -Name allowHighBitCharacters

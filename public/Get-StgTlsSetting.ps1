@@ -41,7 +41,7 @@ function Get-StgTlsSetting {
 
         #STIG required key name
         $SubKeyName = 'DisabledByDefault'
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($Key0 in $RegKeys0) {
 

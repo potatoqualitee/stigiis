@@ -27,7 +27,7 @@ function Get-StgTrustLevel {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.web/trust'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($Webname in $WebNames) {
 

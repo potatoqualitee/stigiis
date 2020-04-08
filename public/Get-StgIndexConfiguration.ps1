@@ -25,7 +25,7 @@ function Get-StgIndexConfiguration {
     }
     process {
         $RegPath = "HKLM:\System\CurrentControlSet\Control\ContentIndex\Catalogs"
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         if (-not (Test-Path $RegPath)) {
             [pscustomobject] @{

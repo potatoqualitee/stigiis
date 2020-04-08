@@ -26,7 +26,7 @@ function Get-StgEncryptionValidation {
     process {
         $FilterPath = 'system.web/machineKey'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $PreConfigValidation = Get-WebConfigurationProperty -Filter $FilterPath -Name Validation
         $PreConfigEncryption = Get-WebConfigurationProperty -Filter $FilterPath -Name Decryption

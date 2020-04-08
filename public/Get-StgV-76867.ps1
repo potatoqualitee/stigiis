@@ -13,47 +13,47 @@ function Get-StgV-76867 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        $FilterPath = 'recycling.periodicRestart.requests',
-
-        [Parameter(DontShow)]
-        [Int64]$RequestsDefault = 100000
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'recycling.periodicRestart.requests'
+        $RequestsDefault = 100000
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    $AppPools = (Get-IISAppPool).Name
 
-    foreach($Pool in $AppPools) {
+        $AppPools = (Get-IISAppPool).Name
 
-        $PreConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
+        foreach($Pool in $AppPools) {
 
-        if ($PreConfigRecycle -eq 0) {
+            $PreConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $RequestsDefault
-        }
+            if ($PreConfigRecycle -eq 0) {
 
-        $PostConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
-
-        [pscustomobject] @{
-
-            Vulnerability = "V-76867"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigRecycle = $PreConfigRecycle.Value
-            PostConfigRecycle = $PostConfigRecycle.Value
-            Compliant = if ($PostConfigRecycle.Value -gt 0) {
-
-                "Yes"
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $RequestsDefault
             }
 
-            else {
+            $PostConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath
 
-                "No: Value must be set higher than 0"
+            [pscustomobject] @{
+                Vulnerability = "V-76867"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigRecycle = $PreConfigRecycle.Value
+                PostConfigRecycle = $PostConfigRecycle.Value
+                Compliant = if ($PostConfigRecycle.Value -gt 0) {
+                    "Yes"
+                } else {
+                    "No: Value must be set higher than 0"
+                }
             }
         }
     }
-
 }

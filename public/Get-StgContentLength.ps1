@@ -28,7 +28,7 @@ function Get-StgContentLength {
         $FilterPath = 'system.webServer/security/requestFiltering/requestLimits'
         $MaxContentLength = 30000000
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $WebNames) {
 

@@ -24,7 +24,7 @@ function Get-StgGroupMembership {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         #Get Local administrators and groups
         $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ''} | select -Skip 6 | ForEach-Object {$_.Replace('*','')}

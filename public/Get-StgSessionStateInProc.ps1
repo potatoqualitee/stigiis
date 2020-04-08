@@ -28,7 +28,7 @@ function Get-StgSessionStateInProc {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.web/sessionState'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $PreConfigMode = Get-WebConfigurationProperty -Filter $FilterPath -Name Mode
 

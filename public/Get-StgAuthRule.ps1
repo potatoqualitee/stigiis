@@ -26,7 +26,7 @@ function Get-StgAuthRule {
         $FilterPath = 'system.web/authorization/allow'
         $Settings = "[@roles='' and @users='*' and @verbs='']"
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         $PreConfigUsers = Get-WebConfigurationProperty -Filter $FilterPath -Name Users
 

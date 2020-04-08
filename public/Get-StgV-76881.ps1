@@ -13,48 +13,47 @@ function Get-StgV-76881 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        $FilterPath = 'failure.rapidFailProtectionInterval',
-
-        [Parameter(DontShow)]
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
+    )
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
+    }
+    process {
+        $FilterPath = 'failure.rapidFailProtectionInterval'
         $ProtectionInterval = "00:05:00"
 
-    )
+        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+        $AppPools = (Get-IISAppPool).Name
 
-    $AppPools = (Get-IISAppPool).Name
+        foreach($Pool in $AppPools) {
 
-    foreach($Pool in $AppPools) {
+            $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-        $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
+            if ([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
 
-        if ([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
-
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $ProtectionInterval
-        }
-
-        $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
-
-        [pscustomobject] @{
-
-            Vulnerability = "V-76881"
-            Computername = $env:COMPUTERNAME
-            ApplicationPool = $Pool
-            PreConfigProtectionInterval = [Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes
-            PostConfigProtectionInterval = [Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes
-            Compliant = if ([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
-
-                "Yes"
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath -Value $ProtectionInterval
             }
 
-            else {
+            $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $FilterPath).Value
 
-                "No: Value must be 5 or less"
+            [pscustomobject] @{
+                Vulnerability = "V-76881"
+                Computername = $env:COMPUTERNAME
+                ApplicationPool = $Pool
+                PreConfigProtectionInterval = [Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes
+                PostConfigProtectionInterval = [Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes
+                Compliant = if ([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
+                    "Yes"
+                } else {
+                    "No: Value must be 5 or less"
+                }
             }
         }
     }
-
 }

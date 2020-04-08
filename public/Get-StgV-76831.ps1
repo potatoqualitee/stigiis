@@ -27,7 +27,7 @@ function Get-StgV-76831 {
         $WebNames = (Get-Website).Name
         $FilterPath = 'system.webServer/defaultDocument'
 
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
+
 
         foreach($WebName in $WebNames) {
 
