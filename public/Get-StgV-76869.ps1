@@ -16,7 +16,7 @@ function Get-StgV-76869 {
     param(
 
         [Parameter(DontShow)]
-        [string]$FilterPath = 'recycling.periodicRestart.memory',
+        $FilterPath = 'recycling.periodicRestart.memory',
 
         [Parameter(DontShow)]
         [Int64]$VMemoryDefault = 1GB
@@ -42,8 +42,8 @@ function Get-StgV-76869 {
             Vulnerability = "V-76869"
             Computername = $env:COMPUTERNAME
             ApplicationPool = $Pool
-            PreConfigVMemory = [string]$PreConfigVMemory.Value
-            PostConfigVMemory = [string]$PostConfigVMemory.Value
+            PreConfigVMemory = $PreConfigVMemory.Value
+            PostConfigVMemory = $PostConfigVMemory.Value
             Compliant = if ($PostConfigVMemory.Value -gt 0) {
 
                 "Yes"

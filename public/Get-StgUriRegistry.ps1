@@ -23,7 +23,7 @@ function Get-StgUriRegistry {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        [string]$ParameterKey = "HKLM:\SYSTEM\CurrentControlSet\Services\HTTP\Parameters"
+        $ParameterKey = "HKLM:\SYSTEM\CurrentControlSet\Services\HTTP\Parameters"
         [String[]]$Keys = @(
             "URIEnableCache",
             "UriMaxUriBytes",

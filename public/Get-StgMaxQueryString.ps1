@@ -25,7 +25,7 @@ function Get-StgMaxQueryString {
     }
     process {
         $WebNames = (Get-Website).Name
-        [string]$FilterPath = 'system.webServer/security/requestFiltering/requestLimits'
+        $FilterPath = 'system.webServer/security/requestFiltering/requestLimits'
         [Int]$MaxQueryString = 2048
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"

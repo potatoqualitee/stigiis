@@ -16,7 +16,7 @@ function Get-StgV-76867 {
     param(
 
         [Parameter(DontShow)]
-        [string]$FilterPath = 'recycling.periodicRestart.requests',
+        $FilterPath = 'recycling.periodicRestart.requests',
 
         [Parameter(DontShow)]
         [Int64]$RequestsDefault = 100000

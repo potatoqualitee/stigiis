@@ -16,7 +16,7 @@ function Get-StgV-76881 {
     param(
 
         [Parameter(DontShow)]
-        [string]$FilterPath = 'failure.rapidFailProtectionInterval',
+        $FilterPath = 'failure.rapidFailProtectionInterval',
 
         [Parameter(DontShow)]
         $ProtectionInterval = "00:05:00"

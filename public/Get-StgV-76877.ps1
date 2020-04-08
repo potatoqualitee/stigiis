@@ -16,7 +16,7 @@ function Get-StgV-76877 {
     param(
 
         [Parameter(DontShow)]
-        [string]$FilterPath = 'processModel.pingingEnabled'
+        $FilterPath = 'processModel.pingingEnabled'
     )
 
     Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"

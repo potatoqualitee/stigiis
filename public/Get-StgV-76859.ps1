@@ -16,13 +16,13 @@ function Get-StgV-76859 {
     param(
 
         [Parameter(DontShow)]
-        [string]$PSpath = 'MACHINE/WEBROOT',
+        $PSpath = 'MACHINE/WEBROOT',
 
         [Parameter(DontShow)]
-        [string]$FilterPathCookies = 'system.web/httpCookies',
+        $FilterPathCookies = 'system.web/httpCookies',
 
         [Parameter(DontShow)]
-        [string]$FilterPathCompression = 'system.web/sessionState'
+        $FilterPathCompression = 'system.web/sessionState'
     )
 
     Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"

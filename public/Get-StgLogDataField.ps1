@@ -49,7 +49,7 @@ function Get-StgLogDataField {
             $CurrentFields
         )
 
-        [string]$CollectionString = ($Collection | Select-Object -Unique)
+        $CollectionString = ($Collection | Select-Object -Unique)
 
         $Replace = $CollectionString.Replace(' ',",")
 

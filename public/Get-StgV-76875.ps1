@@ -16,7 +16,7 @@ function Get-StgV-76875 {
     param(
 
         [Parameter(DontShow)]
-        [string]$FilterPath = 'queueLength',
+        $FilterPath = 'queueLength',
 
         [Parameter(DontShow)]
         [Int]$QLength = 1000

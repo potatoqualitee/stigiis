@@ -13,42 +13,42 @@ function Get-StgV-76839 {
         License: MIT https://opensource.org/licenses/MIT
 
 #>
-    param(
-
-        [Parameter(DontShow)]
-        [string]$PSPath = 'MACHINE/WEBROOT/APPHOST',
-
-        [Parameter(DontShow)]
-        [string]$FilterPath = 'system.applicationHost/applicationPools/applicationPoolDefaults/processModel'
+    [CmdletBinding()]
+    param (
+        [parameter(Mandatory, ValueFromPipeline)]
+        [PSFComputer[]]$ComputerName,
+        [PSCredential]$Credential,
+        [switch]$EnableException
     )
-
-    Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
-
-    $PreConfigTimeOut = Get-WebConfigurationProperty -Filter $FilterPath -Name idleTimeOut
-
-    if (-not ([Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes -le 20)) {
-
-        Set-WebConfigurationProperty -PSPath $PSPath -Filter $FilterPath -Name idleTimeout -Value "00:20:00"
+    begin {
+        . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
+    process {
+        $PSPath = 'MACHINE/WEBROOT/APPHOST'
+        $FilterPath = 'system.applicationHost/applicationPools/applicationPoolDefaults/processModel'
 
-    $PostConfigTimeOut = Get-WebConfigurationProperty -Filter $FilterPath -Name idleTimeOut
+        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 
-    [pscustomobject] @{
+        $PreConfigTimeOut = Get-WebConfigurationProperty -Filter $FilterPath -Name idleTimeOut
 
-        Vulnerability = "V-76839"
-        Computername = $env:COMPUTERNAME
-        Sitename = $env:COMPUTERNAME
-        PreConfigTimeOut = [Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes
-        PostConfigTimeOut = [Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes
-        Compliant = if ([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
+        if (-not ([Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes -le 20)) {
 
-            "Yes"
+            Set-WebConfigurationProperty -PSPath $PSPath -Filter $FilterPath -Name idleTimeout -Value "00:20:00"
         }
 
-        else {
+        $PostConfigTimeOut = Get-WebConfigurationProperty -Filter $FilterPath -Name idleTimeOut
 
-            "No"
+        [pscustomobject] @{
+            Vulnerability = "V-76839"
+            Computername = $env:COMPUTERNAME
+            Sitename = $env:COMPUTERNAME
+            PreConfigTimeOut = [Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes
+            PostConfigTimeOut = [Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes
+            Compliant = if ([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
+                "Yes"
+            } else {
+                "No"
+            }
         }
     }
-
 }

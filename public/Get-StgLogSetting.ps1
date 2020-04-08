@@ -18,10 +18,10 @@ function Get-StgLogSetting {
         [parameter(Mandatory, ValueFromPipeline)]
         [PSFComputer[]]$ComputerName,
         [PSCredential]$Credential,
-        [string]$WebPath = 'MACHINE/WEBROOT/APPHOST',
-        [string]$FilterPath = "system.applicationHost/sites/sitedefaults/logfile",
-        [string]$LogTarget = "logTargetW3C",
-        [string]$LogValues = "File,ETW",
+        $WebPath = 'MACHINE/WEBROOT/APPHOST',
+        $FilterPath = "system.applicationHost/sites/sitedefaults/logfile",
+        $LogTarget = "logTargetW3C",
+        $LogValues = "File,ETW",
         [switch]$EnableException
     )
     begin {

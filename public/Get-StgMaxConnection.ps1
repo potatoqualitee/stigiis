@@ -23,8 +23,8 @@ function Get-StgMaxConnection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
     }
     process {
-        [string]$PSPath = 'MACHINE/WEBROOT/APPHOST'
-        [string]$FilterPath = 'system.applicationHost/sites/siteDefaults'
+        $PSPath = 'MACHINE/WEBROOT/APPHOST'
+        $FilterPath = 'system.applicationHost/sites/siteDefaults'
 
         Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
 

@@ -16,7 +16,7 @@ function Get-StgV-76879 {
     param(
 
         [Parameter(DontShow)]
-        [string]$FilterPath = 'failure.rapidFailProtection'
+        $FilterPath = 'failure.rapidFailProtection'
     )
 
     Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
