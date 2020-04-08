@@ -6,6 +6,17 @@ function Get-StgSessionStateCookie {
     .DESCRIPTION
         Configure and verify cookieLess & regenerateExpiredSessionID properties for vulnerability 76725, 76727, & 76777.
 
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
+
     .NOTES
         Tags: V-76725, V-76727, V-76777
         Author: Chrissy LeMaire (@cl), netnerds.net

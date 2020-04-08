@@ -1,10 +1,21 @@
-function Get-StgV-76873 {
+function Get-StgAppPoolEventLog {
 <#
-.SYNOPSIS
-    Configure and verify Application Pool Event Log settings for vulnerability 76873.
+    .SYNOPSIS
+        Configure and verify Application Pool Event Log settings for vulnerability 76873.
 
-.DESCRIPTION
-    Configure and verify Application Pool Event Log settings for vulnerability 76873.
+    .DESCRIPTION
+        Configure and verify Application Pool Event Log settings for vulnerability 76873.
+
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
 
     .NOTES
         Tags: V-76873
@@ -25,9 +36,6 @@ function Get-StgV-76873 {
     }
     process {
         $filterpath = 'recycling.logEventOnRecycle'
-
-
-
         $AppPools = (Get-IISAppPool).Name
 
         foreach($Pool in $AppPools) {

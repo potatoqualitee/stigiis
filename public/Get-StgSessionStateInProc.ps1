@@ -1,12 +1,23 @@
 function Get-StgSessionStateInProc {
 <#
     .SYNOPSIS
-    Configure and verify Session State Mode settings for vulnerability 76775 & 76813.
+        Configure and verify Session State Mode settings for vulnerability 76775 & 76813.
 
     .DESCRIPTION
-    Configure and verify Session State Mode settings for vulnerability 76775 & 76813.
+        Configure and verify Session State Mode settings for vulnerability 76775 & 76813.
 
-    Communication between a client and the web server is done using the HTTP protocol, but HTTP is a stateless protocol. In order to maintain a connection or session, a web server will generate a session identifier (ID) for each client session when the session is initiated. The session ID allows the web server to track a user session and, in many cases, the user, if the user previously logged into a hosted application. By being able to guess session IDs, an attacker can easily perform a man-in-the-middle attack. To truly generate random session identifiers that cannot be reproduced, the web server session ID generator, when used twice with the same input criteria, must generate an unrelated random ID. The session ID generator also needs to be a FIPS 140-2-approved generator.
+        Communication between a client and the web server is done using the HTTP protocol, but HTTP is a stateless protocol. In order to maintain a connection or session, a web server will generate a session identifier (ID) for each client session when the session is initiated. The session ID allows the web server to track a user session and, in many cases, the user, if the user previously logged into a hosted application. By being able to guess session IDs, an attacker can easily perform a man-in-the-middle attack. To truly generate random session identifiers that cannot be reproduced, the web server session ID generator, when used twice with the same input criteria, must generate an unrelated random ID. The session ID generator also needs to be a FIPS 140-2-approved generator.
+
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
 
     .NOTES
         Tags: V-76775, V-76813

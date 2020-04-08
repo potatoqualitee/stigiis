@@ -8,6 +8,17 @@ function Get-StgCgiIsapi {
 
         By allowing unspecified file extensions to execute, the web servers attack surface is significantly increased. This increased risk can be reduced by only allowing specific ISAPI extensions or CGI extensions to run on the web server.
 
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
+
     .NOTES
         Tags: V-76769
         Author: Chrissy LeMaire (@cl), netnerds.net

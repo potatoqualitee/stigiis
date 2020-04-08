@@ -6,6 +6,17 @@ function Get-StgDirectoryBrowsing {
 .DESCRIPTION
     Configure and verify Directory Browsing properties for vulnerability 76733 & 76829.
 
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
+
     .NOTES
         Tags: V-76733, V-76829
         Author: Chrissy LeMaire (@cl), netnerds.net
@@ -26,7 +37,6 @@ function Get-StgDirectoryBrowsing {
     process {
         $webnames = (Get-Website).Name
         $filterpath = 'system.webServer/directoryBrowse'
-
 
         foreach($webname in $webnames) {
 

@@ -6,6 +6,17 @@ function Get-StgLogDataField {
     .DESCRIPTION
         Add STIG required data fields to the logging feature, including currently active fields for vulnerability 76681 & 76783.
 
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
+
     .NOTES
         Tags: V-76681, V-76783
         Author: Chrissy LeMaire (@cl), netnerds.net

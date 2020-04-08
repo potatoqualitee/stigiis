@@ -6,6 +6,17 @@ function Get-StgLogCustom {
     .DESCRIPTION
         Check, configure, and verify Custom Logging Fields for vulnerabilities 76687, 76689, 76789, & 76791.
 
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
+
     .NOTES
         Tags: V-76687, V-76689, V-76789, V-76791
         Author: Chrissy LeMaire (@cl), netnerds.net

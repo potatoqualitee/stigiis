@@ -8,10 +8,19 @@ function Get-StgClientCertificate {
 
         Protecting the confidentiality and integrity of received information requires that application servers take measures to employ approved cryptography in order to protect the information during transmission over the network. This is usually achieved through the use of Transport Layer Security (TLS), SSL VPN, or IPsec tunnel. The web server must utilize approved encryption when receiving transmitted data.
 
-    .NOTES
-        Setting Client Certificates to Required breaks SolarWinds.
+    .PARAMETER ComputerName
+        The target server.
+
+    .PARAMETER Credential
+        Login to the target computer using alternative credentials.
+
+    .PARAMETER EnableException
+        By default, when something goes wrong we try to catch it, interpret it and give you a friendly warning message.
+        This avoids overwhelming you with "sea of red" exceptions, but is inconvenient because it basically disables advanced scripting.
+        Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
 
     .NOTES
+        Setting Client Certificates to Required breaks SolarWinds.
         Tags: V-76809, V-76851, V-76861
         Author: Chrissy LeMaire (@cl), netnerds.net
         Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
