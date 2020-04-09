@@ -1,4 +1,4 @@
-function Find-DbsCommand {
+function Find-StgCommand {
     <#
     .SYNOPSIS
         Finds stigiis commands searching through the inline help text
@@ -41,22 +41,22 @@ function Find-DbsCommand {
         License: MIT https://opensource.org/licenses/MIT
 
     .EXAMPLE
-        PS C:\> Find-DbsCommand V-76883
+        PS C:\> Find-StgCommand V-76883
 
         For lazy typers: finds all commands searching the entire help for V-76883
 
     .EXAMPLE
-        PS C:\> Find-DbsCommand -Pattern hostname
+        PS C:\> Find-StgCommand -Pattern hostname
 
         For rigorous typers: finds all commands searching the entire help for the word hostname
 
     .EXAMPLE
-        PS C:\> Find-DbsCommand -Tag V-76883
+        PS C:\> Find-StgCommand -Tag V-76883
 
         Finds all commands tagged with V-76883
 
     .EXAMPLE
-        PS C:\> Find-DbsCommand -Tag V-76811, V-76883
+        PS C:\> Find-StgCommand -Tag V-76811, V-76883
 
         Finds all commands tagged with BOTH V-76811 and V-76883
     #>
@@ -160,7 +160,7 @@ function Find-DbsCommand {
         function Get-StgIndex() {
             if ($Pscmdlet.ShouldProcess($dest, "Recreating index")) {
                 $Stgmodule = Get-Module -Name stigiis
-                $allCommands = $Stgmodule.ExportedCommands.Values | Where-Object CommandType -In 'Function', 'Cmdlet' | Sort-Object -Property Name | Select-Object -Unique | Where-Object Name -notin 'Find-DbsCommand'
+                $allCommands = $Stgmodule.ExportedCommands.Values | Where-Object CommandType -In 'Function', 'Cmdlet' | Sort-Object -Property Name | Select-Object -Unique | Where-Object Name -notin 'Find-StgCommand'
                 #Had to add Unique because Select-StgObject was getting populated twice once written to the index file
 
                 $helpcoll = New-Object System.Collections.Generic.List[System.Object]
