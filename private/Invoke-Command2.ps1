@@ -67,12 +67,18 @@ function Invoke-Command2
 		[System.Management.Automation.CredentialAttribute()]
 		[System.Management.Automation.PSCredential]
 		$Credential
-	)
+    )
 	process
 	{
 		foreach ($computer in $ComputerName)
 		{
-
+            Write-Verbose -Message "Connecting to $computer"
+            $null = Invoke-PSFCommand -ComputerName $computer -Credential $Credential -ErrorAction Stop -ScriptBlock {
+                # test to make sure the WebAdministration module exists.
+                # Loading it each time is no big deal because Invoke-PSFCommand uses sessions
+                Import-Module WebAdministration -ErrorAction Stop
+            }
+            Invoke-PSFCommand @PSBoundParameters -ErrorAction Stop
         }
 	}
 }
