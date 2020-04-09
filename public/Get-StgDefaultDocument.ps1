@@ -56,7 +56,7 @@ function Get-StgDefaultDocument {
                 $PostConfigurationDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76831"
+                    Id = "V-76831"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigDefaultDocumentEnabled = $PreConfigDefaultDocumentEnabled.Value
@@ -64,9 +64,9 @@ function Get-StgDefaultDocument {
                     PostConfigurationDefaultDocumentEnabled = $PostConfigurationDefaultDocumentEnabled.Value
                     PostConfigurationDefaultDocumentFiles = $PostConfigurationDefaultDocumentFiles.Count
                     Compliant = if ($PostConfigurationDefaultDocumentEnabled.Value -eq $true -and $PostConfigurationDefaultDocumentFiles.Count -gt 0) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
 
                 }

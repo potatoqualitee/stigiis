@@ -50,13 +50,13 @@ function Get-StgAppPoolRecyclePrivateMemory {
                 $PostConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76871"
+                    Id = "V-76871"
                     ComputerName = $env:ComputerName
                     ApplicationPool = $Pool
                     PreConfigMemory = [string]$PreConfigMemory.Value
                     PostConfigMemory = [string]$PostConfigMemory.Value
                     Compliant = if ($PostConfigMemory.Value -gt 0) {
-                        "Yes"
+                        $true
                     } else {
                         "No: Value must be set higher than 0"
                     }

@@ -48,15 +48,15 @@ function Get-StgSessionTimeout {
                 $PostConfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76841"
+                    Id = "V-76841"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigSessionTimeOut = [Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes
                     PostConfigSessionTimeOut = [Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes
                     Compliant = if ([Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes -le 20) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

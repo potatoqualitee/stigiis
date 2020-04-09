@@ -44,11 +44,11 @@ function Get-StgUriRegistry {
                 $KeyCompliant = if (-not (Test-Path "$($ParameterKey)\$($Key)")) {
                     "No: Key does not exist"
                 } else {
-                    "Yes"
+                    $true
                 }
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76755"
+                    Id = "V-76755"
                     ComputerName = $env:ComputerName
                     Key = "$($ParameterKey)\$($Key)"
                     Compliant = $KeyCompliant

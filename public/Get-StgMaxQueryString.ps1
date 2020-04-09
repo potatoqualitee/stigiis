@@ -49,13 +49,13 @@ function Get-StgMaxQueryString {
                 $PostConfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76821"
+                    Id = "V-76821"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfiugrationMaxQueryString = $PreConfigMaxQueryString.Value
                     PostConfiugrationMaxQueryString = $PostConfigurationMaxQueryString.Value
                     Compliant = if ($PostConfigurationMaxQueryString.Value -le $MaxQueryString) {
-                        "Yes"
+                        $true
                     } else {
                         "No: Value must be $MaxQueryString or less"
                     }

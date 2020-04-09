@@ -53,14 +53,14 @@ function Get-StgCgiIsapi {
             $PostConfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
             [pscustomobject] @{
-                Vulnerability = "V-76769"
+                Id = "V-76769"
                 ComputerName = $env:ComputerName
                 PreConfigCGI = $PostConfigurationCGIExtension.Value
                 PreConfigISAPI = $PostConfigurationISAPIExtension.Value
                 PostConfigurationCGI = $PostConfigurationCGIExtension.Value
                 PostConfigurationISAPI = $PostConfigurationISAPIExtension.Value
                 Compliant = if ($PostConfigurationCGIExtension.Value -eq $false -and $PostConfigurationISAPIExtension.Value -eq $false) {
-                    "Yes"
+                    $true
                 } else {
                     "No: If auto configuration failed, this section may be locked. Configure manually."
                 }

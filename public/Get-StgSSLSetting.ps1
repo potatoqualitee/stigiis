@@ -123,23 +123,23 @@ function Get-StgSSLSetting {
 
                     if ($PostConfig -eq "SSL: Required | Client Certificates: Accept") {
 
-                        "Yes"
+                        $true
                     }
 
                     elseif ($PostConfig -eq "SSL: Required | Client Certificates: Require") {
 
-                        "Yes"
+                        $true
                     }
 
                     else {
 
-                        "No"
+                        $false
                     }
                 )
 
                 [pscustomobject] @{
 
-                    Vulnerability = "V-76679, V-76779, V-76781"
+                    Id = "V-76679, V-76779, V-76781"
                     SiteName = $webname
                     PreConfigFlags = "$PreConfig"
                     PostConfigurationFlags = "$PostConfig"

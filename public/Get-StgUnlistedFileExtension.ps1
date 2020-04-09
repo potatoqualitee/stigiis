@@ -47,13 +47,13 @@ function Get-StgUnlistedFileExtension {
                 $PostConfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76827"
+                    Id = "V-76827"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigUnlistedExtensions = $PreConfigUnlistedExtensions.Value
                     PostConfigurationUnlistedExtensions = $PostConfigurationUnlistedExtensions.Value
                     Compliant = if ($PostConfigurationUnlistedExtensions.Value -eq $false) {
-                        "Yes"
+                        $true
                     } else {
                         "No: Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
                     }

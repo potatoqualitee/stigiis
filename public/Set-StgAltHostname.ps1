@@ -57,9 +57,9 @@ function Set-StgAltHostname {
                     PreConfigHostname  = $hostname
                     PostConfigHostname = $PostConfigHostname
                     Compliant          = if ($PostConfigHostname) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

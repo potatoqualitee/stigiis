@@ -48,19 +48,19 @@ function Get-StgAppPoolPingSetting {
 
                 [pscustomobject] @{
 
-                    Vulnerability = "V-76877"
+                    Id = "V-76877"
                     ComputerName = $env:ComputerName
                     ApplicationPool = $Pool
                     PreConfigPing = $PreConfigPing
                     PostConfigPing = $PostConfigPing
                     Compliant = if ($PostConfigPing -eq $true) {
 
-                        "Yes"
+                        $true
                     }
 
                     else {
 
-                        "No"
+                        $false
                     }
                 }
             }

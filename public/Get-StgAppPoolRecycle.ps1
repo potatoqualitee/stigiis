@@ -50,13 +50,13 @@ function Get-StgAppPoolRecycle {
                 $PostConfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
                 [pscustomobject]@{
-                    Vulnerability = "V-76867"
+                    Id = "V-76867"
                     ComputerName = $env:ComputerName
                     ApplicationPool = $Pool
                     PreConfigRecycle = $PreConfigRecycle.Value
                     PostConfigRecycle = $PostConfigRecycle.Value
                     Compliant = if ($PostConfigRecycle.Value -gt 0) {
-                        "Yes"
+                        $true
                     } else {
                         "No: Value must be set higher than 0"
                     }

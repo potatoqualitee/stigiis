@@ -46,14 +46,14 @@ function Get-StgAuthRule {
             $PostConfigurationUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
             [pscustomobject] @{
-                Vulnerability = "V-76771"
+                Id = "V-76771"
                 ComputerName = $env:ComputerName
                 PreConfigAuthorizedUsers = $PreConfigUsers.Value
                 PostConfigurationAuthorizedUsers = $PostConfigurationUsers.Value
                 Compliant = if ($PostConfigurationUsers.Value -eq "Administrators") {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
         }

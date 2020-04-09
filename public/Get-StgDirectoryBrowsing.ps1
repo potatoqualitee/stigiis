@@ -46,15 +46,15 @@ function Get-StgDirectoryBrowsing {
                 $PostDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76829"
+                    Id = "V-76829"
                     ComputerName = $env:ComputerName
                     SiteName = $webname
                     PreConfigBrowsingEnabled = $PreDirectoryBrowsing.Value
                     PostConfigurationBrowsingEnabled = $PostDirectoryBrowsing.Value
                     Compliant = if ($PostDirectoryBrowsing.Value -eq $false) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }
@@ -66,15 +66,15 @@ function Get-StgDirectoryBrowsing {
             $PostDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
 
             [pscustomobject] @{
-                Vulnerability = "V-76733"
+                Id = "V-76733"
                 ComputerName = $env:ComputerName
                 SiteName = $env:ComputerName
                 PreConfigBrowsingEnabled = $PreDirectoryBrowsing.Value
                 PostConfigurationBrowsingEnabled = $PostDirectoryBrowsing.Value
                 Compliant = if ($PostDirectoryBrowsing.Value -eq $false) {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
         }

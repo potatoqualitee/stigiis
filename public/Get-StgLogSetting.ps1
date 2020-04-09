@@ -91,17 +91,17 @@ function Get-StgLogSetting {
 
             [pscustomobject] @{
 
-                Vulnerability = "V-76683, V-76785"
+                Id = "V-76683, V-76785"
                 PreConfig = "$PreWeb"
                 PostConfiguration = "$PostWeb"
                 Compliant = if ($PostWeb -eq "Both log file and ETW Event") {
 
-                    "Yes"
+                    $true
                 }
 
                 else {
 
-                    "No"
+                    $false
                 }
             }
         }

@@ -40,12 +40,12 @@ function Get-StgPrintService {
 
             foreach($Feature in $PrintFeatures) {
                 [pscustomobject] @{
-                    Vulnerability = "V-76753"
+                    Id = "V-76753"
                     ComputerName = $env:ComputerName
                     Feature = $Feature.Name
                     InstallState = $Feature.InstallState
                     Compliant = if ($Feature.InstallState -eq "Available") {
-                        "Yes"
+                        $true
                     } else {
                         "No: Remove $($Feature.Name) Windows Feature"
                     }

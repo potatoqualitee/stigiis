@@ -207,7 +207,7 @@ function Get-StgClientCertificate {
 
                     if ($PostConfig -eq "SSL: Required | Client Certificates: Require" -or $PostConfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
 
-                        "Yes"
+                        $true
                     }
 
                     else {
@@ -218,7 +218,7 @@ function Get-StgClientCertificate {
 
                 [pscustomobject] @{
 
-                    Vulnerability = "V-76861"
+                    Id = "V-76861"
                     ComputerName = $env:ComputerName
                     SiteName = $webname
                     PreConfigFlags = "$PreConfig"
@@ -392,7 +392,7 @@ function Get-StgClientCertificate {
 
                 if ($PostConfig -eq "SSL: Required | Client Certificates: Require" -or $PostConfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
 
-                    "Yes"
+                    $true
                 }
 
                 else {
@@ -403,7 +403,7 @@ function Get-StgClientCertificate {
 
             [pscustomobject] @{
 
-                Vulnerability = "V-76809, V-76851"
+                Id = "V-76809, V-76851"
                 ComputerName = $env:ComputerName
                 SiteName = $env:ComputerName
                 PreConfigFlags = "$PreConfig"

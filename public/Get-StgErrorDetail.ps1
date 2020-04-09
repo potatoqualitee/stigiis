@@ -44,15 +44,15 @@ function Get-StgV-76737-76835 {
                 Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
                 $PostErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
                 [pscustomobject] @{
-                    Vulnerability = "V-76733, V-76835"
+                    Id = "V-76733, V-76835"
                     ComputerName = $env:ComputerName
                     SiteName = $webname
                     PreConfigBrowsingEnabled = $PreErrorMode
                     PostConfigurationBrowsingEnabled = $PostErrorMode
                     Compliant = if ($PostErrorMode -eq "DetailedLocalOnly") {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

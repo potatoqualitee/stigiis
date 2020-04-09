@@ -42,15 +42,15 @@ function Get-StgSessionSecurity {
             $PostConfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
             [pscustomobject] @{
-                Vulnerability = "V-76757"
+                Id = "V-76757"
                 ComputerName = $env:ComputerName
                 Sitename = $env:ComputerName
                 PreConfigSessionID = $PreConfigSessionID.Value
                 PostConfigurationSessionID = $PostConfigurationSessionID.Value
                 Compliant = if ($PostConfigurationSessionID.Value -eq "True") {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
 
@@ -63,15 +63,15 @@ function Get-StgSessionSecurity {
                 $PostConfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76855"
+                    Id = "V-76855"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigSessionID = $PreConfigSessionID.Value
                     PostConfigurationSessionID = $PostConfigurationSessionID.Value
                     Compliant = if ($PostConfigurationSessionID.Value -eq "True") {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

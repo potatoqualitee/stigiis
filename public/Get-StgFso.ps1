@@ -48,11 +48,11 @@ function Get-StgFso {
             $Compliant = if (Test-Path $FSOKey) {
                 "No: Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
             } else {
-                "Yes"
+                $true
             }
 
             [pscustomobject] @{
-                Vulnerability = "V-76767"
+                Id = "V-76767"
                 ComputerName = $env:ComputerName
                 Key = $FSOKey
                 ComponentStatus = $ComponentEnabled

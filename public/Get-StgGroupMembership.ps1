@@ -41,7 +41,7 @@ function Get-StgGroupMembership {
             foreach($LA in $LocalAdmin) {
                 if (-not ([string]::IsNullOrWhiteSpace($LA))) {
                     [pscustomobject] @{
-                        Vulnerability = "V-76707, V-76719"
+                        Id = "V-76707, V-76719"
                         ComputerName = $env:ComputerName
                         AccessType = "Local Administrator"
                         User = $LA
@@ -70,7 +70,7 @@ function Get-StgGroupMembership {
                     foreach($Member in $Members) {
                         if (-not ([string]::IsNullOrWhiteSpace($Member))) {
                             [pscustomobject] @{
-                                Vulnerability = "V-76707, V-76719"
+                                Id = "V-76707, V-76719"
                                 ComputerName = $env:ComputerName
                                 AccessType = "Group Membership"
                                 User = $Member.SamAccountName

@@ -46,15 +46,15 @@ function Get-StgDoubleEscape {
                 $PostConfigurationDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76825"
+                    Id = "V-76825"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigDoubleEscaping = $PreConfigDoubleEscaping.Value
                     PostConfigurationDoubleEscaping = $PostConfigurationDoubleEscaping.Value
                     Compliant = if ($PostConfigurationDoubleEscaping.Value -eq $false) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

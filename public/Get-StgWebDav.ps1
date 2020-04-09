@@ -40,16 +40,16 @@ function Get-StgWebDav {
             $RemoveFeature = Remove-WindowsFeature -Name $DAVFeature
 
             [pscustomobject] @{
-                Vulnerability = "V-76713, V-76803"
+                Id = "V-76713, V-76803"
                 ComputerName = $env:ComputerName
                 FeatureName = $DAVFeature
                 RemovedFeatures = $RemoveFeature.FeatureResult
                 ExitCode = $RemoveFeature.ExitCode
                 RestartNeeded = $RemoveFeature.RestartNeeded
                 Compliant = if ($RemoveFeature.Success -eq $true) {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
         }

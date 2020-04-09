@@ -38,14 +38,14 @@ function Get-StgIndexConfiguration {
 
             if (-not (Test-Path $RegPath)) {
                 [pscustomobject] @{
-                    Vulnerability = "V-76735"
+                    Id = "V-76735"
                     ComputerName = $env:ComputerName
                     Key = $RegPath
                     Compliant = "Not Applicable: Key does not exist"
                 }
             } else {
                 [pscustomobject] @{
-                    Vulnerability = "V-76735"
+                    Id = "V-76735"
                     ComputerName = $env:ComputerName
                     Key = $RegPath
                     Compliant = "No: Key exists; check Indexing Service snap-in from MMC console"

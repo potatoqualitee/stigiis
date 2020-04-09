@@ -47,7 +47,7 @@ function Get-StgCompression {
             $PostConfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
 
             [pscustomobject] @{
-                Vulnerability = "V-76859"
+                Id = "V-76859"
                 ComputerName = $env:ComputerName
                 Sitename = $env:ComputerName
                 PreConfigCookiesSSL = $PreConfigCookies.Value
@@ -55,9 +55,9 @@ function Get-StgCompression {
                 PreConfigCompressionEnabled = $PreConfigCompression.Value
                 PostConfigCompressionEnabled = $PostConfigCompression.Value
                 Compliant = if ($PostConfigCookies.Value -eq $true -and $PostConfigCompression.Value -eq $false) {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
         }

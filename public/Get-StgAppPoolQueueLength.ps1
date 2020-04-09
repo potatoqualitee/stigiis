@@ -50,13 +50,13 @@ function Get-StgAppPoolQueueLength {
                 $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76875"
+                    Id = "V-76875"
                     ComputerName = $env:ComputerName
                     ApplicationPool = $Pool
                     PreConfigQLength = $PreConfigQLength
                     PostConfigQLength = $PostConfigQLength
                     Compliant = if ($PostConfigQLength -le 1000) {
-                        "Yes"
+                        $true
                     } else {
                         "No: Value must be 1000 or less"
                     }

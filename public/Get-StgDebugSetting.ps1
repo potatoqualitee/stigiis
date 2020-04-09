@@ -44,15 +44,15 @@ function Get-StgDebugSetting {
                 $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76837"
+                    Id = "V-76837"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
                     PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
                     Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

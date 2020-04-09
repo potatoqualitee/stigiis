@@ -49,14 +49,14 @@ function Get-StgContentLength {
                 $PostConfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76819"
+                    Id = "V-76819"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfiugrationMaxContentLength = $PreConfigMaxContentLength.Value
                     PostConfiugrationMaxContentLength = $PostConfigurationMaxContentLength.Value
                     Compliant = if ($PostConfigurationMaxContentLength.Value -le $MaxContentLength) {
 
-                        "Yes"
+                        $true
                     } else {
                         "No: Value must be $MaxContentLength or less"
                     }

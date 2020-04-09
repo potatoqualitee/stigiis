@@ -47,13 +47,13 @@ function Get-StgUrlRequestLimit {
                 $PostConfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76817"
+                    Id = "V-76817"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfiugrationMaxUrl = $PreConfigMaxUrl.Value
                     PostConfiugrationMaxUrl = $PostConfigurationMaxUrl.Value
                     Compliant = if ($PostConfigurationMaxUrl.Value -le $MaxUrl) {
-                        "Yes"
+                        $true
                     } else {
                         "No: Value must be $MaxUrl or less"
                     }

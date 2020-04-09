@@ -80,12 +80,12 @@ function Get-StgTlsSetting {
 
                         if ($KeyValue0 -eq $STIGValue0) {
 
-                            "Yes"
+                            $true
                         }
 
                         else {
 
-                            "No"
+                            $false
                         }
                     }
 
@@ -97,7 +97,7 @@ function Get-StgTlsSetting {
 
                 [pscustomobject] @{
 
-                    Vulnerability = "V-76759"
+                    Id = "V-76759"
                     ComputerName = $env:ComputerName
                     Key = $Key0
                     KeyPropertyName = $SubKeyName
@@ -132,10 +132,10 @@ function Get-StgTlsSetting {
                 $Compliant1 = @(
                     if ($ValueType1 -eq "DWORD") {
                         if ($KeyValue1 -eq $STIGValue1) {
-                            "Yes"
+                            $true
                         } else {
 
-                            "No"
+                            $false
                         }
                     } else {
                         "No - Incorrect Value Type"
@@ -143,7 +143,7 @@ function Get-StgTlsSetting {
                 )
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76759"
+                    Id = "V-76759"
                     ComputerName = $env:ComputerName
                     Key = $Key1
                     KeyPropertyName = $SubKeyName

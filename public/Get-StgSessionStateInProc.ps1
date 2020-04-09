@@ -44,15 +44,15 @@ function Get-StgSessionStateInProc {
             $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
             [pscustomobject] @{
-                Vulnerability = "V-76775"
+                Id = "V-76775"
                 ComputerName = $env:ComputerName
                 Sitename = $env:ComputerName
                 PreConfigMode = $PreConfigMode
                 PostConfigurationMode = $PostConfigurationMode
                 Compliant = if ($PostConfigurationMode -eq "InProc") {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
 
@@ -62,15 +62,15 @@ function Get-StgSessionStateInProc {
                 $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76813"
+                    Id = "V-76813"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigMode = $PreConfigMode
                     PostConfigurationMode = $PostConfigurationMode
                     Compliant = if ($PostConfigurationMode -eq "InProc") {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

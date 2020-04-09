@@ -38,11 +38,11 @@ function Get-StgMaxConnection {
             $MaxConnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
 
             [pscustomobject] @{
-                Vulnerability = "V-76773"
+                Id = "V-76773"
                 ComputerName = $env:ComputerName
                 MaxConnections = $($MaxConnections.MaxConnections)
                 Compliant = if ($MaxConnections.MaxConnections -gt 0) {
-                    "Yes"
+                    $true
                 } else {
                     "No: Configure MaxConnections attribute higher than 0"
                 }

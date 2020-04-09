@@ -45,15 +45,15 @@ function Get-StgHighBit {
                 $PostConfigurationHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76823"
+                    Id = "V-76823"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigHighBit = $PreConfigHighBit.Value
                     PostConfigurationHighBit = $PostConfigurationHighBit.Value
                     Compliant = if ($PostConfigurationHighBit.Value -eq $false) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

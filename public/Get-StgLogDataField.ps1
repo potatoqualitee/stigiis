@@ -69,7 +69,7 @@ function Get-StgLogDataField {
 
             [pscustomobject] @{
 
-                Vulnerability = "V-76681, V-76783"
+                Id = "V-76681, V-76783"
                 PreConfigFields = "$CurrentFields"
                 Date = ($PostFields -contains "Date")
                 Time = ($PostFields -contains "Time")
@@ -82,12 +82,12 @@ function Get-StgLogDataField {
                 PostConfigurationFields = "$PostFields"
                 Compliant = if ($PostFields -contains "Date" -and $PostFields -contains "Time" -and $PostFields -contains "ClientIP" -and $PostFields -contains "UserName" -and $PostFields -contains "Method" -and $PostFields -contains "UriQuery" -and $PostFields -contains "HTTPstatus" -and $PostFields -contains "Referer") {
 
-                    "Yes"
+                    $true
                 }
 
                 else {
 
-                    "No"
+                    $false
                 }
             }
         }

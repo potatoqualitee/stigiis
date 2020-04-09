@@ -51,7 +51,7 @@ function Get-StgSessionStateCookie {
                 $PostTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76725, V-76727, V-76777"
+                    Id = "V-76725, V-76727, V-76777"
                     ComputerName = $env:ComputerName
                     SiteName = $webname
                     PreConfigCookiesLess = $PreCookieConfig
@@ -62,10 +62,10 @@ function Get-StgSessionStateCookie {
                     PostConfigurationTimeout = $PreTimeoutConfig.Value
                     Compliant = if ($PostCookieConfig -eq "UseCookies" -and $PostSessionConfig.Value -eq "True" -and $PostTimeoutConfig.Value -eq "00:20:00") {
 
-                        "Yes"
+                        $true
                     } else {
 
-                        "No"
+                        $false
                     }
                 }
             }

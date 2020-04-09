@@ -65,12 +65,12 @@ function Get-StgLogBaseline {
                     TimeTaken = $Tail.Split(" ")[14]
                     Compliant = if ($WebIP -match $Tail.Split(" ")[2]) {
 
-                        "Yes"
+                        $true
                     }
 
                     else {
 
-                        "No"
+                        $false
                     }
                 }
             }

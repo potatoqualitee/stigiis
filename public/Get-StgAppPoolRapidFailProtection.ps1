@@ -46,15 +46,15 @@ function Get-StgAppPoolRapidFailProtection {
                 $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76877"
+                    Id = "V-76877"
                     ComputerName = $env:ComputerName
                     ApplicationPool = $Pool
                     PreConfigRapidFailEnabled = $PreConfigRapidFailEnabled
                     PostConfigRapidFailEnabled = $PostConfigRapidFailEnabled
                     Compliant = if ($PostConfigRapidFailEnabled -eq $true) {
-                        "Yes"
+                        $true
                     } else {
-                        "No"
+                        $false
                     }
                 }
             }

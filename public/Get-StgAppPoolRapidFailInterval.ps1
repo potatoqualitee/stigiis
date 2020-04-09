@@ -50,13 +50,13 @@ function Get-StgAppPoolRapidFailInterval {
                 $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76881"
+                    Id = "V-76881"
                     ComputerName = $env:ComputerName
                     ApplicationPool = $Pool
                     PreConfigProtectionInterval = [Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes
                     PostConfigProtectionInterval = [Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes
                     Compliant = if ([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
-                        "Yes"
+                        $true
                     } else {
                         "No: Value must be 5 or less"
                     }

@@ -43,7 +43,7 @@ function Get-StgJavaFile {
 
                 [pscustomobject] @{
 
-                    Vulnerability = "V-76717"
+                    Id = "V-76717"
                     ComputerName = $env:ComputerName
                     FilesRemoved = $JavaFiles
                     Compliant = if (-not ($PostFiles)) {
@@ -56,10 +56,10 @@ function Get-StgJavaFile {
                 }
             } else {
                 [pscustomobject] @{
-                    Vulnerability = "V-76717"
+                    Id = "V-76717"
                     ComputerName = $env:ComputerName
                     FilesToRemove = "No files found"
-                    Compliant = "Yes"
+                    Compliant = $true
                 }
             }
         }

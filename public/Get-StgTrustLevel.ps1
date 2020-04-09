@@ -49,7 +49,7 @@ function Get-StgTrustLevel {
 
                 [pscustomobject] @{
 
-                    Vulnerability = "V-76805"
+                    Id = "V-76805"
                     ComputerName = $env:ComputerName
                     SiteName = $webname
                     PreConfigTrustLevel = $PreConfigTrustLevel
@@ -57,12 +57,12 @@ function Get-StgTrustLevel {
                     SuggestedTrustLevel = "Full or less"
                     Compliant = if ($PostConfigTrustLevel -eq "Full" -or $PostConfigTrustLevel -eq "Medium" -or $PostConfigTrustLevel -eq "Low" -or $PostConfigTrustLevel -eq "Minimal") {
 
-                        "Yes"
+                        $true
                     }
 
                     else {
 
-                        "No"
+                        $false
                     }
                 }
             }

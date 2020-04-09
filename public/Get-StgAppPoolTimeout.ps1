@@ -46,15 +46,15 @@ function Get-StgAppPoolTimeout {
             $PostConfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
             [pscustomobject] @{
-                Vulnerability = "V-76839"
+                Id = "V-76839"
                 ComputerName = $env:ComputerName
                 Sitename = $env:ComputerName
                 PreConfigTimeOut = [Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes
                 PostConfigTimeOut = [Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes
                 Compliant = if ([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
         }

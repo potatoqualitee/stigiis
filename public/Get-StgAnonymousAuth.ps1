@@ -42,14 +42,14 @@ function Get-StgAnonymousAuth {
             $PostConfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
             [pscustomobject] @{
-                Vulnerability = "V-76811"
+                Id = "V-76811"
                 ComputerName = $env:ComputerName
                 PreConfigAnonymousAuthentication = $PreConfigAnonymousAuthentication.Value
                 PostConfigurationAnonymousAuthentication = $PostConfigurationAnonymousAuthentication.Value
                 Compliant = if ($PostConfigurationAnonymousAuthentication.Value -eq $false) {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
         }

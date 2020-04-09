@@ -45,16 +45,16 @@ function Get-StgEncryptionValidation {
             $PostConfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
             [pscustomobject] @{
-                Vulnerability = "V-76731"
+                Id = "V-76731"
                 ComputerName = $env:ComputerName
                 PreConfigValidation = $PreConfigValidation
                 PreConfigEncryption = $PreConfigEncryption.Value
                 PostConfigurationValidation = $PostConfigurationValidation
                 PostConfigurationEncryption = $PostConfigurationEncryption.Value
                 Compliant = if ($PostConfigurationValidation -eq "HMACSHA256" -and $PostConfigurationEncryption.Value -eq "Auto") {
-                    "Yes"
+                    $true
                 } else {
-                    "No"
+                    $false
                 }
             }
         }

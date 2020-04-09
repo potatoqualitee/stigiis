@@ -67,13 +67,13 @@ function Get-StgAppPoolEventLog {
                 $PostConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
 
                 [pscustomobject] @{
-                    Vulnerability = "V-76873"
+                    Id = "V-76873"
                     ComputerName = $env:ComputerName
                     ApplicationPool = $Pool
                     PreConfigPool = $PreConfigPool
                     PostConfigPool = $PostConfigPool
                     Compliant = if ($PostConfigPool -like "*Time*" -and $PostConfigPool -like "*Schedule*") {
-                        "Yes"
+                        $true
                     } else {
                         "No: Time and Scheduled logging must be turned on"
                     }

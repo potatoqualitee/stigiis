@@ -46,7 +46,7 @@ function Get-StgMimeMapping {
             $PostMimeConfig = (Get-WebConfiguration //staticcontent).Collection
 
             [pscustomobject] @{
-                Vulnerability = "V-76711, V-76797"
+                Id = "V-76711, V-76797"
                 ComputerName = $env:ComputerName
                 PreConfigExtenstions = $PreMimeConfig.FileExtension
                 PreConfigCount = $PreMimeConfig.Count

@@ -44,7 +44,7 @@ function Get-StgArrProxy {
                     $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
 
                     [pscustomobject] @{
-                        Vulnerability = "V-76703"
+                        Id = "V-76703"
                         ComputerName = $env:ComputerName
                         PostConfigurationProxy = $ProxyValue
                     }
@@ -53,7 +53,7 @@ function Get-StgArrProxy {
                 catch {
 
                     [pscustomobject] @{
-                        Vulnerability = "V-76703"
+                        Id = "V-76703"
                         ComputerName = $env:ComputerName
                         PostConfigurationProxy = "N/A: Application Request Routing not available"
                     }
