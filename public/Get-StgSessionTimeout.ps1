@@ -33,32 +33,43 @@ function Get-StgSessionTimeout {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.web/sessionState"
+            foreach($webname in $webnames) {
+
+                $PreConfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
+
+                if (-not ([Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes -le 20)) {
+
+                    Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name Timeout -Value "00:20:00"
+                }
+
+                $PostConfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76841"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfigSessionTimeOut = [Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes
+                    PostConfigSessionTimeOut = [Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes
+                    Compliant = if ([Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes -le 20) {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.web/sessionState"
-        foreach($webname in $webnames) {
-
-            $PreConfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
-
-            if (-not ([Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes -le 20)) {
-
-                Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name Timeout -Value "00:20:00"
-            }
-
-            $PostConfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
-
-            [pscustomobject] @{
-                Vulnerability = "V-76841"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfigSessionTimeOut = [Int]([TimeSpan]$PreConfigSessionTimeOut.Value).TotalMinutes
-                PostConfigSessionTimeOut = [Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes
-                Compliant = if ([Int]([TimeSpan]$PostConfigSessionTimeOut.Value).TotalMinutes -le 20) {
-                    "Yes"
-                } else {
-                    "No"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

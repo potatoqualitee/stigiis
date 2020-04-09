@@ -33,33 +33,44 @@ function Get-StgAppPoolRecycleVirtualMemory {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $filterpath = "recycling.periodicRestart.memory"
+            $VMemoryDefault = 1GB
+            $AppPools = (Get-IISAppPool).Name
+
+            foreach($Pool in $AppPools) {
+                $PreConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
+
+                if ($PreConfigVMemory -eq 0) {
+
+                    Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $VMemoryDefault
+                }
+
+                $PostConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76869"
+                    ComputerName = $env:ComputerName
+                    ApplicationPool = $Pool
+                    PreConfigVMemory = $PreConfigVMemory.Value
+                    PostConfigVMemory = $PostConfigVMemory.Value
+                    Compliant = if ($PostConfigVMemory.Value -gt 0) {
+                        "Yes"
+                    } else {
+                        "No: Value must be set higher than 0"
+                    }
+                }
+            }
+        }
     }
     process {
-        $filterpath = "recycling.periodicRestart.memory"
-        $VMemoryDefault = 1GB
-        $AppPools = (Get-IISAppPool).Name
-
-        foreach($Pool in $AppPools) {
-            $PreConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
-
-            if ($PreConfigVMemory -eq 0) {
-
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $VMemoryDefault
-            }
-
-            $PostConfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
-
-            [pscustomobject] @{
-                Vulnerability = "V-76869"
-                Computername = $env:COMPUTERNAME
-                ApplicationPool = $Pool
-                PreConfigVMemory = $PreConfigVMemory.Value
-                PostConfigVMemory = $PostConfigVMemory.Value
-                Compliant = if ($PostConfigVMemory.Value -gt 0) {
-                    "Yes"
-                } else {
-                    "No: Value must be set higher than 0"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

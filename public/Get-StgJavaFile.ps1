@@ -33,36 +33,45 @@ function Get-StgJavaFile {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    }
-    process {
+        $scriptblock = {
+            $JavaFiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp,*.java -Recurse -Force -ErrorAction SilentlyContinue
 
+            if ($JavaFiles) {
 
-        $JavaFiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp,*.java -Recurse -Force -ErrorAction SilentlyContinue
+                $JavaFiles | Remove-Item -Force
+                $PostFiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp,*.java -Recurse -Force -ErrorAction SilentlyContinue
 
-        if ($JavaFiles) {
+                [pscustomobject] @{
 
-            $JavaFiles | Remove-Item -Force
-            $PostFiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp,*.java -Recurse -Force -ErrorAction SilentlyContinue
+                    Vulnerability = "V-76717"
+                    ComputerName = $env:ComputerName
+                    FilesRemoved = $JavaFiles
+                    Compliant = if (-not ($PostFiles)) {
 
-            [pscustomobject] @{
+                        "Yes: Files found and removed"
+                    } else {
 
-                Vulnerability = "V-76717"
-                Computername = $env:COMPUTERNAME
-                FilesRemoved = $JavaFiles
-                Compliant = if (-not ($PostFiles)) {
-
-                    "Yes: Files found and removed"
-                } else {
-
-                    "No: File removal incomplete"
+                        "No: File removal incomplete"
+                    }
+                }
+            } else {
+                [pscustomobject] @{
+                    Vulnerability = "V-76717"
+                    ComputerName = $env:ComputerName
+                    FilesToRemove = "No files found"
+                    Compliant = "Yes"
                 }
             }
-        } else {
-            [pscustomobject] @{
-                Vulnerability = "V-76717"
-                Computername = $env:COMPUTERNAME
-                FilesToRemove = "No files found"
-                Compliant = "Yes"
+        }
+    }
+    process {
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

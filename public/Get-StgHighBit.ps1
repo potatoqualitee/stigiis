@@ -33,31 +33,40 @@ function Get-StgHighBit {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/security/requestFiltering"
+
+            foreach($webname in $webnames) {
+                $PreConfigHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
+
+                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name "allowHighBitCharacters" -Value "False"
+
+                $PostConfigurationHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76823"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfigHighBit = $PreConfigHighBit.Value
+                    PostConfigurationHighBit = $PostConfigurationHighBit.Value
+                    Compliant = if ($PostConfigurationHighBit.Value -eq $false) {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webServer/security/requestFiltering"
-
-
-
-        foreach($webname in $webnames) {
-            $PreConfigHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
-
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name "allowHighBitCharacters" -Value "False"
-
-            $PostConfigurationHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
-
-            [pscustomobject] @{
-                Vulnerability = "V-76823"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfigHighBit = $PreConfigHighBit.Value
-                PostConfigurationHighBit = $PostConfigurationHighBit.Value
-                Compliant = if ($PostConfigurationHighBit.Value -eq $false) {
-                    "Yes"
-                } else {
-                    "No"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

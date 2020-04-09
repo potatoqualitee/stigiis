@@ -32,29 +32,40 @@ function Get-StgDebugSetting {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.web/compilation"
+            foreach($webname in $webnames) {
+
+                $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
+
+                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Debug -Value "False"
+
+                $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76837"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
+                    PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
+                    Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.web/compilation"
-        foreach($webname in $webnames) {
-
-            $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
-
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Debug -Value "False"
-
-            $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
-
-            [pscustomobject] @{
-                Vulnerability = "V-76837"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
-                PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
-                Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {
-                    "Yes"
-                } else {
-                    "No"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

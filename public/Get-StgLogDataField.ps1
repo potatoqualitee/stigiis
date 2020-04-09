@@ -33,64 +33,73 @@ function Get-StgLogDataField {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            #STIG required log fields
+            $RequiredFields = @(
+
+                "Date",
+                "Time",
+                "ClientIP",
+                "UserName",
+                "Method",
+                "UriQuery",
+                "HttpStatus",
+                "Referer"
+            )
+
+            #Current log fields
+            $CurrentFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
+
+            #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
+            [String[]]$Collection = @(
+
+                $RequiredFields
+                $CurrentFields
+            )
+
+            $CollectionString = ($Collection | Select-Object -Unique)
+
+            $Replace = $CollectionString.Replace(" ",",")
+
+            #Set all necessary log fields
+            Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $Replace
+
+            #All fields presented after new properties have been set
+            $PostFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
+
+            [pscustomobject] @{
+
+                Vulnerability = "V-76681, V-76783"
+                PreConfigFields = "$CurrentFields"
+                Date = ($PostFields -contains "Date")
+                Time = ($PostFields -contains "Time")
+                ClientIP = ($PostFields -contains "ClientIP")
+                UserName = ($PostFields -contains "UserName")
+                Method = ($PostFields -contains "Method")
+                URIQuery = ($PostFields -contains "UriQuery")
+                ProtocolStatus = ($PostFields -contains "HTTPstatus")
+                Referer = ($PostFields -contains "Referer")
+                PostConfigurationFields = "$PostFields"
+                Compliant = if ($PostFields -contains "Date" -and $PostFields -contains "Time" -and $PostFields -contains "ClientIP" -and $PostFields -contains "UserName" -and $PostFields -contains "Method" -and $PostFields -contains "UriQuery" -and $PostFields -contains "HTTPstatus" -and $PostFields -contains "Referer") {
+
+                    "Yes"
+                }
+
+                else {
+
+                    "No"
+                }
+            }
+        }
     }
     process {
-
-
-        #STIG required log fields
-        $RequiredFields = @(
-
-            "Date",
-            "Time",
-            "ClientIP",
-            "UserName",
-            "Method",
-            "UriQuery",
-            "HttpStatus",
-            "Referer"
-        )
-
-        #Current log fields
-        $CurrentFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
-
-        #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
-        [String[]]$Collection = @(
-
-            $RequiredFields
-            $CurrentFields
-        )
-
-        $CollectionString = ($Collection | Select-Object -Unique)
-
-        $Replace = $CollectionString.Replace(" ",",")
-
-        #Set all necessary log fields
-        Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $Replace
-
-        #All fields presented after new properties have been set
-        $PostFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
-
-        [pscustomobject] @{
-
-            Vulnerability = "V-76681, V-76783"
-            PreConfigFields = "$CurrentFields"
-            Date = ($PostFields -contains "Date")
-            Time = ($PostFields -contains "Time")
-            ClientIP = ($PostFields -contains "ClientIP")
-            UserName = ($PostFields -contains "UserName")
-            Method = ($PostFields -contains "Method")
-            URIQuery = ($PostFields -contains "UriQuery")
-            ProtocolStatus = ($PostFields -contains "HTTPstatus")
-            Referer = ($PostFields -contains "Referer")
-            PostConfigurationFields = "$PostFields"
-            Compliant = if ($PostFields -contains "Date" -and $PostFields -contains "Time" -and $PostFields -contains "ClientIP" -and $PostFields -contains "UserName" -and $PostFields -contains "Method" -and $PostFields -contains "UriQuery" -and $PostFields -contains "HTTPstatus" -and $PostFields -contains "Referer") {
-
-                "Yes"
-            }
-
-            else {
-
-                "No"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

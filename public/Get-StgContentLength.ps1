@@ -33,34 +33,45 @@ function Get-StgContentLength {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/security/requestFiltering/requestLimits"
+            $MaxContentLength = 30000000
+
+
+
+            foreach($webname in $webnames) {
+
+                $PreConfigMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
+
+                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxAllowedContentLength -Value $MaxContentLength -Force
+
+                $PostConfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76819"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfiugrationMaxContentLength = $PreConfigMaxContentLength.Value
+                    PostConfiugrationMaxContentLength = $PostConfigurationMaxContentLength.Value
+                    Compliant = if ($PostConfigurationMaxContentLength.Value -le $MaxContentLength) {
+
+                        "Yes"
+                    } else {
+                        "No: Value must be $MaxContentLength or less"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webServer/security/requestFiltering/requestLimits"
-        $MaxContentLength = 30000000
-
-
-
-        foreach($webname in $webnames) {
-
-            $PreConfigMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
-
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxAllowedContentLength -Value $MaxContentLength -Force
-
-            $PostConfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
-
-            [pscustomobject] @{
-                Vulnerability = "V-76819"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfiugrationMaxContentLength = $PreConfigMaxContentLength.Value
-                PostConfiugrationMaxContentLength = $PostConfigurationMaxContentLength.Value
-                Compliant = if ($PostConfigurationMaxContentLength.Value -le $MaxContentLength) {
-
-                    "Yes"
-                } else {
-                    "No: Value must be $MaxContentLength or less"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

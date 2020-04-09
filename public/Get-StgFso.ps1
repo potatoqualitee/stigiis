@@ -35,32 +35,40 @@ function Get-StgFso {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $FSOKey = "HKCR:\CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}"
+            New-PSDrive -PSProvider Registry -root HKEY_CLASSES_ROOT -Name HKCR | Out-Null
+
+            $ComponentEnabled = if (Test-Path $FSOKey) {
+                "Enabled"
+            } else {
+                "Disabled"
+            }
+
+            $Compliant = if (Test-Path $FSOKey) {
+                "No: Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
+            } else {
+                "Yes"
+            }
+
+            [pscustomobject] @{
+                Vulnerability = "V-76767"
+                ComputerName = $env:ComputerName
+                Key = $FSOKey
+                ComponentStatus = $ComponentEnabled
+                Compliant = $Compliant
+            }
+        }
     }
     process {
-        $FSOKey = "HKCR:\CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}"
-
-        Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
-
-        New-PSDrive -PSProvider Registry -root HKEY_CLASSES_ROOT -Name HKCR | Out-Null
-
-        $ComponentEnabled = if (Test-Path $FSOKey) {
-            "Enabled"
-        } else {
-            "Disabled"
-        }
-
-        $Compliant = if (Test-Path $FSOKey) {
-            "No: Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
-        } else {
-            "Yes"
-        }
-
-        [pscustomobject] @{
-            Vulnerability = "V-76767"
-            Computername = $env:COMPUTERNAME
-            Key = $FSOKey
-            ComponentStatus = $ComponentEnabled
-            Compliant = $Compliant
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
+            }
         }
     }
 }

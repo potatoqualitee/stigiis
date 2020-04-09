@@ -32,28 +32,38 @@ function Get-StgUriRegistry {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $ParameterKey = "HKLM:\SYSTEM\CurrentControlSet\Services\HTTP\Parameters"
+            [String[]]$Keys = @(
+                "URIEnableCache",
+                "UriMaxUriBytes",
+                "UriScavengerPeriod"
+                )
+
+            foreach($Key in $Keys) {
+                $KeyCompliant = if (-not (Test-Path "$($ParameterKey)\$($Key)")) {
+                    "No: Key does not exist"
+                } else {
+                    "Yes"
+                }
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76755"
+                    ComputerName = $env:ComputerName
+                    Key = "$($ParameterKey)\$($Key)"
+                    Compliant = $KeyCompliant
+                }
+            }
+        }
     }
     process {
-        $ParameterKey = "HKLM:\SYSTEM\CurrentControlSet\Services\HTTP\Parameters"
-        [String[]]$Keys = @(
-            "URIEnableCache",
-            "UriMaxUriBytes",
-            "UriScavengerPeriod"
-            )
-
-        Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
-        foreach($Key in $Keys) {
-            $KeyCompliant = if (-not (Test-Path "$($ParameterKey)\$($Key)")) {
-                "No: Key does not exist"
-            } else {
-                "Yes"
-            }
-
-            [pscustomobject] @{
-                Vulnerability = "V-76755"
-                Computername = $env:COMPUTERNAME
-                Key = "$($ParameterKey)\$($Key)"
-                Compliant = $KeyCompliant
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

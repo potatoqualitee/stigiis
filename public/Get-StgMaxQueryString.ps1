@@ -33,33 +33,44 @@ function Get-StgMaxQueryString {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/security/requestFiltering/requestLimits"
+            [Int]$MaxQueryString = 2048
+
+
+
+            foreach($webname in $webnames) {
+
+                $PreConfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
+
+                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxQueryString -Value $MaxQueryString -Force
+
+                $PostConfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76821"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfiugrationMaxQueryString = $PreConfigMaxQueryString.Value
+                    PostConfiugrationMaxQueryString = $PostConfigurationMaxQueryString.Value
+                    Compliant = if ($PostConfigurationMaxQueryString.Value -le $MaxQueryString) {
+                        "Yes"
+                    } else {
+                        "No: Value must be $MaxQueryString or less"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webServer/security/requestFiltering/requestLimits"
-        [Int]$MaxQueryString = 2048
-
-
-
-        foreach($webname in $webnames) {
-
-            $PreConfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
-
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxQueryString -Value $MaxQueryString -Force
-
-            $PostConfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
-
-            [pscustomobject] @{
-                Vulnerability = "V-76821"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfiugrationMaxQueryString = $PreConfigMaxQueryString.Value
-                PostConfiugrationMaxQueryString = $PostConfigurationMaxQueryString.Value
-                Compliant = if ($PostConfigurationMaxQueryString.Value -le $MaxQueryString) {
-                    "Yes"
-                } else {
-                    "No: Value must be $MaxQueryString or less"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

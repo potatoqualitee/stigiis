@@ -32,25 +32,36 @@ function Get-StgAnonymousAuth {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $pspath = "MACHINE/WEBROOT/APPHOST"
+            $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
+            $PreConfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+
+            Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
+
+            $PostConfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+
+            [pscustomobject] @{
+                Vulnerability = "V-76811"
+                ComputerName = $env:ComputerName
+                PreConfigAnonymousAuthentication = $PreConfigAnonymousAuthentication.Value
+                PostConfigurationAnonymousAuthentication = $PostConfigurationAnonymousAuthentication.Value
+                Compliant = if ($PostConfigurationAnonymousAuthentication.Value -eq $false) {
+                    "Yes"
+                } else {
+                    "No"
+                }
+            }
+        }
     }
     process {
-        $pspath = "MACHINE/WEBROOT/APPHOST"
-        $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
-        $PreConfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
-
-        Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
-
-        $PostConfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
-
-        [pscustomobject] @{
-            Vulnerability = "V-76811"
-            Computername = $env:COMPUTERNAME
-            PreConfigAnonymousAuthentication = $PreConfigAnonymousAuthentication.Value
-            PostConfigurationAnonymousAuthentication = $PostConfigurationAnonymousAuthentication.Value
-            Compliant = if ($PostConfigurationAnonymousAuthentication.Value -eq $false) {
-                "Yes"
-            } else {
-                "No"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

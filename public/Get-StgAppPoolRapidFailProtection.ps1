@@ -33,33 +33,41 @@ function Get-StgAppPoolRapidFailProtection {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $filterpath = "failure.rapidFailProtection"
+            $AppPools = (Get-IISAppPool).Name
+
+            foreach($Pool in $AppPools) {
+
+                $PreConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+
+                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $true
+
+                $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76877"
+                    ComputerName = $env:ComputerName
+                    ApplicationPool = $Pool
+                    PreConfigRapidFailEnabled = $PreConfigRapidFailEnabled
+                    PostConfigRapidFailEnabled = $PostConfigRapidFailEnabled
+                    Compliant = if ($PostConfigRapidFailEnabled -eq $true) {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+            }
+        }
     }
     process {
-        $filterpath = "failure.rapidFailProtection"
-
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
-
-        $AppPools = (Get-IISAppPool).Name
-
-        foreach($Pool in $AppPools) {
-
-            $PreConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
-
-            Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $true
-
-            $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
-
-            [pscustomobject] @{
-                Vulnerability = "V-76877"
-                Computername = $env:COMPUTERNAME
-                ApplicationPool = $Pool
-                PreConfigRapidFailEnabled = $PreConfigRapidFailEnabled
-                PostConfigRapidFailEnabled = $PostConfigRapidFailEnabled
-                Compliant = if ($PostConfigRapidFailEnabled -eq $true) {
-                    "Yes"
-                } else {
-                    "No"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

@@ -32,44 +32,19 @@ function Get-StgSessionSecurity {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    }
-    process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webServer/asp/session"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/asp/session"
+            $PreConfigSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
+            Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
 
-
-        $PreConfigSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
-
-        Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
-
-        $PostConfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
-
-        [pscustomobject] @{
-            Vulnerability = "V-76757"
-            Computername = $env:COMPUTERNAME
-            Sitename = $env:COMPUTERNAME
-            PreConfigSessionID = $PreConfigSessionID.Value
-            PostConfigurationSessionID = $PostConfigurationSessionID.Value
-            Compliant = if ($PostConfigurationSessionID.Value -eq "True") {
-                "Yes"
-            } else {
-                "No"
-            }
-        }
-
-        foreach($webname in $webname) {
-
-            $PreConfigSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
-
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
-
-            $PostConfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
+            $PostConfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
             [pscustomobject] @{
-                Vulnerability = "V-76855"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
+                Vulnerability = "V-76757"
+                ComputerName = $env:ComputerName
+                Sitename = $env:ComputerName
                 PreConfigSessionID = $PreConfigSessionID.Value
                 PostConfigurationSessionID = $PostConfigurationSessionID.Value
                 Compliant = if ($PostConfigurationSessionID.Value -eq "True") {
@@ -77,6 +52,39 @@ function Get-StgSessionSecurity {
                 } else {
                     "No"
                 }
+            }
+
+            foreach($webname in $webname) {
+
+                $PreConfigSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
+
+                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
+
+                $PostConfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76855"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfigSessionID = $PreConfigSessionID.Value
+                    PostConfigurationSessionID = $PostConfigurationSessionID.Value
+                    Compliant = if ($PostConfigurationSessionID.Value -eq "True") {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+            }
+        }
+    }
+    process {
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

@@ -32,33 +32,43 @@ function Get-StgArrProxy {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    }
-    process {
-        $WebPath = "MACHINE/WEBROOT/APPHOST"
-        $webnames = (Get-Website).Name
-        foreach($webname in $webnames) {
+        $scriptblock= {
+            $WebPath = "MACHINE/WEBROOT/APPHOST"
+            $webnames = (Get-Website).Name
+            foreach($webname in $webnames) {
+                try {
 
-            try {
+                    #Disable proxy for Application Request Routing
+                    Set-WebConfigurationProperty -Location $WebPath -Filter "system.webServer/proxy" -Name "Enabled" -Value "False"
 
-                #Disable proxy for Application Request Routing
-                Set-WebConfigurationProperty -Location $WebPath -Filter "system.webServer/proxy" -Name "Enabled" -Value "False"
+                    $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
 
-                $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
+                    [pscustomobject] @{
+                        Vulnerability = "V-76703"
+                        ComputerName = $env:ComputerName
+                        PostConfigurationProxy = $ProxyValue
+                    }
+                }
 
-                [pscustomobject] @{
-                    Vulnerability = "V-76703"
-                    Computername = $env:COMPUTERNAME
-                    PostConfigurationProxy = $ProxyValue
+                catch {
+
+                    [pscustomobject] @{
+                        Vulnerability = "V-76703"
+                        ComputerName = $env:ComputerName
+                        PostConfigurationProxy = "N/A: Application Request Routing not available"
+                    }
                 }
             }
-
-            catch {
-
-                [pscustomobject] @{
-                    Vulnerability = "V-76703"
-                    Computername = $env:COMPUTERNAME
-                    PostConfigurationProxy = "N/A: Application Request Routing not available"
-                }
+        }
+    }
+    process {
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

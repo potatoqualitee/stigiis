@@ -33,41 +33,49 @@ function Get-StgTrustLevel {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.web/trust"
+            foreach($webname in $webnames) {
+
+                $PreConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
+
+                if ($PostConfigTrustLevel -ne "Full" -or $PostConfigTrustLevel -ne "Medium" -or $PostConfigTrustLevel -ne "Low" -or $PostConfigTrustLevel -ne "Minimal") {
+
+                    Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
+                }
+
+                $PostConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
+
+                [pscustomobject] @{
+
+                    Vulnerability = "V-76805"
+                    ComputerName = $env:ComputerName
+                    SiteName = $webname
+                    PreConfigTrustLevel = $PreConfigTrustLevel
+                    PostConfigTrustLevel = $PreConfigTrustLevel
+                    SuggestedTrustLevel = "Full or less"
+                    Compliant = if ($PostConfigTrustLevel -eq "Full" -or $PostConfigTrustLevel -eq "Medium" -or $PostConfigTrustLevel -eq "Low" -or $PostConfigTrustLevel -eq "Minimal") {
+
+                        "Yes"
+                    }
+
+                    else {
+
+                        "No"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.web/trust"
-
-
-
-        foreach($webname in $webnames) {
-
-            $PreConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
-
-            if ($PostConfigTrustLevel -ne "Full" -or $PostConfigTrustLevel -ne "Medium" -or $PostConfigTrustLevel -ne "Low" -or $PostConfigTrustLevel -ne "Minimal") {
-
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
-            }
-
-            $PostConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
-
-            [pscustomobject] @{
-
-                Vulnerability = "V-76805"
-                Computername = $env:COMPUTERNAME
-                SiteName = $webname
-                PreConfigTrustLevel = $PreConfigTrustLevel
-                PostConfigTrustLevel = $PreConfigTrustLevel
-                SuggestedTrustLevel = "Full or less"
-                Compliant = if ($PostConfigTrustLevel -eq "Full" -or $PostConfigTrustLevel -eq "Medium" -or $PostConfigTrustLevel -eq "Low" -or $PostConfigTrustLevel -eq "Minimal") {
-
-                    "Yes"
-                }
-
-                else {
-
-                    "No"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

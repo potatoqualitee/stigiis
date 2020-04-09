@@ -33,26 +33,37 @@ function Get-StgMimeMapping {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            #Pre-Configuration MIME map collection
+            $PreMimeConfig = (Get-WebConfiguration //staticcontent).Collection
+
+            #Adjusted MIM map collection
+            $NewCollection = ($PreMimeConfig | where {$_.fileextension -ne ".exe" -and $_.fileextension -ne ".dll" -and $_.fileextension -ne ".com" -and $_.fileextension -ne ".bat" -and $_.fileextension -ne ".csh"})
+
+            #Set new configurations
+            Set-WebConfigurationProperty //staticContent -Name Collection -InputObject $NewCollection
+
+            $PostMimeConfig = (Get-WebConfiguration //staticcontent).Collection
+
+            [pscustomobject] @{
+                Vulnerability = "V-76711, V-76797"
+                ComputerName = $env:ComputerName
+                PreConfigExtenstions = $PreMimeConfig.FileExtension
+                PreConfigCount = $PreMimeConfig.Count
+                PostConfigurationExtenstions = $PostMimeConfig.FileExtension
+                PostConfigurationCount = $PostMimeConfig.Count
+            }
+        }
     }
     process {
-        #Pre-Configuration MIME map collection
-        $PreMimeConfig = (Get-WebConfiguration //staticcontent).Collection
-
-        #Adjusted MIM map collection
-        $NewCollection = ($PreMimeConfig | where {$_.fileextension -ne ".exe" -and $_.fileextension -ne ".dll" -and $_.fileextension -ne ".com" -and $_.fileextension -ne ".bat" -and $_.fileextension -ne ".csh"})
-
-        #Set new configurations
-        Set-WebConfigurationProperty //staticContent -Name Collection -InputObject $NewCollection
-
-        $PostMimeConfig = (Get-WebConfiguration //staticcontent).Collection
-
-        [pscustomobject] @{
-            Vulnerability = "V-76711, V-76797"
-            Computername = $env:COMPUTERNAME
-            PreConfigExtenstions = $PreMimeConfig.FileExtension
-            PreConfigCount = $PreMimeConfig.Count
-            PostConfigurationExtenstions = $PostMimeConfig.FileExtension
-            PostConfigurationCount = $PostMimeConfig.Count
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
+            }
         }
     }
 }

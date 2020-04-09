@@ -33,32 +33,40 @@ function Get-StgAppPoolTimeout {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $pspath = "MACHINE/WEBROOT/APPHOST"
+            $filterpath = "system.applicationHost/applicationPools/applicationPoolDefaults/processModel"
+            $PreConfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
+
+            if (-not ([Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes -le 20)) {
+
+                Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
+            }
+
+            $PostConfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
+
+            [pscustomobject] @{
+                Vulnerability = "V-76839"
+                ComputerName = $env:ComputerName
+                Sitename = $env:ComputerName
+                PreConfigTimeOut = [Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes
+                PostConfigTimeOut = [Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes
+                Compliant = if ([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
+                    "Yes"
+                } else {
+                    "No"
+                }
+            }
+        }
     }
     process {
-        $pspath = "MACHINE/WEBROOT/APPHOST"
-        $filterpath = "system.applicationHost/applicationPools/applicationPoolDefaults/processModel"
-
-
-
-        $PreConfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
-
-        if (-not ([Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes -le 20)) {
-
-            Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
-        }
-
-        $PostConfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
-
-        [pscustomobject] @{
-            Vulnerability = "V-76839"
-            Computername = $env:COMPUTERNAME
-            Sitename = $env:COMPUTERNAME
-            PreConfigTimeOut = [Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes
-            PostConfigTimeOut = [Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes
-            Compliant = if ([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
-                "Yes"
-            } else {
-                "No"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

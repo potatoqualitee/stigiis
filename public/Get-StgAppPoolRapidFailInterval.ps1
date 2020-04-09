@@ -33,37 +33,45 @@ function Get-StgAppPoolRapidFailInterval {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $filterpath = "failure.rapidFailProtectionInterval"
+            $ProtectionInterval = "00:05:00"
+            $AppPools = (Get-IISAppPool).Name
+
+            foreach($Pool in $AppPools) {
+
+                $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+
+                if ([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
+
+                    Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $ProtectionInterval
+                }
+
+                $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76881"
+                    ComputerName = $env:ComputerName
+                    ApplicationPool = $Pool
+                    PreConfigProtectionInterval = [Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes
+                    PostConfigProtectionInterval = [Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes
+                    Compliant = if ([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
+                        "Yes"
+                    } else {
+                        "No: Value must be 5 or less"
+                    }
+                }
+            }
+        }
     }
     process {
-        $filterpath = "failure.rapidFailProtectionInterval"
-        $ProtectionInterval = "00:05:00"
-
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
-
-        $AppPools = (Get-IISAppPool).Name
-
-        foreach($Pool in $AppPools) {
-
-            $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
-
-            if ([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
-
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $ProtectionInterval
-            }
-
-            $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
-
-            [pscustomobject] @{
-                Vulnerability = "V-76881"
-                Computername = $env:COMPUTERNAME
-                ApplicationPool = $Pool
-                PreConfigProtectionInterval = [Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes
-                PostConfigProtectionInterval = [Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes
-                Compliant = if ([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
-                    "Yes"
-                } else {
-                    "No: Value must be 5 or less"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

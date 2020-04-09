@@ -33,35 +33,43 @@ function Get-StgCompression {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $pspath = "MACHINE/WEBROOT"
+            $filerpathCookies = "system.web/httpCookies"
+            $filerpathCompression = "system.web/sessionState"
+            $PreConfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
+            $PreConfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
+
+            Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL -Value "True"
+            Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled -Value "False"
+
+            $PostConfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
+            $PostConfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
+
+            [pscustomobject] @{
+                Vulnerability = "V-76859"
+                ComputerName = $env:ComputerName
+                Sitename = $env:ComputerName
+                PreConfigCookiesSSL = $PreConfigCookies.Value
+                PostConfigCookiesSSL = $PostConfigCookies.Value
+                PreConfigCompressionEnabled = $PreConfigCompression.Value
+                PostConfigCompressionEnabled = $PostConfigCompression.Value
+                Compliant = if ($PostConfigCookies.Value -eq $true -and $PostConfigCompression.Value -eq $false) {
+                    "Yes"
+                } else {
+                    "No"
+                }
+            }
+        }
     }
     process {
-        $pspath = "MACHINE/WEBROOT"
-        $filerpathCookies = "system.web/httpCookies"
-        $filerpathCompression = "system.web/sessionState"
-
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
-
-        $PreConfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
-        $PreConfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
-
-        Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL -Value "True"
-        Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled -Value "False"
-
-        $PostConfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
-        $PostConfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
-
-        [pscustomobject] @{
-            Vulnerability = "V-76859"
-            Computername = $env:COMPUTERNAME
-            Sitename = $env:COMPUTERNAME
-            PreConfigCookiesSSL = $PreConfigCookies.Value
-            PostConfigCookiesSSL = $PostConfigCookies.Value
-            PreConfigCompressionEnabled = $PreConfigCompression.Value
-            PostConfigCompressionEnabled = $PostConfigCompression.Value
-            Compliant = if ($PostConfigCookies.Value -eq $true -and $PostConfigCompression.Value -eq $false) {
-                "Yes"
-            } else {
-                "No"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

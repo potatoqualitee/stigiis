@@ -33,56 +33,65 @@ function Get-StgGroupMembership {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    }
-    process {
+        $scriptblock = {
+            #Get Local administrators and groups
+            $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ""} | select -Skip 6 | ForEach-Object {$_.Replace("*","")}
+            $LocalAdmin = net localgroup Administrators | where {$_ -notmatch "command completed successfully"} | select -Skip 6
 
-
-        #Get Local administrators and groups
-        $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ""} | select -Skip 6 | ForEach-Object {$_.Replace("*","")}
-        $LocalAdmin = net localgroup Administrators | where {$_ -notmatch "command completed successfully"} | select -Skip 6
-
-        foreach($LA in $LocalAdmin) {
-            if (-not ([string]::IsNullOrWhiteSpace($LA))) {
-                [pscustomobject] @{
-                    Vulnerability = "V-76707, V-76719"
-                    Computername = $env:COMPUTERNAME
-                    AccessType = "Local Administrator"
-                    User = $LA
-                    SecurityGroup = ""
-                    ObjectClass = ""
-                    DistinguishedName = "N/A"
+            foreach($LA in $LocalAdmin) {
+                if (-not ([string]::IsNullOrWhiteSpace($LA))) {
+                    [pscustomobject] @{
+                        Vulnerability = "V-76707, V-76719"
+                        ComputerName = $env:ComputerName
+                        AccessType = "Local Administrator"
+                        User = $LA
+                        SecurityGroup = ""
+                        ObjectClass = ""
+                        DistinguishedName = "N/A"
+                    }
                 }
             }
-        }
 
-        foreach($LG in $LocalGroups) {
+            foreach($LG in $LocalGroups) {
 
-            if (-not ([string]::IsNullOrWhiteSpace($LG))) {
+                if (-not ([string]::IsNullOrWhiteSpace($LG))) {
 
-                try {
+                    try {
 
-                    #Get group members of Security Groups
-                    $Members = Get-ADGroupMember $LG -ErrorAction Stop
-                }
+                        #Get group members of Security Groups
+                        $Members = Get-ADGroupMember $LG -ErrorAction Stop
+                    }
 
-                catch {
+                    catch {
 
-                    $Members = @()
-                }
+                        $Members = @()
+                    }
 
-                foreach($Member in $Members) {
-                    if (-not ([string]::IsNullOrWhiteSpace($Member))) {
-                        [pscustomobject] @{
-                            Vulnerability = "V-76707, V-76719"
-                            Computername = $env:COMPUTERNAME
-                            AccessType = "Group Membership"
-                            User = $Member.SamAccountName
-                            SecurityGroup = $LG
-                            ObjectClass = $Member.objectClass.ToUpper()
-                            DistinguishedName = $Member.DistinguishedName
+                    foreach($Member in $Members) {
+                        if (-not ([string]::IsNullOrWhiteSpace($Member))) {
+                            [pscustomobject] @{
+                                Vulnerability = "V-76707, V-76719"
+                                ComputerName = $env:ComputerName
+                                AccessType = "Group Membership"
+                                User = $Member.SamAccountName
+                                SecurityGroup = $LG
+                                ObjectClass = $Member.objectClass.ToUpper()
+                                DistinguishedName = $Member.DistinguishedName
+                            }
                         }
                     }
                 }
+            }
+        }
+    }
+    process {
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

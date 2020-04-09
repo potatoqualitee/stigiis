@@ -32,23 +32,31 @@ function Get-StgMaxConnection {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $pspath = "MACHINE/WEBROOT/APPHOST"
+            $filterpath = "system.applicationHost/sites/siteDefaults"
+            $MaxConnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
+
+            [pscustomobject] @{
+                Vulnerability = "V-76773"
+                ComputerName = $env:ComputerName
+                MaxConnections = $($MaxConnections.MaxConnections)
+                Compliant = if ($MaxConnections.MaxConnections -gt 0) {
+                    "Yes"
+                } else {
+                    "No: Configure MaxConnections attribute higher than 0"
+                }
+            }
+        }
     }
     process {
-        $pspath = "MACHINE/WEBROOT/APPHOST"
-        $filterpath = "system.applicationHost/sites/siteDefaults"
-
-
-
-        $MaxConnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
-
-        [pscustomobject] @{
-            Vulnerability = "V-76773"
-            Computername = $env:COMPUTERNAME
-            MaxConnections = $($MaxConnections.MaxConnections)
-            Compliant = if ($MaxConnections.MaxConnections -gt 0) {
-                "Yes"
-            } else {
-                "No: Configure MaxConnections attribute higher than 0"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

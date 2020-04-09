@@ -33,31 +33,42 @@ function Get-StgUrlRequestLimit {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/security/requestFiltering/requestLimits"
+            $MaxUrl = 4096
+
+            foreach($webname in $webnames) {
+
+                $PreConfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+
+                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
+
+                $PostConfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76817"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfiugrationMaxUrl = $PreConfigMaxUrl.Value
+                    PostConfiugrationMaxUrl = $PostConfigurationMaxUrl.Value
+                    Compliant = if ($PostConfigurationMaxUrl.Value -le $MaxUrl) {
+                        "Yes"
+                    } else {
+                        "No: Value must be $MaxUrl or less"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webServer/security/requestFiltering/requestLimits"
-        $MaxUrl = 4096
-
-        foreach($webname in $webnames) {
-
-            $PreConfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
-
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
-
-            $PostConfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
-
-            [pscustomobject] @{
-                Vulnerability = "V-76817"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfiugrationMaxUrl = $PreConfigMaxUrl.Value
-                PostConfiugrationMaxUrl = $PostConfigurationMaxUrl.Value
-                Compliant = if ($PostConfigurationMaxUrl.Value -le $MaxUrl) {
-                    "Yes"
-                } else {
-                    "No: Value must be $MaxUrl or less"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

@@ -34,30 +34,41 @@ function Get-StgUnlistedFileExtension {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/security/requestFiltering/fileExtensions"
+
+            foreach($webname in $webnames) {
+
+                $PreConfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
+
+                #Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
+
+                $PostConfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76827"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfigUnlistedExtensions = $PreConfigUnlistedExtensions.Value
+                    PostConfigurationUnlistedExtensions = $PostConfigurationUnlistedExtensions.Value
+                    Compliant = if ($PostConfigurationUnlistedExtensions.Value -eq $false) {
+                        "Yes"
+                    } else {
+                        "No: Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webServer/security/requestFiltering/fileExtensions"
-
-        foreach($webname in $webnames) {
-
-            $PreConfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
-
-            #Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
-
-            $PostConfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
-
-            [pscustomobject] @{
-                Vulnerability = "V-76827"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfigUnlistedExtensions = $PreConfigUnlistedExtensions.Value
-                PostConfigurationUnlistedExtensions = $PostConfigurationUnlistedExtensions.Value
-                Compliant = if ($PostConfigurationUnlistedExtensions.Value -eq $false) {
-                    "Yes"
-                } else {
-                    "No: Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

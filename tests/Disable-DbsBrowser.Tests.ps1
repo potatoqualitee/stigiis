@@ -1,15 +1,15 @@
 $CommandName = $MyInvocation.MyCommand.Name.Replace(".Tests.ps1", "")
 Describe "$commandname Integration Tests" -Tags "IntegrationTests" {
     Context "Disables SQL Server Browser on localhost" {
-        $results = Disable-DbsBrowser -ComputerName $env:COMPUTERNAME
+        $results = Disable-DbsBrowser -ComputerName $env:ComputerName
         It -Skip "should report that browser is disabled" {
             $results.BrowserDisabled | Should -Be $true
         }
-        $service = Get-Service *SQLBrowser* -ComputerName $env:COMPUTERNAME
+        $service = Get-Service *SQLBrowser* -ComputerName $env:ComputerName
         It -Skip "should actually be disabled" {
             $service.StartType | Should -Be 'Disabled'
         }
-        $results = Disable-DbsBrowser -ComputerName $env:COMPUTERNAME -WhatIf -WarningAction SilentlyContinue
+        $results = Disable-DbsBrowser -ComputerName $env:ComputerName -WhatIf -WarningAction SilentlyContinue
         It "should not return any objects when using whatif" {
             $results | Should -Be $null
         }

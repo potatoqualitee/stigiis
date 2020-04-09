@@ -33,32 +33,40 @@ function Get-StgEncryptionValidation {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $filterpath = "system.web/machineKey"
+            $PreConfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+            $PreConfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
+
+            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
+            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
+
+            $PostConfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+            $PostConfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
+
+            [pscustomobject] @{
+                Vulnerability = "V-76731"
+                ComputerName = $env:ComputerName
+                PreConfigValidation = $PreConfigValidation
+                PreConfigEncryption = $PreConfigEncryption.Value
+                PostConfigurationValidation = $PostConfigurationValidation
+                PostConfigurationEncryption = $PostConfigurationEncryption.Value
+                Compliant = if ($PostConfigurationValidation -eq "HMACSHA256" -and $PostConfigurationEncryption.Value -eq "Auto") {
+                    "Yes"
+                } else {
+                    "No"
+                }
+            }
+        }
     }
     process {
-        $filterpath = "system.web/machineKey"
-
-
-
-        $PreConfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-        $PreConfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
-
-        Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
-        Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
-
-        $PostConfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-        $PostConfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
-
-        [pscustomobject] @{
-            Vulnerability = "V-76731"
-            Computername = $env:COMPUTERNAME
-            PreConfigValidation = $PreConfigValidation
-            PreConfigEncryption = $PreConfigEncryption.Value
-            PostConfigurationValidation = $PostConfigurationValidation
-            PostConfigurationEncryption = $PostConfigurationEncryption.Value
-            Compliant = if ($PostConfigurationValidation -eq "HMACSHA256" -and $PostConfigurationEncryption.Value -eq "Auto") {
-                "Yes"
-            } else {
-                "No"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

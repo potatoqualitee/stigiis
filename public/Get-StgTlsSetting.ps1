@@ -35,123 +35,134 @@ function Get-StgTlsSetting {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    }
-    process {
-        #TLS registry keys
-        $RegKeys0 = @(
-            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server",
-            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server"
-        )
+        $sriptblock = {
+            #TLS registry keys
+            $RegKeys0 = @(
+                "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server",
+                "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server"
+            )
 
-        #SSL registry keys
-        $RegKeys1 = @(
-            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 1.0\Server",
-            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server",
-            "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server"
-        )
+            #SSL registry keys
+            $RegKeys1 = @(
+                "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 1.0\Server",
+                "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server",
+                "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server"
+            )
 
-        #STIG required key name
-        $SubKeyName = "DisabledByDefault"
+            #STIG required key name
+            $SubKeyName = "DisabledByDefault"
 
 
-        foreach($Key0 in $RegKeys0) {
+            foreach($Key0 in $RegKeys0) {
 
-            $STIGValue0 = "0"
+                $STIGValue0 = "0"
 
-            #If key doesn"t exist, create key
-            if (-not (Test-Path $Key0)) {
+                #If key doesn"t exist, create key
+                if (-not (Test-Path $Key0)) {
 
-                New-Item $Key0 -Force | Out-Null
-            }
+                    New-Item $Key0 -Force | Out-Null
+                }
 
-            #Create STIG required key property and set proper value
-            if ((Get-ItemProperty $Key0).DisabledByDefault -ne "0") {
+                #Create STIG required key property and set proper value
+                if ((Get-ItemProperty $Key0).DisabledByDefault -ne "0") {
 
-                New-ItemProperty $Key0 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue0 -ErrorAction SilentlyContinue -Force | Out-Null
-            }
+                    New-ItemProperty $Key0 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue0 -ErrorAction SilentlyContinue -Force | Out-Null
+                }
 
-            #Get current key property values
-            $KeyValue0 = (Get-ItemProperty $Key0).DisabledByDefault
-            $ValueType0 = (Get-Item $Key0).GetValueKind("DisabledByDefault")
+                #Get current key property values
+                $KeyValue0 = (Get-ItemProperty $Key0).DisabledByDefault
+                $ValueType0 = (Get-Item $Key0).GetValueKind("DisabledByDefault")
 
-            #Check compliance of each key according to STIG
-            $Compliant0 = @(
+                #Check compliance of each key according to STIG
+                $Compliant0 = @(
 
-                if ($ValueType0 -eq "DWORD") {
+                    if ($ValueType0 -eq "DWORD") {
 
-                    if ($KeyValue0 -eq $STIGValue0) {
+                        if ($KeyValue0 -eq $STIGValue0) {
 
-                        "Yes"
+                            "Yes"
+                        }
+
+                        else {
+
+                            "No"
+                        }
                     }
 
                     else {
 
-                        "No"
+                        "No - Incorrect Value Type"
                     }
+                )
+
+                [pscustomobject] @{
+
+                    Vulnerability = "V-76759"
+                    ComputerName = $env:ComputerName
+                    Key = $Key0
+                    KeyPropertyName = $SubKeyName
+                    ValueType = $ValueType0
+                    KeyValue = $KeyValue0
+                    STIGValue = $STIGValue0
+                    Compliant = "$Compliant0"
+                }
+            }
+
+            foreach($Key1 in $RegKeys1) {
+
+                $STIGValue1 = "1"
+
+                #If key doesn"t exist, create key
+                if (-not (Test-Path $Key1)) {
+
+                    New-Item $Key1 -Force | Out-Null
                 }
 
-                else {
+                #Create STIG required key property and set proper value
+                if ((Get-ItemProperty $Key1).DisabledByDefault -ne "1") {
 
-                    "No - Incorrect Value Type"
+                    New-ItemProperty $Key1 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue1 -ErrorAction SilentlyContinue -Force | Out-Null
                 }
-            )
 
-            [pscustomobject] @{
+                #Get current key property values
+                $KeyValue1 = (Get-ItemProperty $Key1).DisabledByDefault
+                $ValueType1 = (Get-Item $Key1).GetValueKind("DisabledByDefault")
 
-                Vulnerability = "V-76759"
-                Computername = $env:COMPUTERNAME
-                Key = $Key0
-                KeyPropertyName = $SubKeyName
-                ValueType = $ValueType0
-                KeyValue = $KeyValue0
-                STIGValue = $STIGValue0
-                Compliant = "$Compliant0"
+                #Check compliance of each key according to STIG
+                $Compliant1 = @(
+                    if ($ValueType1 -eq "DWORD") {
+                        if ($KeyValue1 -eq $STIGValue1) {
+                            "Yes"
+                        } else {
+
+                            "No"
+                        }
+                    } else {
+                        "No - Incorrect Value Type"
+                    }
+                )
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76759"
+                    ComputerName = $env:ComputerName
+                    Key = $Key1
+                    KeyPropertyName = $SubKeyName
+                    ValueType = $ValueType1
+                    KeyValue = $KeyValue1
+                    STIGValue = $STIGValue1
+                    Compliant = "$Compliant1"
+                }
             }
         }
-
-        foreach($Key1 in $RegKeys1) {
-
-            $STIGValue1 = "1"
-
-            #If key doesn"t exist, create key
-            if (-not (Test-Path $Key1)) {
-
-                New-Item $Key1 -Force | Out-Null
-            }
-
-            #Create STIG required key property and set proper value
-            if ((Get-ItemProperty $Key1).DisabledByDefault -ne "1") {
-
-                New-ItemProperty $Key1 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue1 -ErrorAction SilentlyContinue -Force | Out-Null
-            }
-
-            #Get current key property values
-            $KeyValue1 = (Get-ItemProperty $Key1).DisabledByDefault
-            $ValueType1 = (Get-Item $Key1).GetValueKind("DisabledByDefault")
-
-            #Check compliance of each key according to STIG
-            $Compliant1 = @(
-                if ($ValueType1 -eq "DWORD") {
-                    if ($KeyValue1 -eq $STIGValue1) {
-                        "Yes"
-                    } else {
-
-                        "No"
-                    }
-                } else {
-                    "No - Incorrect Value Type"
-                }
-            )
-
-            [pscustomobject] @{
-                Vulnerability = "V-76759"
-                Computername = $env:COMPUTERNAME
-                Key = $Key1
-                KeyPropertyName = $SubKeyName
-                ValueType = $ValueType1
-                KeyValue = $KeyValue1
-                STIGValue = $STIGValue1
-                Compliant = "$Compliant1"
+    }
+    process {
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

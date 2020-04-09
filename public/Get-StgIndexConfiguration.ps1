@@ -33,24 +33,34 @@ function Get-StgIndexConfiguration {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $RegPath = "HKLM:\System\CurrentControlSet\Control\ContentIndex\Catalogs"
+
+            if (-not (Test-Path $RegPath)) {
+                [pscustomobject] @{
+                    Vulnerability = "V-76735"
+                    ComputerName = $env:ComputerName
+                    Key = $RegPath
+                    Compliant = "Not Applicable: Key does not exist"
+                }
+            } else {
+                [pscustomobject] @{
+                    Vulnerability = "V-76735"
+                    ComputerName = $env:ComputerName
+                    Key = $RegPath
+                    Compliant = "No: Key exists; check Indexing Service snap-in from MMC console"
+                }
+            }
+        }
     }
     process {
-        $RegPath = "HKLM:\System\CurrentControlSet\Control\ContentIndex\Catalogs"
-
-
-        if (-not (Test-Path $RegPath)) {
-            [pscustomobject] @{
-                Vulnerability = "V-76735"
-                Computername = $env:COMPUTERNAME
-                Key = $RegPath
-                Compliant = "Not Applicable: Key does not exist"
-            }
-        } else {
-            [pscustomobject] @{
-                Vulnerability = "V-76735"
-                Computername = $env:COMPUTERNAME
-                Key = $RegPath
-                Compliant = "No: Key exists; check Indexing Service snap-in from MMC console"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

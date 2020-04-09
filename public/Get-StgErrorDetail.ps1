@@ -35,27 +35,37 @@ function Get-StgV-76737-76835 {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/httpErrors"
+
+            foreach($webname in $webnames) {
+                $PreErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
+                Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
+                $PostErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
+                [pscustomobject] @{
+                    Vulnerability = "V-76733, V-76835"
+                    ComputerName = $env:ComputerName
+                    SiteName = $webname
+                    PreConfigBrowsingEnabled = $PreErrorMode
+                    PostConfigurationBrowsingEnabled = $PostErrorMode
+                    Compliant = if ($PostErrorMode -eq "DetailedLocalOnly") {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+            }
+        }
     }
     process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webServer/httpErrors"
-
-
-        foreach($webname in $webnames) {
-            $PreErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
-            Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
-            $PostErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
-            [pscustomobject] @{
-                Vulnerability = "V-76733, V-76835"
-                Computername = $env:COMPUTERNAME
-                SiteName = $webname
-                PreConfigBrowsingEnabled = $PreErrorMode
-                PostConfigurationBrowsingEnabled = $PostErrorMode
-                Compliant = if ($PostErrorMode -eq "DetailedLocalOnly") {
-                    "Yes"
-                } else {
-                    "No"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

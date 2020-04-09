@@ -6,6 +6,10 @@ function Get-StgAltHostname {
     .DESCRIPTION
         Configure and verify Alternate Hostname settings for vulnerability 76883.
 
+        When using static HTML pages, a Content-Location header is added to the response. The Internet Information Server (IIS) Content-Location may reference the IP address of the server, rather than the Fully Qualified Domain Name (FQDN) or Hostname. This header may expose internal IP addresses that are usually hidden or masked behind a Network Address Translation (NAT) firewall or proxy server. There is a value that can be modified in the IIS metabase to change the default behavior from exposing IP addresses, to sending the FQDN instead.
+
+        If “alternateHostName” has no assigned value, this is a finding.
+
     .PARAMETER ComputerName
         The target server.
 
@@ -33,38 +37,36 @@ function Get-StgAltHostname {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            foreach($webname in $webnames) {
+                $hostname = (Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/serverRuntime" -Name alternateHostname).Value
+
+                if ($hostname) {
+                        $compliant = $true
+                    } else {
+                        $compliant = $false
+                    }
+
+                [pscustomobject] @{
+                    Id = "V-76883"
+                    ComputerName    = $env:ComputerName
+                    Sitename        = $webname
+                    Hostname        = $hostname
+                    Compliant       = $compliant
+                }
+            }
+        }
     }
     process {
-        $pspath = "MACHINE/WEBROOT/APPHOST"
-        $webnames = (Get-Website).Name
-        $filterpath = "system.webserver/serverRuntime"
-
-        Write-PSFMessage -Level Verbose -Message "Configuring STIG Settings for $($MyInvocation.MyCommand)"
-
-        foreach($webname in $webnames) {
-
-            $PreConfigHostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
-
-            if ([string]::IsNullOrWhiteSpace($PreConfigHostname)) {
-
-                [string]$AlternateHostName = "$(($webname).Replace(" ","")).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
-
-                Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name alternateHostname -Value $AlternateHostName
-            }
-
-            $PostConfigHostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
-
-            [pscustomobject] @{
-                Vulnerability = "V-76883"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
-                PreConfigHostname = $PreConfigHostname
-                PostConfigHostname = $PostConfigHostname
-                Compliant = if (-not ([string]::IsNullOrWhiteSpace($PostConfigHostname))) {
-                    "Yes"
-                } else {
-                    "No"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

@@ -33,24 +33,33 @@ function Get-StgV-76715 {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $RO = [System.Security.Cryptography.X509Certificates.OpenFlags]"ReadOnly"
+            $LM = [System.Security.Cryptography.X509Certificates.StoreLocation]"LocalMachine"
+
+            $Stores = New-Object System.Security.Cryptography.X509Certificates.X509Store("\\$Server\root",$LM)
+            $Stores.Open($RO)
+            $Certs = $Stores.Certificates
+
+            foreach($Cert in $Certs) {
+                [pscustomobject] @{
+                    ComputerName = $env:Computer
+                    DNS = $Cert.DNSNameList
+                    ExpirationDate = $Cert.NotAfter
+                    Version = $Cert.Version
+                    HasPrivateKey = $Cert.HasPrivateKey
+                }
+            }
+        }
     }
     process {
-        Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
-
-        $RO = [System.Security.Cryptography.X509Certificates.OpenFlags]"ReadOnly"
-        $LM = [System.Security.Cryptography.X509Certificates.StoreLocation]"LocalMachine"
-
-        $Stores = New-Object System.Security.Cryptography.X509Certificates.X509Store("\\$Server\root",$LM)
-        $Stores.Open($RO)
-        $Certs = $Stores.Certificates
-
-        foreach($Cert in $Certs) {
-            [pscustomobject] @{
-                ComputerName = $env:Computer
-                DNS = $Cert.DNSNameList
-                ExpirationDate = $Cert.NotAfter
-                Version = $Cert.Version
-                HasPrivateKey = $Cert.HasPrivateKey
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

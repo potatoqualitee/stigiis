@@ -33,34 +33,45 @@ function Get-StgAppPoolQueueLength {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $filterpath = "queueLength"
+            $QLength = 1000
+            $AppPools = (Get-IISAppPool).Name
+
+            foreach($Pool in $AppPools) {
+
+                $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+
+                if ($PreConfigQLength.Value -gt 1000) {
+
+                    Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $QLength
+                }
+
+                $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76875"
+                    ComputerName = $env:ComputerName
+                    ApplicationPool = $Pool
+                    PreConfigQLength = $PreConfigQLength
+                    PostConfigQLength = $PostConfigQLength
+                    Compliant = if ($PostConfigQLength -le 1000) {
+                        "Yes"
+                    } else {
+                        "No: Value must be 1000 or less"
+                    }
+                }
+            }
+        }
     }
     process {
-        $filterpath = "queueLength"
-        [Int]$QLength = 1000
-        $AppPools = (Get-IISAppPool).Name
-
-        foreach($Pool in $AppPools) {
-
-            $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
-
-            if ($PreConfigQLength.Value -gt 1000) {
-
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $QLength
-            }
-
-            $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
-
-            [pscustomobject] @{
-                Vulnerability = "V-76875"
-                Computername = $env:COMPUTERNAME
-                ApplicationPool = $Pool
-                PreConfigQLength = $PreConfigQLength
-                PostConfigQLength = $PostConfigQLength
-                Compliant = if ($PostConfigQLength -le 1000) {
-                    "Yes"
-                } else {
-                    "No: Value must be 1000 or less"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

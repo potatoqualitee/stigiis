@@ -33,18 +33,27 @@ function Get-StgInstalledFeature {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            #Get all installed Windows Features
+            $Features = Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending"}
+
+            foreach($Feature in $Features) {
+                [pscustomobject] @{
+                    ComputerName = $env:ComputerName
+                    Name = $Feature.Name
+                    InstallState = $Feature.InstallState
+                }
+            }
+        }
     }
     process {
-        Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
-
-        #Get all installed Windows Features
-        $Features = Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending"}
-
-        foreach($Feature in $Features) {
-            [pscustomobject] @{
-                Computername = $env:COMPUTERNAME
-                Name = $Feature.Name
-                InstallState = $Feature.InstallState
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

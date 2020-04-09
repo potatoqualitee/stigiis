@@ -33,26 +33,34 @@ function Get-StgPrintService {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $PrintPath = "$($env:windir)\web\printers"
+            $PrintServices = @("Print-Services", "Print-Internet")
+            $PrintFeatures = Get-WindowsFeature -Name $PrintServices
+
+            foreach($Feature in $PrintFeatures) {
+                [pscustomobject] @{
+                    Vulnerability = "V-76753"
+                    ComputerName = $env:ComputerName
+                    Feature = $Feature.Name
+                    InstallState = $Feature.InstallState
+                    Compliant = if ($Feature.InstallState -eq "Available") {
+                        "Yes"
+                    } else {
+                        "No: Remove $($Feature.Name) Windows Feature"
+                    }
+                }
+            }
+        }
     }
     process {
-        $PrintPath = "$($env:windir)\web\printers"
-        $PrintServices = @("Print-Services", "Print-Internet")
-
-
-
-        $PrintFeatures = Get-WindowsFeature -Name $PrintServices
-
-        foreach($Feature in $PrintFeatures) {
-            [pscustomobject] @{
-                Vulnerability = "V-76753"
-                Computername = $env:COMPUTERNAME
-                Feature = $Feature.Name
-                InstallState = $Feature.InstallState
-                Compliant = if ($Feature.InstallState -eq "Available") {
-                    "Yes"
-                } else {
-                    "No: Remove $($Feature.Name) Windows Feature"
-                }
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

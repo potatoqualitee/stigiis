@@ -33,24 +33,35 @@ function Get-StgWebDav {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
+        $scriptblock = {
+            $DAVFeature = "Web-DAV-Publishing"
+
+            #Remove Web-DAV-Publishing feature
+            $RemoveFeature = Remove-WindowsFeature -Name $DAVFeature
+
+            [pscustomobject] @{
+                Vulnerability = "V-76713, V-76803"
+                ComputerName = $env:ComputerName
+                FeatureName = $DAVFeature
+                RemovedFeatures = $RemoveFeature.FeatureResult
+                ExitCode = $RemoveFeature.ExitCode
+                RestartNeeded = $RemoveFeature.RestartNeeded
+                Compliant = if ($RemoveFeature.Success -eq $true) {
+                    "Yes"
+                } else {
+                    "No"
+                }
+            }
+        }
     }
     process {
-        $DAVFeature = "Web-DAV-Publishing"
-
-        #Remove Web-DAV-Publishing feature
-        $RemoveFeature = Remove-WindowsFeature -Name $DAVFeature
-
-        [pscustomobject] @{
-            Vulnerability = "V-76713, V-76803"
-            Computername = $env:COMPUTERNAME
-            FeatureName = $DAVFeature
-            RemovedFeatures = $RemoveFeature.FeatureResult
-            ExitCode = $RemoveFeature.ExitCode
-            RestartNeeded = $RemoveFeature.RestartNeeded
-            Compliant = if ($RemoveFeature.Success -eq $true) {
-                "Yes"
-            } else {
-                "No"
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

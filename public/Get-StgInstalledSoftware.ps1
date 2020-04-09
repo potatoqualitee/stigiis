@@ -33,48 +33,57 @@ function Get-StgInstalledSoftware {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    }
-    process {
-        Write-PSFMessage -Level Verbose -Message "Reporting STIG Settings for $($MyInvocation.MyCommand)"
+        $scriptblock = {
+            if ($PSVersionTable.PSVersion -ge "5.0") {
 
-        if ($PSVersionTable.PSVersion -ge "5.0") {
+                Get-Package
+            }
 
-            Get-Package
-        }
+            else {
 
-        else {
+            $Keys = "","\Wow6432Node"
 
-        $Keys = "","\Wow6432Node"
+                foreach ($Key in $keys) {
+                    try {
 
-            foreach ($Key in $keys) {
-                try {
+                        $Apps = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall").GetSubKeyNames()
+                    }
+                    catch {
 
-                    $Apps = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall").GetSubKeyNames()
-                }
-                catch {
+                        Continue
+                    }
 
-                    Continue
-                }
+                    foreach ($App in $Apps) {
 
-                foreach ($App in $Apps) {
+                        $Program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
+                        $Name = $Program.GetValue("DisplayName")
 
-                    $Program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
-                    $Name = $Program.GetValue("DisplayName")
+                        if ($Name -and $Name -match $NameRegex) {
 
-                    if ($Name -and $Name -match $NameRegex) {
-
-                        [pscustomobject]@{
-                            Computername = $Computer
-                            Software = $Name
-                            Version = $Program.GetValue("DisplayVersion")
-                            Publisher = $Program.GetValue("Publisher")
-                            InstallDate = $Program.GetValue("InstallDate")
-                            UninstallString = $Program.GetValue("UninstallString")
-                            Bits = $(if ($Key -eq "\Wow6432Node") {"64"} else {"32"})
-                            Path = $Program.name
+                            [pscustomobject]@{
+                                ComputerName = $Computer
+                                Software = $Name
+                                Version = $Program.GetValue("DisplayVersion")
+                                Publisher = $Program.GetValue("Publisher")
+                                InstallDate = $Program.GetValue("InstallDate")
+                                UninstallString = $Program.GetValue("UninstallString")
+                                Bits = $(if ($Key -eq "\Wow6432Node") {"64"} else {"32"})
+                                Path = $Program.name
+                            }
                         }
                     }
                 }
+            }
+        }
+    }
+    process {
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }

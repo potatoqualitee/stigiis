@@ -34,41 +34,19 @@ function Get-StgSessionStateInProc {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    }
-    process {
-        $webnames = (Get-Website).Name
-        $filterpath = "system.web/sessionState"
-
-
-
-        $PreConfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
-
-        Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
-
-        $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
-
-        [pscustomobject] @{
-            Vulnerability = "V-76775"
-            Computername = $env:COMPUTERNAME
-            Sitename = $env:COMPUTERNAME
-            PreConfigMode = $PreConfigMode
-            PostConfigurationMode = $PostConfigurationMode
-            Compliant = if ($PostConfigurationMode -eq "InProc") {
-                "Yes"
-            } else {
-                "No"
-            }
-        }
-
-        foreach($webname in $webnames) {
+        $scriptblock = {
+            $webnames = (Get-Website).Name
+            $filterpath = "system.web/sessionState"
             $PreConfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+
             Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
+
             $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
             [pscustomobject] @{
-                Vulnerability = "V-76813"
-                Computername = $env:COMPUTERNAME
-                Sitename = $webname
+                Vulnerability = "V-76775"
+                ComputerName = $env:ComputerName
+                Sitename = $env:ComputerName
                 PreConfigMode = $PreConfigMode
                 PostConfigurationMode = $PostConfigurationMode
                 Compliant = if ($PostConfigurationMode -eq "InProc") {
@@ -76,6 +54,36 @@ function Get-StgSessionStateInProc {
                 } else {
                     "No"
                 }
+            }
+
+            foreach($webname in $webnames) {
+                $PreConfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+                Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
+                $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+
+                [pscustomobject] @{
+                    Vulnerability = "V-76813"
+                    ComputerName = $env:ComputerName
+                    Sitename = $webname
+                    PreConfigMode = $PreConfigMode
+                    PostConfigurationMode = $PostConfigurationMode
+                    Compliant = if ($PostConfigurationMode -eq "InProc") {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+            }
+        }
+    }
+    process {
+        foreach ($computer in $ComputerName) {
+            try {
+                Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
+                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
+            } catch {
+                Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
             }
         }
     }
