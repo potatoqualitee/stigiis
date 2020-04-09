@@ -55,7 +55,7 @@ function Invoke-Command2
 	param (
 		[PSFComputer[]]
 		[Alias('Session')]
-		$ComputerName = $env:COMPUTERNAME,
+		$ComputerName = $env:ComputerName,
 
 		[Parameter(Mandatory)]
 		[scriptblock]
@@ -72,7 +72,7 @@ function Invoke-Command2
 	{
 		foreach ($computer in $ComputerName)
 		{
-            Write-Verbose -Message "Connecting to $computer"
+            Write-PSFMessage -Level Verbose -Message "Connecting to $computer"
             $null = Invoke-PSFCommand -ComputerName $computer -Credential $Credential -ErrorAction Stop -ScriptBlock {
                 # test to make sure the WebAdministration module exists.
                 # Loading it each time is no big deal because Invoke-PSFCommand uses sessions
