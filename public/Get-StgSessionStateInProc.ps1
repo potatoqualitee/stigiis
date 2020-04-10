@@ -37,19 +37,19 @@ function Get-StgSessionStateInProc {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
-            $PreConfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+            $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
             Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
 
-            $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+            $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
             [pscustomobject] @{
                 Id = "V-76775"
                 ComputerName = $env:ComputerName
                 Sitename = $env:ComputerName
-                PreConfigMode = $PreConfigMode
-                PostConfigurationMode = $PostConfigurationMode
-                Compliant = if ($PostConfigurationMode -eq "InProc") {
+                PreConfigMode = $preconfigMode
+                PostConfigurationMode = $postconfigurationMode
+                Compliant = if ($postconfigurationMode -eq "InProc") {
                     $true
                 } else {
                     $false
@@ -57,17 +57,17 @@ function Get-StgSessionStateInProc {
             }
 
             foreach($webname in $webnames) {
-                $PreConfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+                $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
                 Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
-                $PostConfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+                $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
                 [pscustomobject] @{
                     Id = "V-76813"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfigMode = $PreConfigMode
-                    PostConfigurationMode = $PostConfigurationMode
-                    Compliant = if ($PostConfigurationMode -eq "InProc") {
+                    PreConfigMode = $preconfigMode
+                    PostConfigurationMode = $postconfigurationMode
+                    Compliant = if ($postconfigurationMode -eq "InProc") {
                         $true
                     } else {
                         $false
@@ -80,7 +80,7 @@ function Get-StgSessionStateInProc {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -34,23 +34,20 @@ function Get-StgAuthRule {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/authorization/allow"
-            $Settings = "[@roles="" and @users="*" and @verbs=""]"
-
-
-
-            $PreConfigUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
+            $Settings = "[@roles='' and @users='*' and @verbs='']"
+            $preconfigUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
             Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
             Add-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "system.web/authorization" -Name "." -Value @{users="?"} -Type deny
 
-            $PostConfigurationUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
+            $postconfigurationUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
             [pscustomobject] @{
                 Id = "V-76771"
                 ComputerName = $env:ComputerName
-                PreConfigAuthorizedUsers = $PreConfigUsers.Value
-                PostConfigurationAuthorizedUsers = $PostConfigurationUsers.Value
-                Compliant = if ($PostConfigurationUsers.Value -eq "Administrators") {
+                Before = $preconfigUsers.Value
+                After = $postconfigurationUsers.Value
+                Compliant = if ($postconfigurationUsers.Value -eq "Administrators") {
                     $true
                 } else {
                     $false
@@ -62,7 +59,7 @@ function Get-StgAuthRule {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -38,24 +38,24 @@ function Get-StgTrustLevel {
             $filterpath = "system.web/trust"
             foreach($webname in $webnames) {
 
-                $PreConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
+                $preconfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
-                if ($PostConfigTrustLevel -ne "Full" -or $PostConfigTrustLevel -ne "Medium" -or $PostConfigTrustLevel -ne "Low" -or $PostConfigTrustLevel -ne "Minimal") {
+                if ($postconfigTrustLevel -ne "Full" -or $postconfigTrustLevel -ne "Medium" -or $postconfigTrustLevel -ne "Low" -or $postconfigTrustLevel -ne "Minimal") {
 
                     Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
                 }
 
-                $PostConfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
+                $postconfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
                 [pscustomobject] @{
 
                     Id = "V-76805"
                     ComputerName = $env:ComputerName
                     SiteName = $webname
-                    PreConfigTrustLevel = $PreConfigTrustLevel
-                    PostConfigTrustLevel = $PreConfigTrustLevel
+                    PreConfigTrustLevel = $preconfigTrustLevel
+                    PostConfigTrustLevel = $preconfigTrustLevel
                     SuggestedTrustLevel = "Full or less"
-                    Compliant = if ($PostConfigTrustLevel -eq "Full" -or $PostConfigTrustLevel -eq "Medium" -or $PostConfigTrustLevel -eq "Low" -or $PostConfigTrustLevel -eq "Minimal") {
+                    Compliant = if ($postconfigTrustLevel -eq "Full" -or $postconfigTrustLevel -eq "Medium" -or $postconfigTrustLevel -eq "Low" -or $postconfigTrustLevel -eq "Minimal") {
 
                         $true
                     }
@@ -72,7 +72,7 @@ function Get-StgTrustLevel {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

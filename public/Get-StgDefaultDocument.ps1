@@ -38,32 +38,32 @@ function Get-StgDefaultDocument {
             $filterpath = "system.webServer/defaultDocument"
             foreach($webname in $webnames) {
 
-                $PreConfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+                $preconfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
-                if ($PreConfigDefaultDocumentEnabled -eq $false) {
+                if ($preconfigDefaultDocumentEnabled -eq $false) {
 
                     Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Enabled -Value "True"
                 }
 
-                $PreConfigDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
+                $preconfigDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
-                if ($PreConfigDefaultDocumentFiles.Count -eq 0) {
+                if ($preconfigDefaultDocumentFiles.Count -eq 0) {
 
                     Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value="Default.aspx"}
                 }
 
-                $PostConfigurationDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
-                $PostConfigurationDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
+                $postconfigurationDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+                $postconfigurationDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
                 [pscustomobject] @{
                     Id = "V-76831"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfigDefaultDocumentEnabled = $PreConfigDefaultDocumentEnabled.Value
-                    PreConfigDefaultDocumentFiles = $PreConfigDefaultDocumentFiles.Count
-                    PostConfigurationDefaultDocumentEnabled = $PostConfigurationDefaultDocumentEnabled.Value
-                    PostConfigurationDefaultDocumentFiles = $PostConfigurationDefaultDocumentFiles.Count
-                    Compliant = if ($PostConfigurationDefaultDocumentEnabled.Value -eq $true -and $PostConfigurationDefaultDocumentFiles.Count -gt 0) {
+                    PreConfigDefaultDocumentEnabled = $preconfigDefaultDocumentEnabled.Value
+                    PreConfigDefaultDocumentFiles = $preconfigDefaultDocumentFiles.Count
+                    PostConfigurationDefaultDocumentEnabled = $postconfigurationDefaultDocumentEnabled.Value
+                    PostConfigurationDefaultDocumentFiles = $postconfigurationDefaultDocumentFiles.Count
+                    Compliant = if ($postconfigurationDefaultDocumentEnabled.Value -eq $true -and $postconfigurationDefaultDocumentFiles.Count -gt 0) {
                         $true
                     } else {
                         $false
@@ -77,7 +77,7 @@ function Get-StgDefaultDocument {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

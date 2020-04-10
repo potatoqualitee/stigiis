@@ -38,44 +38,38 @@ function Get-StgAppPoolEventLog {
             $filterpath = "recycling.logEventOnRecycle"
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($Pool in $AppPools) {
+            foreach($pool in $AppPools) {
+                #STIG required log fields
+                $RequiredPoolFields = @(
+                    "Time",
+                    "Schedule"
+                )
 
-            #STIG required log fields
-            $RequiredPoolFields = @(
+                #Current log fields
+                $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Split(",")
 
-                "Time",
-                "Schedule"
-            )
+                #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
+                [String[]]$PoolCollection = @(
+                    $RequiredPoolFields
+                    $CurrentPoolFields
+                )
 
-            #Current log fields
-            $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Split(",")
-
-            #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
-            [String[]]$PoolCollection = @(
-                $RequiredPoolFields
-                $CurrentPoolFields
-            )
-
-            [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
-
-            $PoolReplace = $PoolCollectionString.Replace(" ",",")
-
-                $PreConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
-
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $PoolReplace
-
-                $PostConfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
+                [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
+                $PoolReplace = $PoolCollectionString.Replace(" ",",")
+                $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $PoolReplace
+                $postconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
                 [pscustomobject] @{
                     Id = "V-76873"
                     ComputerName = $env:ComputerName
-                    ApplicationPool = $Pool
-                    PreConfigPool = $PreConfigPool
-                    PostConfigPool = $PostConfigPool
-                    Compliant = if ($PostConfigPool -like "*Time*" -and $PostConfigPool -like "*Schedule*") {
+                    ApplicationPool = $pool
+                    Before = $preconfigPool
+                    After = $postconfigPool
+                    Compliant = if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {
                         $true
                     } else {
-                        "No: Time and Scheduled logging must be turned on"
+                        $false # "No: Time and Scheduled logging must be turned on"
                     }
                 }
             }
@@ -85,7 +79,7 @@ function Get-StgAppPoolEventLog {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -37,19 +37,19 @@ function Get-StgDebugSetting {
             $filterpath = "system.web/compilation"
             foreach($webname in $webnames) {
 
-                $PreConfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
+                $preconfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
 
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Debug -Value "False"
 
-                $PostConfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
+                $postconfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
 
                 [pscustomobject] @{
                     Id = "V-76837"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfigDebugBehaviors = $PreConfigDebugBehavior.Value
-                    PostConfigurationDebugBehavior = $PostConfigurationDebugBehavior.Value
-                    Compliant = if ($PostConfigurationDebugBehavior.Value -eq $false) {
+                    PreConfigDebugBehaviors = $preconfigDebugBehavior.Value
+                    PostConfigurationDebugBehavior = $postconfigurationDebugBehavior.Value
+                    Compliant = if ($postconfigurationDebugBehavior.Value -eq $false) {
                         $true
                     } else {
                         $false
@@ -62,7 +62,7 @@ function Get-StgDebugSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -40,19 +40,19 @@ function Get-StgUnlistedFileExtension {
 
             foreach($webname in $webnames) {
 
-                $PreConfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
+                $preconfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
 
                 #Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
 
-                $PostConfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
+                $postconfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
 
                 [pscustomobject] @{
                     Id = "V-76827"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfigUnlistedExtensions = $PreConfigUnlistedExtensions.Value
-                    PostConfigurationUnlistedExtensions = $PostConfigurationUnlistedExtensions.Value
-                    Compliant = if ($PostConfigurationUnlistedExtensions.Value -eq $false) {
+                    PreConfigUnlistedExtensions = $preconfigUnlistedExtensions.Value
+                    PostConfigurationUnlistedExtensions = $postconfigurationUnlistedExtensions.Value
+                    Compliant = if ($postconfigurationUnlistedExtensions.Value -eq $false) {
                         $true
                     } else {
                         "No: Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
@@ -65,7 +65,7 @@ function Get-StgUnlistedFileExtension {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

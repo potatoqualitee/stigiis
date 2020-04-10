@@ -41,28 +41,26 @@ function Get-StgCgiIsapi {
             )
             $filterpath = "system.webserver/security/isapiCgiRestriction"
 
-
-
-            $PreConfigCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
-            $PreConfigISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
+            $preconfigCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+            $preconfigISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
             Set-WebConfigurationProperty -Filter $filterpath -Name notListedCgisAllowed -Value "False" -Force
             Set-WebConfigurationProperty -Filter $filterpath -Name notListedIsapisAllowed -Value "False" -Force
 
-            $PostConfigurationCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
-            $PostConfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
+            $postconfigurationCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+            $postconfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
             [pscustomobject] @{
                 Id = "V-76769"
                 ComputerName = $env:ComputerName
-                PreConfigCGI = $PostConfigurationCGIExtension.Value
-                PreConfigISAPI = $PostConfigurationISAPIExtension.Value
-                PostConfigurationCGI = $PostConfigurationCGIExtension.Value
-                PostConfigurationISAPI = $PostConfigurationISAPIExtension.Value
-                Compliant = if ($PostConfigurationCGIExtension.Value -eq $false -and $PostConfigurationISAPIExtension.Value -eq $false) {
+                BeforeCGI    = $preconfigCGIExtension.Value
+                BeforeISAPI  = $preconfigISAPIExtension.Value
+                AfterCGI = $postconfigurationCGIExtension.Value
+                AfterISAPI = $postconfigurationISAPIExtension.Value
+                Compliant = if (-not $postconfigurationCGIExtension.Value -and -not $postconfigurationISAPIExtension.Value) {
                     $true
                 } else {
-                    "No: If auto configuration failed, this section may be locked. Configure manually."
+                    $false # "No: If auto configuration failed, this section may be locked. Configure manually."
                 }
             }
         }
@@ -71,7 +69,7 @@ function Get-StgCgiIsapi {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, BeforeCGI, BeforeISAPI, AfterCGI, AfterISAPI, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

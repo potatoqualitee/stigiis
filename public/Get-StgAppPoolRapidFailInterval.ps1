@@ -38,24 +38,24 @@ function Get-StgAppPoolRapidFailInterval {
             $ProtectionInterval = "00:05:00"
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($Pool in $AppPools) {
+            foreach($pool in $AppPools) {
 
-                $PreConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+                $preconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
-                if ([Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes -gt 5) {
+                if ([Int]([TimeSpan]$preconfigProtectionInterval).TotalMinutes -gt 5) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $ProtectionInterval
+                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $ProtectionInterval
                 }
 
-                $PostConfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+                $postconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
                 [pscustomobject] @{
                     Id = "V-76881"
                     ComputerName = $env:ComputerName
-                    ApplicationPool = $Pool
-                    PreConfigProtectionInterval = [Int]([TimeSpan]$PreConfigProtectionInterval).TotalMinutes
-                    PostConfigProtectionInterval = [Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes
-                    Compliant = if ([Int]([TimeSpan]$PostConfigProtectionInterval).TotalMinutes -le 5) {
+                    ApplicationPool = $pool
+                    Before = [Int]([TimeSpan]$preconfigProtectionInterval).TotalMinutes
+                    After = [Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes
+                    Compliant = if ([Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes -le 5) {
                         $true
                     } else {
                         "No: Value must be 5 or less"
@@ -68,7 +68,7 @@ function Get-StgAppPoolRapidFailInterval {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

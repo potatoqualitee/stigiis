@@ -38,24 +38,24 @@ function Get-StgAppPoolQueueLength {
             $QLength = 1000
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($Pool in $AppPools) {
+            foreach($pool in $AppPools) {
 
-                $PreConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+                $preconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
-                if ($PreConfigQLength.Value -gt 1000) {
+                if ($preconfigQLength.Value -gt 1000) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $QLength
+                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $QLength
                 }
 
-                $PostConfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+                $postconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
                 [pscustomobject] @{
                     Id = "V-76875"
                     ComputerName = $env:ComputerName
-                    ApplicationPool = $Pool
-                    PreConfigQLength = $PreConfigQLength
-                    PostConfigQLength = $PostConfigQLength
-                    Compliant = if ($PostConfigQLength -le 1000) {
+                    ApplicationPool = $pool
+                    Before = $preconfigQLength
+                    After = $postconfigQLength
+                    Compliant = if ($postconfigQLength -le 1000) {
                         $true
                     } else {
                         "No: Value must be 1000 or less"
@@ -68,7 +68,7 @@ function Get-StgAppPoolQueueLength {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -39,19 +39,19 @@ function Get-StgDoubleEscape {
 
             foreach($webname in $webnames) {
 
-                $PreConfigDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
+                $preconfigDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
 
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowDoubleEscaping -Value "False"
 
-                $PostConfigurationDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
+                $postconfigurationDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
 
                 [pscustomobject] @{
                     Id = "V-76825"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfigDoubleEscaping = $PreConfigDoubleEscaping.Value
-                    PostConfigurationDoubleEscaping = $PostConfigurationDoubleEscaping.Value
-                    Compliant = if ($PostConfigurationDoubleEscaping.Value -eq $false) {
+                    PreConfigDoubleEscaping = $preconfigDoubleEscaping.Value
+                    PostConfigurationDoubleEscaping = $postconfigurationDoubleEscaping.Value
+                    Compliant = if ($postconfigurationDoubleEscaping.Value -eq $false) {
                         $true
                     } else {
                         $false
@@ -64,7 +64,7 @@ function Get-StgDoubleEscape {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

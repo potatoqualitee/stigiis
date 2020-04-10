@@ -42,19 +42,19 @@ function Get-StgContentLength {
 
             foreach($webname in $webnames) {
 
-                $PreConfigMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
+                $preconfigMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxAllowedContentLength -Value $MaxContentLength -Force
 
-                $PostConfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
+                $postconfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
                 [pscustomobject] @{
                     Id = "V-76819"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfiugrationMaxContentLength = $PreConfigMaxContentLength.Value
-                    PostConfiugrationMaxContentLength = $PostConfigurationMaxContentLength.Value
-                    Compliant = if ($PostConfigurationMaxContentLength.Value -le $MaxContentLength) {
+                    PreConfiugrationMaxContentLength = $preconfigMaxContentLength.Value
+                    PostConfiugrationMaxContentLength = $postconfigurationMaxContentLength.Value
+                    Compliant = if ($postconfigurationMaxContentLength.Value -le $MaxContentLength) {
 
                         $true
                     } else {
@@ -68,7 +68,7 @@ function Get-StgContentLength {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -42,19 +42,19 @@ function Get-StgMaxQueryString {
 
             foreach($webname in $webnames) {
 
-                $PreConfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
+                $preconfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
 
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxQueryString -Value $MaxQueryString -Force
 
-                $PostConfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
+                $postconfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
 
                 [pscustomobject] @{
                     Id = "V-76821"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfiugrationMaxQueryString = $PreConfigMaxQueryString.Value
-                    PostConfiugrationMaxQueryString = $PostConfigurationMaxQueryString.Value
-                    Compliant = if ($PostConfigurationMaxQueryString.Value -le $MaxQueryString) {
+                    PreConfiugrationMaxQueryString = $preconfigMaxQueryString.Value
+                    PostConfiugrationMaxQueryString = $postconfigurationMaxQueryString.Value
+                    Compliant = if ($postconfigurationMaxQueryString.Value -le $MaxQueryString) {
                         $true
                     } else {
                         "No: Value must be $MaxQueryString or less"
@@ -67,7 +67,7 @@ function Get-StgMaxQueryString {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

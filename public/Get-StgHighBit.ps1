@@ -38,19 +38,19 @@ function Get-StgHighBit {
             $filterpath = "system.webServer/security/requestFiltering"
 
             foreach($webname in $webnames) {
-                $PreConfigHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
+                $preconfigHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name "allowHighBitCharacters" -Value "False"
 
-                $PostConfigurationHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
+                $postconfigurationHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
                 [pscustomobject] @{
                     Id = "V-76823"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfigHighBit = $PreConfigHighBit.Value
-                    PostConfigurationHighBit = $PostConfigurationHighBit.Value
-                    Compliant = if ($PostConfigurationHighBit.Value -eq $false) {
+                    PreConfigHighBit = $preconfigHighBit.Value
+                    PostConfigurationHighBit = $postconfigurationHighBit.Value
+                    Compliant = if ($postconfigurationHighBit.Value -eq $false) {
                         $true
                     } else {
                         $false
@@ -63,7 +63,7 @@ function Get-StgHighBit {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -35,18 +35,18 @@ function Get-StgAnonymousAuth {
         $scriptblock = {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
-            $PreConfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+            $preconfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
             Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
 
-            $PostConfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+            $postconfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
             [pscustomobject] @{
                 Id = "V-76811"
                 ComputerName = $env:ComputerName
-                PreConfigAnonymousAuthentication = $PreConfigAnonymousAuthentication.Value
-                PostConfigurationAnonymousAuthentication = $PostConfigurationAnonymousAuthentication.Value
-                Compliant = if ($PostConfigurationAnonymousAuthentication.Value -eq $false) {
+                Before = $preconfigAnonymousAuthentication.Value
+                After = $postconfigurationAnonymousAuthentication.Value
+                Compliant = if (-not $postconfigurationAnonymousAuthentication.Value) {
                     $true
                 } else {
                     $false
@@ -58,7 +58,7 @@ function Get-StgAnonymousAuth {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

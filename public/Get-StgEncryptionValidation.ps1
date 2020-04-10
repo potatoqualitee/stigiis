@@ -35,23 +35,23 @@ function Get-StgEncryptionValidation {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/machineKey"
-            $PreConfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-            $PreConfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
+            $preconfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+            $preconfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
             Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
             Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
 
-            $PostConfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-            $PostConfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
+            $postconfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+            $postconfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
             [pscustomobject] @{
                 Id = "V-76731"
                 ComputerName = $env:ComputerName
-                PreConfigValidation = $PreConfigValidation
-                PreConfigEncryption = $PreConfigEncryption.Value
-                PostConfigurationValidation = $PostConfigurationValidation
-                PostConfigurationEncryption = $PostConfigurationEncryption.Value
-                Compliant = if ($PostConfigurationValidation -eq "HMACSHA256" -and $PostConfigurationEncryption.Value -eq "Auto") {
+                PreConfigValidation = $preconfigValidation
+                PreConfigEncryption = $preconfigEncryption.Value
+                PostConfigurationValidation = $postconfigurationValidation
+                PostConfigurationEncryption = $postconfigurationEncryption.Value
+                Compliant = if ($postconfigurationValidation -eq "HMACSHA256" -and $postconfigurationEncryption.Value -eq "Auto") {
                     $true
                 } else {
                     $false
@@ -63,7 +63,7 @@ function Get-StgEncryptionValidation {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

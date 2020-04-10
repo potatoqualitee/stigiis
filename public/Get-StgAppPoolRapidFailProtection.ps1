@@ -37,21 +37,21 @@ function Get-StgAppPoolRapidFailProtection {
             $filterpath = "failure.rapidFailProtection"
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($Pool in $AppPools) {
+            foreach($pool in $AppPools) {
 
-                $PreConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+                $preconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $true
+                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $true
 
-                $PostConfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+                $postconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
                 [pscustomobject] @{
                     Id = "V-76877"
                     ComputerName = $env:ComputerName
-                    ApplicationPool = $Pool
-                    PreConfigRapidFailEnabled = $PreConfigRapidFailEnabled
-                    PostConfigRapidFailEnabled = $PostConfigRapidFailEnabled
-                    Compliant = if ($PostConfigRapidFailEnabled -eq $true) {
+                    ApplicationPool = $pool
+                    Before = $preconfigRapidFailEnabled
+                    After = $postconfigRapidFailEnabled
+                    Compliant = if ($postconfigRapidFailEnabled -eq $true) {
                         $true
                     } else {
                         $false
@@ -64,7 +64,7 @@ function Get-StgAppPoolRapidFailProtection {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

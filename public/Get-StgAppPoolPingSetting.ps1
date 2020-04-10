@@ -35,31 +35,21 @@ function Get-StgAppPoolPingSetting {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "processModel.pingingEnabled"
-
             $AppPools = (Get-IISAppPool).Name
-
-            foreach($Pool in $AppPools) {
-
-                $PreConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
-
-                Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $true
-
-                $PostConfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath).Value
+            foreach($pool in $AppPools) {
+                $preconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $true
+                $postconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
                 [pscustomobject] @{
-
                     Id = "V-76877"
                     ComputerName = $env:ComputerName
-                    ApplicationPool = $Pool
-                    PreConfigPing = $PreConfigPing
-                    PostConfigPing = $PostConfigPing
-                    Compliant = if ($PostConfigPing -eq $true) {
-
+                    ApplicationPool = $pool
+                    Before = $preconfigPing
+                    After = $postconfigPing
+                    Compliant = if ($postconfigPing) {
                         $true
-                    }
-
-                    else {
-
+                    } else {
                         $false
                     }
                 }
@@ -70,7 +60,7 @@ function Get-StgAppPoolPingSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

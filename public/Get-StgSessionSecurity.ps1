@@ -35,19 +35,19 @@ function Get-StgSessionSecurity {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/asp/session"
-            $PreConfigSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
+            $preconfigSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
             Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
 
-            $PostConfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
+            $postconfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
             [pscustomobject] @{
                 Id = "V-76757"
                 ComputerName = $env:ComputerName
                 Sitename = $env:ComputerName
-                PreConfigSessionID = $PreConfigSessionID.Value
-                PostConfigurationSessionID = $PostConfigurationSessionID.Value
-                Compliant = if ($PostConfigurationSessionID.Value -eq "True") {
+                PreConfigSessionID = $preconfigSessionID.Value
+                PostConfigurationSessionID = $postconfigurationSessionID.Value
+                Compliant = if ($postconfigurationSessionID.Value -eq "True") {
                     $true
                 } else {
                     $false
@@ -56,19 +56,19 @@ function Get-StgSessionSecurity {
 
             foreach($webname in $webname) {
 
-                $PreConfigSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
+                $preconfigSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
 
-                $PostConfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
+                $postconfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
                 [pscustomobject] @{
                     Id = "V-76855"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfigSessionID = $PreConfigSessionID.Value
-                    PostConfigurationSessionID = $PostConfigurationSessionID.Value
-                    Compliant = if ($PostConfigurationSessionID.Value -eq "True") {
+                    PreConfigSessionID = $preconfigSessionID.Value
+                    PostConfigurationSessionID = $postconfigurationSessionID.Value
+                    Compliant = if ($postconfigurationSessionID.Value -eq "True") {
                         $true
                     } else {
                         $false
@@ -81,7 +81,7 @@ function Get-StgSessionSecurity {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

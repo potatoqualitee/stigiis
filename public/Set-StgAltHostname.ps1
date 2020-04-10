@@ -48,15 +48,15 @@ function Set-StgAltHostname {
                     #Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name alternateHostname -Value $AlternateHostName
                 }
 
-                $PostConfigHostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
+                $postconfigHostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
 
                 [pscustomobject] @{
                     Id = "V-76883"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
                     PreConfigHostname  = $hostname
-                    PostConfigHostname = $PostConfigHostname
-                    Compliant          = if ($PostConfigHostname) {
+                    PostConfigHostname = $postconfigHostname
+                    Compliant          = if ($postconfigHostname) {
                         $true
                     } else {
                         $false
@@ -69,7 +69,7 @@ function Set-StgAltHostname {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Compliant, PreConfigHostname, PostConfigHostname |
+                    Select-DefaultView -Property Id, ComputerName, Sitename, Compliant, PreConfigHostname, PostConfigHostname |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

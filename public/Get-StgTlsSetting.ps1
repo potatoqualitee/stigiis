@@ -74,7 +74,7 @@ function Get-StgTlsSetting {
                 $ValueType0 = (Get-Item $Key0).GetValueKind("DisabledByDefault")
 
                 #Check compliance of each key according to STIG
-                $Compliant0 = @(
+                $compliant0 = @(
 
                     if ($ValueType0 -eq "DWORD") {
 
@@ -104,7 +104,7 @@ function Get-StgTlsSetting {
                     ValueType = $ValueType0
                     KeyValue = $KeyValue0
                     STIGValue = $STIGValue0
-                    Compliant = "$Compliant0"
+                    Compliant = "$compliant0"
                 }
             }
 
@@ -129,7 +129,7 @@ function Get-StgTlsSetting {
                 $ValueType1 = (Get-Item $Key1).GetValueKind("DisabledByDefault")
 
                 #Check compliance of each key according to STIG
-                $Compliant1 = @(
+                $compliant1 = @(
                     if ($ValueType1 -eq "DWORD") {
                         if ($KeyValue1 -eq $STIGValue1) {
                             $true
@@ -150,7 +150,7 @@ function Get-StgTlsSetting {
                     ValueType = $ValueType1
                     KeyValue = $KeyValue1
                     STIGValue = $STIGValue1
-                    Compliant = "$Compliant1"
+                    Compliant = "$compliant1"
                 }
             }
         }
@@ -159,7 +159,7 @@ function Get-StgTlsSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

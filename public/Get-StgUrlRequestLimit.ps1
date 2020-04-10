@@ -40,19 +40,19 @@ function Get-StgUrlRequestLimit {
 
             foreach($webname in $webnames) {
 
-                $PreConfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+                $preconfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
 
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
 
-                $PostConfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+                $postconfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
 
                 [pscustomobject] @{
                     Id = "V-76817"
                     ComputerName = $env:ComputerName
                     Sitename = $webname
-                    PreConfiugrationMaxUrl = $PreConfigMaxUrl.Value
-                    PostConfiugrationMaxUrl = $PostConfigurationMaxUrl.Value
-                    Compliant = if ($PostConfigurationMaxUrl.Value -le $MaxUrl) {
+                    PreConfiugrationMaxUrl = $preconfigMaxUrl.Value
+                    PostConfiugrationMaxUrl = $postconfigurationMaxUrl.Value
+                    Compliant = if ($postconfigurationMaxUrl.Value -le $MaxUrl) {
                         $true
                     } else {
                         "No: Value must be $MaxUrl or less"
@@ -65,7 +65,7 @@ function Get-StgUrlRequestLimit {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

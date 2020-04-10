@@ -38,24 +38,24 @@ function Get-StgAppPoolRecyclePrivateMemory {
             $MemoryDefault = 1GB
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($Pool in $AppPools) {
+            foreach($pool in $AppPools) {
 
-                $PreConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
+                $preconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
-                if ($PreConfigMemory -eq 0) {
+                if ($preconfigMemory -eq 0) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath -Value $MemoryDefault
+                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $MemoryDefault
                 }
 
-                $PostConfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($Pool)" -Name $filterpath
+                $postconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
                 [pscustomobject] @{
                     Id = "V-76871"
                     ComputerName = $env:ComputerName
-                    ApplicationPool = $Pool
-                    PreConfigMemory = [string]$PreConfigMemory.Value
-                    PostConfigMemory = [string]$PostConfigMemory.Value
-                    Compliant = if ($PostConfigMemory.Value -gt 0) {
+                    ApplicationPool = $pool
+                    Before = [string]$preconfigMemory.Value
+                    After = [string]$postconfigMemory.Value
+                    Compliant = if ($postconfigMemory.Value -gt 0) {
                         $true
                     } else {
                         "No: Value must be set higher than 0"
@@ -68,7 +68,7 @@ function Get-StgAppPoolRecyclePrivateMemory {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

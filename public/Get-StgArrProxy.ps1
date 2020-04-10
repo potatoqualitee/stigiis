@@ -37,25 +37,20 @@ function Get-StgArrProxy {
             $webnames = (Get-Website).Name
             foreach($webname in $webnames) {
                 try {
-
                     #Disable proxy for Application Request Routing
                     Set-WebConfigurationProperty -Location $WebPath -Filter "system.webServer/proxy" -Name "Enabled" -Value "False"
-
                     $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
 
                     [pscustomobject] @{
                         Id = "V-76703"
                         ComputerName = $env:ComputerName
-                        PostConfigurationProxy = $ProxyValue
+                        Value = $ProxyValue
                     }
-                }
-
-                catch {
-
+                } catch {
                     [pscustomobject] @{
                         Id = "V-76703"
                         ComputerName = $env:ComputerName
-                        PostConfigurationProxy = "N/A: Application Request Routing not available"
+                        Value = "N/A: Application Request Routing not available"
                     }
                 }
             }
@@ -65,7 +60,7 @@ function Get-StgArrProxy {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -103,14 +103,14 @@ function Get-StgLogCustom {
             foreach($webname in $webnames) {
 
                 #Post-Configuration custom fields
-                $PostConfig = (Get-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection")
+                $postconfig = (Get-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection")
 
                 [pscustomobject] @{
 
                     Id = "V-76687, V-76689, V-76789, V-76791"
                     SiteName = $webname
-                    CustomFields = $($PostConfig.logFieldName)
-                    Compliant = if ($PostConfig.logFieldName -contains "Connection" -and $PostConfig.logFieldName -contains "Warning" -and $PostConfig.logFieldName -contains "HTTPConnection" -and $PostConfig.logFieldName -contains "User-Agent" -and $PostConfig.logFieldName -contains "Content-Type" -and $PostConfig.logFieldName -contains "HTTP_USER_AGENT") {
+                    CustomFields = $($postconfig.logFieldName)
+                    Compliant = if ($postconfig.logFieldName -contains "Connection" -and $postconfig.logFieldName -contains "Warning" -and $postconfig.logFieldName -contains "HTTPConnection" -and $postconfig.logFieldName -contains "User-Agent" -and $postconfig.logFieldName -contains "Content-Type" -and $postconfig.logFieldName -contains "HTTP_USER_AGENT") {
 
                         $true
                     }
@@ -127,7 +127,7 @@ function Get-StgLogCustom {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -36,22 +36,22 @@ function Get-StgAppPoolTimeout {
         $scriptblock = {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.applicationHost/applicationPools/applicationPoolDefaults/processModel"
-            $PreConfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
+            $preconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
-            if (-not ([Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes -le 20)) {
+            if (-not ([Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes -le 20)) {
 
                 Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
             }
 
-            $PostConfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
+            $postconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
             [pscustomobject] @{
                 Id = "V-76839"
                 ComputerName = $env:ComputerName
                 Sitename = $env:ComputerName
-                PreConfigTimeOut = [Int]([TimeSpan]$PreConfigTimeOut.Value).TotalMinutes
-                PostConfigTimeOut = [Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes
-                Compliant = if ([Int]([TimeSpan]$PostConfigTimeOut.Value).TotalMinutes -le 20) {
+                Before = [Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes
+                After = [Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes
+                Compliant = if ([Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes -le 20) {
                     $true
                 } else {
                     $false
@@ -63,7 +63,7 @@ function Get-StgAppPoolTimeout {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property ComputerName, Id, Sitename, Hostname, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Sitename, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
