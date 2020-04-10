@@ -49,8 +49,8 @@ function Get-StgSessionTimeout {
 
                 [pscustomobject] @{
                     Id = "V-76841"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName = $webname
                     PreConfigSessionTimeOut = [Int]([TimeSpan]$preconfigSessionTimeOut.Value).TotalMinutes
                     PostConfigSessionTimeOut = [Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes
                     Compliant = if ([Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes -le 20) {

@@ -1,5 +1,5 @@
 function Get-StgEncryptionValidation {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Validation and Encryption properties for vulnerability 76731.
 
@@ -44,18 +44,20 @@ function Get-StgEncryptionValidation {
             $postconfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
             $postconfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
+            if ($postconfigurationValidation -eq "HMACSHA256" -and $postconfigurationEncryption.Value -eq "Auto") {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
+
             [pscustomobject] @{
-                Id = "V-76731"
-                ComputerName = $env:ComputerName
-                PreConfigValidation = $preconfigValidation
-                PreConfigEncryption = $preconfigEncryption.Value
-                PostConfigurationValidation = $postconfigurationValidation
-                PostConfigurationEncryption = $postconfigurationEncryption.Value
-                Compliant = if ($postconfigurationValidation -eq "HMACSHA256" -and $postconfigurationEncryption.Value -eq "Auto") {
-                    $true
-                } else {
-                    $false
-                }
+                Id               = "V-76731"
+                ComputerName     = $env:COMPUTERNAME
+                BeforeValidation = $preconfigValidation
+                BeforeEncryption = $preconfigEncryption.Value
+                AfterValidation  = $postconfigurationValidation
+                AfterEncryption  = $postconfigurationEncryption.Value
+                Compliant        = $compliant
             }
         }
     }
@@ -63,7 +65,7 @@ function Get-StgEncryptionValidation {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, BeforeEncryption, AfterEncryption, BeforeValidation, AfterValidation, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

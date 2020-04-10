@@ -1,5 +1,5 @@
 function Get-StgLogCustom {
-<#
+    <#
     .SYNOPSIS
         Check, configure, and verify Custom Logging Fields for vulnerabilities 76687, 76689, 76789, & 76791.
 
@@ -37,38 +37,38 @@ function Get-StgLogCustom {
             #Custom logging fields
             $Connection = [pscustomobject] @{
                 LogFieldName = "Connection"
-                SourceType = "RequestHeader"
-                SourceName = "Connection"
+                SourceType   = "RequestHeader"
+                SourceName   = "Connection"
             }
 
             $Warning = [pscustomobject] @{
                 LogFieldName = "Warning"
-                SourceType = "RequestHeader"
-                SourceName = "Warning"
+                SourceType   = "RequestHeader"
+                SourceName   = "Warning"
             }
 
             $HTTPConnection = [pscustomobject] @{
                 LogFieldName = "HTTPConnection"
-                SourceType = "ServerVariable"
-                SourceName = "HTTPConnection"
+                SourceType   = "ServerVariable"
+                SourceName   = "HTTPConnection"
             }
 
             $UserAgent = [pscustomobject] @{
                 LogFieldName = "User-Agent"
-                SourceType = "RequestHeader"
-                SourceName = "User-Agent"
+                SourceType   = "RequestHeader"
+                SourceName   = "User-Agent"
             }
 
             $ContentType = [pscustomobject] @{
                 LogFieldName = "Content-Type"
-                SourceType = "RequestHeader"
-                SourceName = "Content-Type"
+                SourceType   = "RequestHeader"
+                SourceName   = "Content-Type"
             }
 
             $HTTPUserAgent = [pscustomobject] @{
                 LogFieldName = "HTTP_USER_AGENT"
-                SourceType = "ServerVariable"
-                SourceName = "HTTP_USER_AGENT"
+                SourceType   = "ServerVariable"
+                SourceName   = "HTTP_USER_AGENT"
             }
 
             $CustomFields = @(
@@ -80,45 +80,35 @@ function Get-StgLogCustom {
                 $HTTPUserAgent
             )
 
-
-
             #All website names
             $webnames = (Get-Website).Name
 
-            foreach($Custom in $CustomFields) {
-
-                foreach($webname in $webnames) {
-
+            foreach ($Custom in $CustomFields) {
+                foreach ($webname in $webnames) {
                     try {
                         #Set custom logging fields
                         New-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection" -Value $Custom -ErrorAction Stop
-                    }
-                    catch {
+                    } catch {
                         # usually duplication errors
                         Write-Verbose -Message "$_"
                     }
                 }
             }
 
-            foreach($webname in $webnames) {
-
+            foreach ($webname in $webnames) {
                 #Post-Configuration custom fields
                 $postconfig = (Get-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection")
+                if ($postconfig.logFieldName -contains "Connection" -and $postconfig.logFieldName -contains "Warning" -and $postconfig.logFieldName -contains "HTTPConnection" -and $postconfig.logFieldName -contains "User-Agent" -and $postconfig.logFieldName -contains "Content-Type" -and $postconfig.logFieldName -contains "HTTP_USER_AGENT") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
 
+                }
                 [pscustomobject] @{
-
-                    Id = "V-76687, V-76689, V-76789, V-76791"
-                    SiteName = $webname
+                    Id           = "V-76687", "V-76689", "V-76789", "V-76791"
+                    SiteName     = $webname
                     CustomFields = $($postconfig.logFieldName)
-                    Compliant = if ($postconfig.logFieldName -contains "Connection" -and $postconfig.logFieldName -contains "Warning" -and $postconfig.logFieldName -contains "HTTPConnection" -and $postconfig.logFieldName -contains "User-Agent" -and $postconfig.logFieldName -contains "Content-Type" -and $postconfig.logFieldName -contains "HTTP_USER_AGENT") {
-
-                        $true
-                    }
-
-                    else {
-
-                        $false
-                    }
+                    Compliant    = $compliant
                 }
             }
         }

@@ -1,5 +1,5 @@
 function Get-StgDebugSetting {
-<#
+    <#
 .SYNOPSIS
     Configure and verify Debug Behavior settings for vulnerability 76837.
 
@@ -35,25 +35,23 @@ function Get-StgDebugSetting {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/compilation"
-            foreach($webname in $webnames) {
-
+            foreach ($webname in $webnames) {
                 $preconfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
-
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Debug -Value "False"
-
                 $postconfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
+                if (-not $postconfigurationDebugBehavior.Value) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76837"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
-                    PreConfigDebugBehaviors = $preconfigDebugBehavior.Value
-                    PostConfigurationDebugBehavior = $postconfigurationDebugBehavior.Value
-                    Compliant = if ($postconfigurationDebugBehavior.Value -eq $false) {
-                        $true
-                    } else {
-                        $false
-                    }
+                    Id           = "V-76837"
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName     = $webname
+                    Before       = $preconfigDebugBehavior.Value
+                    After        = $postconfigurationDebugBehavior.Value
+                    Compliant    = $compliant
                 }
             }
         }
@@ -62,7 +60,7 @@ function Get-StgDebugSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

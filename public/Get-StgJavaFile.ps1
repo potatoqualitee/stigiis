@@ -1,5 +1,5 @@
 function Get-StgJavaFile {
-<#
+    <#
     .SYNOPSIS
         Remove all *.jpp,*.java files for vulnerability 76717.
 
@@ -34,32 +34,30 @@ function Get-StgJavaFile {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $JavaFiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp,*.java -Recurse -Force -ErrorAction SilentlyContinue
+            $javafiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
 
-            if ($JavaFiles) {
+            if ($javafiles) {
+                $javafiles | Remove-Item -Force
+                $postfiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
 
-                $JavaFiles | Remove-Item -Force
-                $PostFiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp,*.java -Recurse -Force -ErrorAction SilentlyContinue
+                if (-not ($postfiles)) {
+                    $compliant = $true # "Yes: Files found and removed"
+                } else {
+                    $compliant = $false # "No: File removal incomplete"
+                }
 
                 [pscustomobject] @{
-
-                    Id = "V-76717"
-                    ComputerName = $env:ComputerName
-                    FilesRemoved = $JavaFiles
-                    Compliant = if (-not ($PostFiles)) {
-
-                        "Yes: Files found and removed"
-                    } else {
-
-                        "No: File removal incomplete"
-                    }
+                    Id           = "V-76717"
+                    ComputerName = $env:COMPUTERNAME
+                    Files        = $javafiles
+                    Compliant    = $compliant
                 }
             } else {
                 [pscustomobject] @{
-                    Id = "V-76717"
-                    ComputerName = $env:ComputerName
-                    FilesToRemove = "No files found"
-                    Compliant = $true
+                    Id           = "V-76717"
+                    ComputerName = $env:COMPUTERNAME
+                    Files        = "No files found"
+                    Compliant    = $true
                 }
             }
         }
@@ -68,7 +66,7 @@ function Get-StgJavaFile {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Files, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

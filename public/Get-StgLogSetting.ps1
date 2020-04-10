@@ -1,5 +1,5 @@
 function Get-StgLogSetting {
-<#
+    <#
     .SYNOPSIS
         Check, configure, and verify baseline logging setting for vulnerability 76683 & 76785.
 
@@ -45,19 +45,11 @@ function Get-StgLogSetting {
 
             #Output which radio buttons are set
             $PreWeb = @(
-
                 if ($PreWeb -notcontains "ETW") {
-
                     "Log File Only"
-                }
-
-                elseif ($PreWeb -notcontains "File") {
-
+                } elseif ($PreWeb -notcontains "File") {
                     "ETW Event Only"
-                }
-
-                else {
-
+                } else {
                     "Both log file and ETW Event"
                 }
             )
@@ -72,37 +64,26 @@ function Get-StgLogSetting {
 
             #Output which radio buttons are set
             $PostWeb = @(
-
                 if ($PostWeb -notcontains "ETW") {
-
                     "Log File Only"
-                }
-
-                elseif ($PostWeb -notcontains "File") {
-
+                } elseif ($PostWeb -notcontains "File") {
                     "ETW Event Only"
-                }
-
-                else {
-
+                } else {
                     "Both log file and ETW Event"
                 }
             )
 
+            if ($PostWeb -eq "Both log file and ETW Event") {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
+
             [pscustomobject] @{
-
-                Id = "V-76683, V-76785"
-                PreConfig = "$PreWeb"
-                PostConfiguration = "$PostWeb"
-                Compliant = if ($PostWeb -eq "Both log file and ETW Event") {
-
-                    $true
-                }
-
-                else {
-
-                    $false
-                }
+                Id        = "V-76683", "V-76785"
+                Before    = $PreWeb
+                After     = $PostWeb
+                Compliant = $compliant
             }
         }
     }

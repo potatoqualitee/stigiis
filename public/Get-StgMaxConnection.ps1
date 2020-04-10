@@ -1,5 +1,5 @@
 function Get-StgMaxConnection {
-<#
+    <#
     .SYNOPSIS
         Verify Maximum Connection settings for vulnerability 76773.
 
@@ -33,19 +33,19 @@ function Get-StgMaxConnection {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.applicationHost/sites/siteDefaults"
-            $MaxConnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
+            $maxconnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
+            if ($maxconnections.MaxConnections -gt 0) {
+                $compliant = $true
+            } else {
+                $compliant = $false # "No: Configure MaxConnections attribute higher than 0"
+            }
 
             [pscustomobject] @{
-                Id = "V-76773"
-                ComputerName = $env:ComputerName
-                MaxConnections = $($MaxConnections.MaxConnections)
-                Compliant = if ($MaxConnections.MaxConnections -gt 0) {
-                    $true
-                } else {
-                    "No: Configure MaxConnections attribute higher than 0"
-                }
+                Id           = "V-76773"
+                ComputerName = $env:COMPUTERNAME
+                Value        = $($maxconnections.MaxConnections)
+                Compliant    = $compliant
             }
         }
     }
@@ -53,7 +53,7 @@ function Get-StgMaxConnection {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Value, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -41,7 +41,7 @@ function Get-StgPrintService {
             foreach($Feature in $PrintFeatures) {
                 [pscustomobject] @{
                     Id = "V-76753"
-                    ComputerName = $env:ComputerName
+                    ComputerName = $env:COMPUTERNAME
                     Feature = $Feature.Name
                     InstallState = $Feature.InstallState
                     Compliant = if ($Feature.InstallState -eq "Available") {

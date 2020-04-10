@@ -43,8 +43,8 @@ function Get-StgSessionSecurity {
 
             [pscustomobject] @{
                 Id = "V-76757"
-                ComputerName = $env:ComputerName
-                Sitename = $env:ComputerName
+                ComputerName = $env:COMPUTERNAME
+                SiteName = $env:COMPUTERNAME
                 PreConfigSessionID = $preconfigSessionID.Value
                 PostConfigurationSessionID = $postconfigurationSessionID.Value
                 Compliant = if ($postconfigurationSessionID.Value -eq "True") {
@@ -64,8 +64,8 @@ function Get-StgSessionSecurity {
 
                 [pscustomobject] @{
                     Id = "V-76855"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName = $webname
                     PreConfigSessionID = $preconfigSessionID.Value
                     PostConfigurationSessionID = $postconfigurationSessionID.Value
                     Compliant = if ($postconfigurationSessionID.Value -eq "True") {

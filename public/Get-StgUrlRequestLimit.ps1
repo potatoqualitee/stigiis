@@ -48,8 +48,8 @@ function Get-StgUrlRequestLimit {
 
                 [pscustomobject] @{
                     Id = "V-76817"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName = $webname
                     PreConfiugrationMaxUrl = $preconfigMaxUrl.Value
                     PostConfiugrationMaxUrl = $postconfigurationMaxUrl.Value
                     Compliant = if ($postconfigurationMaxUrl.Value -le $MaxUrl) {

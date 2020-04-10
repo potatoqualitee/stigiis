@@ -43,13 +43,13 @@ function Get-StgArrProxy {
 
                     [pscustomobject] @{
                         Id = "V-76703"
-                        ComputerName = $env:ComputerName
+                        ComputerName = $env:COMPUTERNAME
                         Value = $ProxyValue
                     }
                 } catch {
                     [pscustomobject] @{
                         Id = "V-76703"
-                        ComputerName = $env:ComputerName
+                        ComputerName = $env:COMPUTERNAME
                         Value = "N/A: Application Request Routing not available"
                     }
                 }
@@ -60,7 +60,7 @@ function Get-StgArrProxy {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Value |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

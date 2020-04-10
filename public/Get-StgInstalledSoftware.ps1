@@ -1,5 +1,5 @@
 function Get-StgInstalledSoftware {
-<#
+    <#
     .SYNOPSIS
         Report installed software for vulnerability 76701. Needs to be assessed manually.
 
@@ -35,40 +35,31 @@ function Get-StgInstalledSoftware {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             if ($PSVersionTable.PSVersion -ge "5.0") {
-
                 Get-Package
-            }
-
-            else {
-
-            $Keys = "","\Wow6432Node"
-
+            } else {
+                $Keys = "", "\Wow6432Node"
                 foreach ($Key in $keys) {
                     try {
-
-                        $Apps = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall").GetSubKeyNames()
-                    }
-                    catch {
-
-                        Continue
+                        $apps = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine", $Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall").GetSubKeyNames()
+                    } catch {
+                        continue
                     }
 
-                    foreach ($App in $Apps) {
-
-                        $Program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine",$Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
+                    foreach ($app in $apps) {
+                        $Program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine", $Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
                         $Name = $Program.GetValue("DisplayName")
 
                         if ($Name -and $Name -match $NameRegex) {
-
                             [pscustomobject]@{
-                                ComputerName = $Computer
-                                Software = $Name
-                                Version = $Program.GetValue("DisplayVersion")
-                                Publisher = $Program.GetValue("Publisher")
-                                InstallDate = $Program.GetValue("InstallDate")
+                                ID              = "V-76701"
+                                ComputerName    = $Computer
+                                Software        = $Name
+                                Version         = $Program.GetValue("DisplayVersion")
+                                Publisher       = $Program.GetValue("Publisher")
+                                InstallDate     = $Program.GetValue("InstallDate")
                                 UninstallString = $Program.GetValue("UninstallString")
-                                Bits = $(if ($Key -eq "\Wow6432Node") {"64"} else {"32"})
-                                Path = $Program.name
+                                Bits            = $(if ($Key -eq "\Wow6432Node") {"64"} else {"32"})
+                                Path            = $Program.name
                             }
                         }
                     }
@@ -80,7 +71,7 @@ function Get-StgInstalledSoftware {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Software, Version, Publisher, InstallDate, UninstallString, Bits, Path |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

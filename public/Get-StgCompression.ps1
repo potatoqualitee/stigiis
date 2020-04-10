@@ -45,20 +45,20 @@ function Get-StgCompression {
 
             $postconfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
             $postconfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
-
+            if ($postconfigCookies.Value -and -not $postconfigCompression.Value) {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
             [pscustomobject] @{
-                Id = "V-76859"
-                ComputerName = $env:ComputerName
-                Sitename = $env:ComputerName
-                BeforeCookiesSSL = $preconfigCookies.Value
-                AfterCookiesSSL = $postconfigCookies.Value
+                Id                       = "V-76859"
+                ComputerName             = $env:COMPUTERNAME
+                SiteName                 = $env:COMPUTERNAME
+                BeforeCookiesSSL         = $preconfigCookies.Value
+                AfterCookiesSSL          = $postconfigCookies.Value
                 BeforeCompressionEnabled = $preconfigCompression.Value
-                AfterCompressionEnabled = $postconfigCompression.Value
-                Compliant = if ($postconfigCookies.Value -and -not $postconfigCompression.Value) {
-                    $true
-                } else {
-                    $false
-                }
+                AfterCompressionEnabled  = $postconfigCompression.Value
+                Compliant                = $compliant
             }
         }
     }
@@ -66,7 +66,7 @@ function Get-StgCompression {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Sitename, BeforeCookiesSSL, AfterCookiesSSL, BeforeCompressionEnabled, AfterCompressionEnabled, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, BeforeCookiesSSL, AfterCookiesSSL, BeforeCompressionEnabled, AfterCompressionEnabled, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -55,7 +55,7 @@ function Invoke-Command2
 	param (
 		[PSFComputer[]]
 		[Alias('Session')]
-		$ComputerName = $env:ComputerName,
+		$ComputerName = $env:COMPUTERNAME,
 
 		[Parameter(Mandatory)]
 		[scriptblock]

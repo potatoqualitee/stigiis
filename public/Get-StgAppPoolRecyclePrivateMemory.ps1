@@ -1,5 +1,5 @@
 function Get-StgAppPoolRecyclePrivateMemory {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Private Memory Recycling settings for vulnerability 76871.
 
@@ -38,28 +38,27 @@ function Get-StgAppPoolRecyclePrivateMemory {
             $MemoryDefault = 1GB
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($pool in $AppPools) {
-
+            foreach ($pool in $AppPools) {
                 $preconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
                 if ($preconfigMemory -eq 0) {
-
                     Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $MemoryDefault
                 }
 
                 $postconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                if ($postconfigMemory.Value -gt 0) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Value must be set higher than 0"
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76871"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76871"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = [string]$preconfigMemory.Value
-                    After = [string]$postconfigMemory.Value
-                    Compliant = if ($postconfigMemory.Value -gt 0) {
-                        $true
-                    } else {
-                        "No: Value must be set higher than 0"
-                    }
+                    Before          = [string]$preconfigMemory.Value
+                    After           = [string]$postconfigMemory.Value
+                    Compliant       = $compliant
                 }
             }
         }

@@ -48,8 +48,8 @@ function Get-StgUnlistedFileExtension {
 
                 [pscustomobject] @{
                     Id = "V-76827"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName = $webname
                     PreConfigUnlistedExtensions = $preconfigUnlistedExtensions.Value
                     PostConfigurationUnlistedExtensions = $postconfigurationUnlistedExtensions.Value
                     Compliant = if ($postconfigurationUnlistedExtensions.Value -eq $false) {

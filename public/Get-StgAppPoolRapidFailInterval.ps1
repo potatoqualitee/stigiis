@@ -1,5 +1,5 @@
 function Get-StgAppPoolRapidFailInterval {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Rapid-Fail Interval settings for vulnerability 76881.
 
@@ -38,7 +38,7 @@ function Get-StgAppPoolRapidFailInterval {
             $ProtectionInterval = "00:05:00"
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($pool in $AppPools) {
+            foreach ($pool in $AppPools) {
 
                 $preconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
@@ -48,18 +48,19 @@ function Get-StgAppPoolRapidFailInterval {
                 }
 
                 $postconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                if ([Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes -le 5) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Value must be 5 or less"
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76881"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76881"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = [Int]([TimeSpan]$preconfigProtectionInterval).TotalMinutes
-                    After = [Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes
-                    Compliant = if ([Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes -le 5) {
-                        $true
-                    } else {
-                        "No: Value must be 5 or less"
-                    }
+                    Before          = [Int]([TimeSpan]$preconfigProtectionInterval).TotalMinutes
+                    After           = [Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes
+                    Compliant       = $compliant
                 }
             }
         }

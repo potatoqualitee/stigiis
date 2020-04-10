@@ -1,5 +1,5 @@
 function Get-StgAppPoolPingSetting {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Ping settings for vulnerability 76877.
 
@@ -36,22 +36,24 @@ function Get-StgAppPoolPingSetting {
         $scriptblock = {
             $filterpath = "processModel.pingingEnabled"
             $AppPools = (Get-IISAppPool).Name
-            foreach($pool in $AppPools) {
+            foreach ($pool in $AppPools) {
                 $preconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
                 Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $true
                 $postconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
+                if ($postconfigPing) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
+
                 [pscustomobject] @{
-                    Id = "V-76877"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76877"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = $preconfigPing
-                    After = $postconfigPing
-                    Compliant = if ($postconfigPing) {
-                        $true
-                    } else {
-                        $false
-                    }
+                    Before          = $preconfigPing
+                    After           = $postconfigPing
+                    Compliant       = $compliant
                 }
             }
         }

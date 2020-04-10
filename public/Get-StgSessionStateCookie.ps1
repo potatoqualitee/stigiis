@@ -52,7 +52,7 @@ function Get-StgSessionStateCookie {
 
                 [pscustomobject] @{
                     Id = "V-76725, V-76727, V-76777"
-                    ComputerName = $env:ComputerName
+                    ComputerName = $env:COMPUTERNAME
                     SiteName = $webname
                     PreConfigCookiesLess = $PreCookieConfig
                     PreConfigSessionID = $PreSessionConfig.Value

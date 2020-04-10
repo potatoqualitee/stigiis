@@ -36,7 +36,6 @@ function Get-StgLogDataField {
         $scriptblock = {
             #STIG required log fields
             $RequiredFields = @(
-
                 "Date",
                 "Time",
                 "ClientIP",
@@ -52,14 +51,12 @@ function Get-StgLogDataField {
 
             #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
             [String[]]$Collection = @(
-
                 $RequiredFields
                 $CurrentFields
             )
 
             $CollectionString = ($Collection | Select-Object -Unique)
-
-            $Replace = $CollectionString.Replace(" ",",")
+            $Replace = $CollectionString.Replace(" ", ",")
 
             #Set all necessary log fields
             Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $Replace
@@ -67,28 +64,25 @@ function Get-StgLogDataField {
             #All fields presented after new properties have been set
             $PostFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
 
+            if ($PostFields -contains "Date" -and $PostFields -contains "Time" -and $PostFields -contains "ClientIP" -and $PostFields -contains "UserName" -and $PostFields -contains "Method" -and $PostFields -contains "UriQuery" -and $PostFields -contains "HTTPstatus" -and $PostFields -contains "Referer") {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
+
             [pscustomobject] @{
-
-                Id = "V-76681, V-76783"
-                PreConfigFields = "$CurrentFields"
-                Date = ($PostFields -contains "Date")
-                Time = ($PostFields -contains "Time")
-                ClientIP = ($PostFields -contains "ClientIP")
-                UserName = ($PostFields -contains "UserName")
-                Method = ($PostFields -contains "Method")
-                URIQuery = ($PostFields -contains "UriQuery")
-                ProtocolStatus = ($PostFields -contains "HTTPstatus")
-                Referer = ($PostFields -contains "Referer")
+                Id                      = "V-76681", "V-76783"
+                PreConfigFields         = "$CurrentFields"
+                Date                    = ($PostFields -contains "Date")
+                Time                    = ($PostFields -contains "Time")
+                ClientIP                = ($PostFields -contains "ClientIP")
+                UserName                = ($PostFields -contains "UserName")
+                Method                  = ($PostFields -contains "Method")
+                URIQuery                = ($PostFields -contains "UriQuery")
+                ProtocolStatus          = ($PostFields -contains "HTTPstatus")
+                Referer                 = ($PostFields -contains "Referer")
                 PostConfigurationFields = "$PostFields"
-                Compliant = if ($PostFields -contains "Date" -and $PostFields -contains "Time" -and $PostFields -contains "ClientIP" -and $PostFields -contains "UserName" -and $PostFields -contains "Method" -and $PostFields -contains "UriQuery" -and $PostFields -contains "HTTPstatus" -and $PostFields -contains "Referer") {
-
-                    $true
-                }
-
-                else {
-
-                    $false
-                }
+                Compliant               = $compliant
             }
         }
     }

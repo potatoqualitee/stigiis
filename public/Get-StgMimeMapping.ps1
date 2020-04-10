@@ -47,7 +47,7 @@ function Get-StgMimeMapping {
 
             [pscustomobject] @{
                 Id = "V-76711, V-76797"
-                ComputerName = $env:ComputerName
+                ComputerName = $env:COMPUTERNAME
                 PreConfigExtenstions = $PreMimeConfig.FileExtension
                 PreConfigCount = $PreMimeConfig.Count
                 PostConfigurationExtenstions = $PostMimeConfig.FileExtension

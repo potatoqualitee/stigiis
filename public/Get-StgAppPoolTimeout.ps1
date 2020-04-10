@@ -39,23 +39,22 @@ function Get-StgAppPoolTimeout {
             $preconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
             if (-not ([Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes -le 20)) {
-
                 Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
             }
 
             $postconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
+            if ([Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes -le 20) {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
 
             [pscustomobject] @{
-                Id = "V-76839"
-                ComputerName = $env:ComputerName
-                Sitename = $env:ComputerName
-                Before = [Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes
-                After = [Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes
-                Compliant = if ([Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes -le 20) {
-                    $true
-                } else {
-                    $false
-                }
+                Id              = "V-76839"
+                ComputerName    = $env:COMPUTERNAME
+                Before          = [Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes
+                After           = [Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes
+                Compliant       = $compliant
             }
         }
     }
@@ -63,7 +62,7 @@ function Get-StgAppPoolTimeout {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Sitename, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

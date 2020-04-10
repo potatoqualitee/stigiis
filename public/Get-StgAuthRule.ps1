@@ -44,7 +44,7 @@ function Get-StgAuthRule {
 
             [pscustomobject] @{
                 Id = "V-76771"
-                ComputerName = $env:ComputerName
+                ComputerName = $env:COMPUTERNAME
                 Before = $preconfigUsers.Value
                 After = $postconfigurationUsers.Value
                 Compliant = if ($postconfigurationUsers.Value -eq "Administrators") {

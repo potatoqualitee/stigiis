@@ -1,5 +1,5 @@
 function Get-StgV-76737-76835 {
-<#
+    <#
     .SYNOPSIS
         Configure and verify HTTP Error Detail properties for vulnerability 76737 & 76835.
 
@@ -39,21 +39,24 @@ function Get-StgV-76737-76835 {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/httpErrors"
 
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
                 $PreErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
                 Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
                 $PostErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
+
+                if ($PostErrorMode -eq "DetailedLocalOnly") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
+
                 [pscustomobject] @{
-                    Id = "V-76733, V-76835"
-                    ComputerName = $env:ComputerName
-                    SiteName = $webname
-                    PreConfigBrowsingEnabled = $PreErrorMode
-                    PostConfigurationBrowsingEnabled = $PostErrorMode
-                    Compliant = if ($PostErrorMode -eq "DetailedLocalOnly") {
-                        $true
-                    } else {
-                        $false
-                    }
+                    Id           = "V-76733, V-76835"
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName     = $webname
+                    Before       = $PreErrorMode
+                    After        = $PostErrorMode
+                    Compliant    = $compliant
                 }
             }
         }
@@ -62,7 +65,7 @@ function Get-StgV-76737-76835 {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

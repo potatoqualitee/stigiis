@@ -129,7 +129,7 @@ function Get-StgClientCertificate {
 
                 [pscustomobject] @{
                     Id = "V-76861"
-                    ComputerName = $env:ComputerName
+                    ComputerName = $env:COMPUTERNAME
                     SiteName = $webname
                     Before = $preconfig
                     After = $postconfig
@@ -227,12 +227,12 @@ function Get-StgClientCertificate {
             )
 
             [pscustomobject] @{
-                Id = "V-76809", "V-76851"
-                ComputerName = $env:ComputerName
-                SiteName = $env:ComputerName
-                Before = $preconfig
-                After = $postconfig
-                Compliant = $compliant
+                Id           = "V-76809", "V-76851"
+                ComputerName = $env:COMPUTERNAME
+                SiteName     = $env:COMPUTERNAME
+                Before       = $preconfig
+                After        = $postconfig
+                Compliant    = $compliant
             }
         }
     }

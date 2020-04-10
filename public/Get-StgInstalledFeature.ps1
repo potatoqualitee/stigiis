@@ -35,13 +35,14 @@ function Get-StgInstalledFeature {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             #Get all installed Windows Features
-            $Features = Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending"}
+            $features = Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending"}
 
-            foreach($Feature in $Features) {
+            foreach ($feature in $features) {
                 [pscustomobject] @{
-                    ComputerName = $env:ComputerName
-                    Name = $Feature.Name
-                    InstallState = $Feature.InstallState
+                    Id           = "V-76709"
+                    ComputerName = $env:COMPUTERNAME
+                    Name         = $feature.Name
+                    InstallState = $feature.InstallState
                 }
             }
         }
@@ -50,7 +51,7 @@ function Get-StgInstalledFeature {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Name, InstallState |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -1,5 +1,5 @@
 function Get-StgHighBit {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Allow High-Bit Characters settings for vulnerability 76823.
 
@@ -37,24 +37,26 @@ function Get-StgHighBit {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering"
 
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
                 $preconfigHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name "allowHighBitCharacters" -Value "False"
 
                 $postconfigurationHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
+                if (-not $postconfigurationHighBit.Value) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
+
                 [pscustomobject] @{
-                    Id = "V-76823"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
-                    PreConfigHighBit = $preconfigHighBit.Value
-                    PostConfigurationHighBit = $postconfigurationHighBit.Value
-                    Compliant = if ($postconfigurationHighBit.Value -eq $false) {
-                        $true
-                    } else {
-                        $false
-                    }
+                    Id           = "V-76823"
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName     = $webname
+                    Before       = $preconfigHighBit.Value
+                    After        = $postconfigurationHighBit.Value
+                    Compliant    = $compliant
                 }
             }
         }

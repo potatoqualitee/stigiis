@@ -32,9 +32,9 @@ function Get-StgLogAcl {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-    $scriptblock = {
+        $scriptblock = {
             $WebPath = "MACHINE/WEBROOT/APPHOST"
-            $LogDirectory = (Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.applicationHost/sites/sitedefaults/logfile" -Name Directory).Value.Replace("%SystemDrive%","$env:SystemDrive")
+            $LogDirectory = (Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.applicationHost/sites/sitedefaults/logfile" -Name Directory).Value.Replace("%SystemDrive%",$env:SystemDrive)
 
             #Child directories of IIS log directory
             $LogDirectoryChildren = (Get-ChildItem -Path $LogDirectory -Directory -Recurse -Force)
@@ -45,10 +45,12 @@ function Get-StgLogAcl {
 
                 foreach($Access in $ACL) {
                     [pscustomobject] @{
-                        Directory = $LDC.FullName
-                        "User/Group" = $Access.IdentityReference
-                        Permissions = $Access.FileSystemRights
-                        Inherited = $Access.IsInherited
+                        Id           = "V-76695", "V-76697", "V-76795"
+                        ComputerName = $env:COMPUTERNAME
+                        Directory    = $LDC.FullName
+                        Account      = $Access.IdentityReference
+                        Permissions  = $Access.FileSystemRights
+                        Inherited    = $Access.IsInherited
                     }
                 }
             }
@@ -58,7 +60,7 @@ function Get-StgLogAcl {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Directory, Permissions, Inherited |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

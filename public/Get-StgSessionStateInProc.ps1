@@ -45,8 +45,8 @@ function Get-StgSessionStateInProc {
 
             [pscustomobject] @{
                 Id = "V-76775"
-                ComputerName = $env:ComputerName
-                Sitename = $env:ComputerName
+                ComputerName = $env:COMPUTERNAME
+                SiteName = $env:COMPUTERNAME
                 PreConfigMode = $preconfigMode
                 PostConfigurationMode = $postconfigurationMode
                 Compliant = if ($postconfigurationMode -eq "InProc") {
@@ -63,8 +63,8 @@ function Get-StgSessionStateInProc {
 
                 [pscustomobject] @{
                     Id = "V-76813"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName = $webname
                     PreConfigMode = $preconfigMode
                     PostConfigurationMode = $postconfigurationMode
                     Compliant = if ($postconfigurationMode -eq "InProc") {

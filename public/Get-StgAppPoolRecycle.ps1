@@ -1,5 +1,5 @@
 function Get-StgAppPoolRecycle {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Recycling settings for vulnerability 76867.
 
@@ -38,7 +38,7 @@ function Get-StgAppPoolRecycle {
             $RequestsDefault = 100000
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($pool in $AppPools) {
+            foreach ($pool in $AppPools) {
 
                 $preconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
@@ -49,17 +49,19 @@ function Get-StgAppPoolRecycle {
 
                 $postconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
+                if ($postconfigRecycle.Value -gt 0) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false #"No: Value must be set higher than 0"
+                }
+
                 [pscustomobject]@{
-                    Id = "V-76867"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76867"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = $preconfigRecycle.Value
-                    After = $postconfigRecycle.Value
-                    Compliant = if ($postconfigRecycle.Value -gt 0) {
-                        $true
-                    } else {
-                        "No: Value must be set higher than 0"
-                    }
+                    Before          = $preconfigRecycle.Value
+                    After           = $postconfigRecycle.Value
+                    Compliant       = $compliant
                 }
             }
         }

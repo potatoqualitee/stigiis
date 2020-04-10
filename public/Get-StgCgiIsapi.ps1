@@ -1,5 +1,5 @@
 function Get-StgCgiIsapi {
-<#
+    <#
     .SYNOPSIS
         Configure and verify CGI and ISAPI module settings for vulnerability 76769.
 
@@ -50,18 +50,20 @@ function Get-StgCgiIsapi {
             $postconfigurationCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
             $postconfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
+            if (-not $postconfigurationCGIExtension.Value -and -not $postconfigurationISAPIExtension.Value) {
+                $compliant = $true
+            } else {
+                $compliant = $false # "No: If auto configuration failed, this section may be locked. Configure manually."
+            }
+
             [pscustomobject] @{
-                Id = "V-76769"
-                ComputerName = $env:ComputerName
+                Id           = "V-76769"
+                ComputerName = $env:COMPUTERNAME
                 BeforeCGI    = $preconfigCGIExtension.Value
                 BeforeISAPI  = $preconfigISAPIExtension.Value
-                AfterCGI = $postconfigurationCGIExtension.Value
-                AfterISAPI = $postconfigurationISAPIExtension.Value
-                Compliant = if (-not $postconfigurationCGIExtension.Value -and -not $postconfigurationISAPIExtension.Value) {
-                    $true
-                } else {
-                    $false # "No: If auto configuration failed, this section may be locked. Configure manually."
-                }
+                AfterCGI     = $postconfigurationCGIExtension.Value
+                AfterISAPI   = $postconfigurationISAPIExtension.Value
+                Compliant    = $compliant
             }
         }
     }

@@ -1,5 +1,5 @@
 function Get-StgContentLength {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Maximum Content Length settings for vulnerability 76819.
 
@@ -40,7 +40,7 @@ function Get-StgContentLength {
 
 
 
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
 
                 $preconfigMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
@@ -48,18 +48,19 @@ function Get-StgContentLength {
 
                 $postconfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
-                [pscustomobject] @{
-                    Id = "V-76819"
-                    ComputerName = $env:ComputerName
-                    Sitename = $webname
-                    PreConfiugrationMaxContentLength = $preconfigMaxContentLength.Value
-                    PostConfiugrationMaxContentLength = $postconfigurationMaxContentLength.Value
-                    Compliant = if ($postconfigurationMaxContentLength.Value -le $MaxContentLength) {
+                if ($postconfigurationMaxContentLength.Value -le $MaxContentLength) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Value must be $MaxContentLength or less"
+                }
 
-                        $true
-                    } else {
-                        "No: Value must be $MaxContentLength or less"
-                    }
+                [pscustomobject] @{
+                    Id           = "V-76819"
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName     = $webname
+                    Before       = $preconfigMaxContentLength.Value
+                    After        = $postconfigurationMaxContentLength.Value
+                    Compliant    = $compliant
                 }
             }
         }
@@ -68,7 +69,7 @@ function Get-StgContentLength {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

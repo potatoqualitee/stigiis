@@ -1,5 +1,5 @@
 function Get-StgAppPoolEventLog {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Event Log settings for vulnerability 76873.
 
@@ -38,7 +38,7 @@ function Get-StgAppPoolEventLog {
             $filterpath = "recycling.logEventOnRecycle"
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($pool in $AppPools) {
+            foreach ($pool in $AppPools) {
                 #STIG required log fields
                 $RequiredPoolFields = @(
                     "Time",
@@ -55,22 +55,24 @@ function Get-StgAppPoolEventLog {
                 )
 
                 [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
-                $PoolReplace = $PoolCollectionString.Replace(" ",",")
+                $PoolReplace = $PoolCollectionString.Replace(" ", ",")
                 $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
                 Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $PoolReplace
                 $postconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
+                if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Time and Scheduled logging must be turned on"
+                }
+
                 [pscustomobject] @{
-                    Id = "V-76873"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76873"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = $preconfigPool
-                    After = $postconfigPool
-                    Compliant = if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {
-                        $true
-                    } else {
-                        $false # "No: Time and Scheduled logging must be turned on"
-                    }
+                    Before          = $preconfigPool
+                    After           = $postconfigPool
+                    Compliant       = $compliant
                 }
             }
         }
@@ -79,7 +81,7 @@ function Get-StgAppPoolEventLog {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

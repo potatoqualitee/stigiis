@@ -50,7 +50,7 @@ function Get-StgTrustLevel {
                 [pscustomobject] @{
 
                     Id = "V-76805"
-                    ComputerName = $env:ComputerName
+                    ComputerName = $env:COMPUTERNAME
                     SiteName = $webname
                     PreConfigTrustLevel = $preconfigTrustLevel
                     PostConfigTrustLevel = $preconfigTrustLevel

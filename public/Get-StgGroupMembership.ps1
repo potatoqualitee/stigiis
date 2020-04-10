@@ -1,5 +1,5 @@
 function Get-StgGroupMembership {
-<#
+    <#
     .SYNOPSIS
         Check baseline account/security group accesses for vulnerability 76707 & 76719.
 
@@ -35,47 +35,41 @@ function Get-StgGroupMembership {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             #Get Local administrators and groups
-            $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ""} | select -Skip 6 | ForEach-Object {$_.Replace("*","")}
+            $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ""} | select -Skip 6 | ForEach-Object {$_.Replace("*", "")}
             $LocalAdmin = net localgroup Administrators | where {$_ -notmatch "command completed successfully"} | select -Skip 6
 
-            foreach($LA in $LocalAdmin) {
+            foreach ($LA in $LocalAdmin) {
                 if (-not ([string]::IsNullOrWhiteSpace($LA))) {
                     [pscustomobject] @{
-                        Id = "V-76707, V-76719"
-                        ComputerName = $env:ComputerName
-                        AccessType = "Local Administrator"
-                        User = $LA
-                        SecurityGroup = ""
-                        ObjectClass = ""
+                        Id                = "V-76707", "V-76719"
+                        ComputerName      = $env:COMPUTERNAME
+                        AccessType        = "Local Administrator"
+                        User              = $LA
+                        SecurityGroup     = ""
+                        ObjectClass       = ""
                         DistinguishedName = "N/A"
                     }
                 }
             }
 
-            foreach($LG in $LocalGroups) {
-
-                if (-not ([string]::IsNullOrWhiteSpace($LG))) {
-
+            foreach ($LG in $LocalGroups) {
+                if ($LG) {
                     try {
-
                         #Get group members of Security Groups
                         $Members = Get-ADGroupMember $LG -ErrorAction Stop
-                    }
-
-                    catch {
-
+                    } catch {
                         $Members = @()
                     }
 
-                    foreach($Member in $Members) {
-                        if (-not ([string]::IsNullOrWhiteSpace($Member))) {
+                    foreach ($Member in $Members) {
+                        if ($Member) {
                             [pscustomobject] @{
-                                Id = "V-76707, V-76719"
-                                ComputerName = $env:ComputerName
-                                AccessType = "Group Membership"
-                                User = $Member.SamAccountName
-                                SecurityGroup = $LG
-                                ObjectClass = $Member.objectClass.ToUpper()
+                                Id                = "V-76707", "V-76719"
+                                ComputerName      = $env:COMPUTERNAME
+                                AccessType        = "Group Membership"
+                                User              = $Member.SamAccountName
+                                SecurityGroup     = $LG
+                                ObjectClass       = $Member.objectClass.ToUpper()
                                 DistinguishedName = $Member.DistinguishedName
                             }
                         }
@@ -88,7 +82,7 @@ function Get-StgGroupMembership {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, AccessType, User, SecurityGroup, ObjectClass, DistinguishedName |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

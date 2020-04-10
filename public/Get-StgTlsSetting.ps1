@@ -98,7 +98,7 @@ function Get-StgTlsSetting {
                 [pscustomobject] @{
 
                     Id = "V-76759"
-                    ComputerName = $env:ComputerName
+                    ComputerName = $env:COMPUTERNAME
                     Key = $Key0
                     KeyPropertyName = $SubKeyName
                     ValueType = $ValueType0
@@ -144,7 +144,7 @@ function Get-StgTlsSetting {
 
                 [pscustomobject] @{
                     Id = "V-76759"
-                    ComputerName = $env:ComputerName
+                    ComputerName = $env:COMPUTERNAME
                     Key = $Key1
                     KeyPropertyName = $SubKeyName
                     ValueType = $ValueType1

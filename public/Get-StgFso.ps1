@@ -1,5 +1,5 @@
 function Get-StgFso {
-<#
+    <#
     .SYNOPSIS
         Verify File System Component settings for vulnerability 76767.
 
@@ -45,18 +45,18 @@ function Get-StgFso {
                 "Disabled"
             }
 
-            $compliant = if (Test-Path $FSOKey) {
-                "No: Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
+            if (Test-Path $FSOKey) {
+                $compliant = $false # "No: Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
             } else {
-                $true
+                $compliant = $true
             }
 
             [pscustomobject] @{
-                Id = "V-76767"
-                ComputerName = $env:ComputerName
-                Key = $FSOKey
-                ComponentStatus = $ComponentEnabled
-                Compliant = $compliant
+                Id           = "V-76767"
+                ComputerName = $env:COMPUTERNAME
+                Key          = $FSOKey
+                Value        = $ComponentEnabled
+                Compliant    = $compliant
             }
         }
     }
@@ -64,7 +64,7 @@ function Get-StgFso {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Key, Value, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

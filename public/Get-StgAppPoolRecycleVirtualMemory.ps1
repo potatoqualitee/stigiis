@@ -42,23 +42,23 @@ function Get-StgAppPoolRecycleVirtualMemory {
                 $preconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
                 if ($preconfigVMemory -eq 0) {
-
                     Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $VMemoryDefault
                 }
 
                 $postconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                if ($postconfigVMemory.Value -gt 0) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Value must be set higher than 0"
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76869"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76869"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = $preconfigVMemory.Value
-                    After = $postconfigVMemory.Value
-                    Compliant = if ($postconfigVMemory.Value -gt 0) {
-                        $true
-                    } else {
-                        "No: Value must be set higher than 0"
-                    }
+                    Before          = $preconfigVMemory.Value
+                    After           = $postconfigVMemory.Value
+                    Compliant       = $compliant
                 }
             }
         }

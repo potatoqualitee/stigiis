@@ -41,7 +41,7 @@ function Get-StgWebDav {
 
             [pscustomobject] @{
                 Id = "V-76713, V-76803"
-                ComputerName = $env:ComputerName
+                ComputerName = $env:COMPUTERNAME
                 FeatureName = $DAVFeature
                 RemovedFeatures = $RemoveFeature.FeatureResult
                 ExitCode = $RemoveFeature.ExitCode

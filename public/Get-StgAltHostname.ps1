@@ -37,7 +37,6 @@ function Get-StgAltHostname {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-
         $scriptblock = {
             $webnames = (Get-Website).Name
             foreach($webname in $webnames) {
@@ -50,9 +49,9 @@ function Get-StgAltHostname {
                     }
 
                 [pscustomobject] @{
-                    Id = "V-76883"
-                    ComputerName    = $env:ComputerName
-                    Sitename        = $webname
+                    Id              = "V-76883"
+                    ComputerName    = $env:COMPUTERNAME
+                    SiteName        = $webname
                     Hostname        = $hostname
                     Compliant       = $compliant
                 }
@@ -63,7 +62,7 @@ function Get-StgAltHostname {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

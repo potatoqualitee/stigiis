@@ -1,5 +1,5 @@
 function Get-StgAppPoolQueueLength {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Queue Length settings for vulnerability 76875.
 
@@ -38,7 +38,7 @@ function Get-StgAppPoolQueueLength {
             $QLength = 1000
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($pool in $AppPools) {
+            foreach ($pool in $AppPools) {
 
                 $preconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
@@ -48,18 +48,19 @@ function Get-StgAppPoolQueueLength {
                 }
 
                 $postconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                if ($postconfigQLength -le 1000) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Value must be 1000 or less"
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76875"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76875"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = $preconfigQLength
-                    After = $postconfigQLength
-                    Compliant = if ($postconfigQLength -le 1000) {
-                        $true
-                    } else {
-                        "No: Value must be 1000 or less"
-                    }
+                    Before          = $preconfigQLength
+                    After           = $postconfigQLength
+                    Compliant       = $compliant
                 }
             }
         }

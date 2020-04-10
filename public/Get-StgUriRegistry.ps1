@@ -49,7 +49,7 @@ function Get-StgUriRegistry {
 
                 [pscustomobject] @{
                     Id = "V-76755"
-                    ComputerName = $env:ComputerName
+                    ComputerName = $env:COMPUTERNAME
                     Key = "$($ParameterKey)\$($Key)"
                     Compliant = $KeyCompliant
                 }

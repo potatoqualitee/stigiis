@@ -1,5 +1,5 @@
 function Get-StgAppPoolRapidFailProtection {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Rapid-Fail Protection settings for vulnerability 76879.
 
@@ -37,25 +37,26 @@ function Get-StgAppPoolRapidFailProtection {
             $filterpath = "failure.rapidFailProtection"
             $AppPools = (Get-IISAppPool).Name
 
-            foreach($pool in $AppPools) {
+            foreach ($pool in $AppPools) {
 
                 $preconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
                 Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $true
 
                 $postconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                if ($postconfigRapidFailEnabled -eq $true) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76877"
-                    ComputerName = $env:ComputerName
+                    Id              = "V-76877"
+                    ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before = $preconfigRapidFailEnabled
-                    After = $postconfigRapidFailEnabled
-                    Compliant = if ($postconfigRapidFailEnabled -eq $true) {
-                        $true
-                    } else {
-                        $false
-                    }
+                    Before          = $preconfigRapidFailEnabled
+                    After           = $postconfigRapidFailEnabled
+                    Compliant       = $compliant
                 }
             }
         }

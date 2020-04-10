@@ -40,17 +40,18 @@ function Get-StgAnonymousAuth {
             Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
 
             $postconfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+            if (-not $postconfigurationAnonymousAuthentication.Value) {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
 
             [pscustomobject] @{
-                Id = "V-76811"
-                ComputerName = $env:ComputerName
-                Before = $preconfigAnonymousAuthentication.Value
-                After = $postconfigurationAnonymousAuthentication.Value
-                Compliant = if (-not $postconfigurationAnonymousAuthentication.Value) {
-                    $true
-                } else {
-                    $false
-                }
+                Id           = "V-76811"
+                ComputerName = $env:COMPUTERNAME
+                Before       = $preconfigAnonymousAuthentication.Value
+                After        = $postconfigurationAnonymousAuthentication.Value
+                Compliant    = $compliant
             }
         }
     }
