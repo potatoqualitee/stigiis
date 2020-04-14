@@ -1,0 +1,1189 @@
+﻿[
+    {
+        "Name":  "Get-StgAltHostname",
+        "Description":  "Configure and verify Alternate Hostname settings for vulnerability 76883.",
+        "Tags":  "V-76883",
+        "Synopsis":  "Configure and verify Alternate Hostname settings for vulnerability 76883.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAltHostname",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAltHostname [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAnonymousAuth",
+        "Description":  "Configure and verify Anonymous Authentication settings for vulnerability 76811.",
+        "Tags":  "V-76811",
+        "Synopsis":  "Configure and verify Anonymous Authentication settings for vulnerability 76811.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAnonymousAuth",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAnonymousAuth [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolEventLog",
+        "Description":  "Configure and verify Application Pool Event Log settings for vulnerability 76873.",
+        "Tags":  "V-76873",
+        "Synopsis":  "Configure and verify Application Pool Event Log settings for vulnerability 76873.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolEventLog",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolEventLog [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolPingSetting",
+        "Description":  "Configure and verify Application Pool Ping settings for vulnerability 76877.",
+        "Tags":  "V-76877",
+        "Synopsis":  "Configure and verify Application Pool Ping settings for vulnerability 76877.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolPingSetting",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolPingSetting [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolQueueLength",
+        "Description":  "Configure and verify Application Pool Queue Length settings for vulnerability 76875.",
+        "Tags":  "V-76875",
+        "Synopsis":  "Configure and verify Application Pool Queue Length settings for vulnerability 76875.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolQueueLength",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolQueueLength [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolRapidFailInterval",
+        "Description":  "Configure and verify Application Pool Rapid-Fail Interval settings for vulnerability 76881.",
+        "Tags":  "V-76881",
+        "Synopsis":  "Configure and verify Application Pool Rapid-Fail Interval settings for vulnerability 76881.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolRapidFailInterval",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolRapidFailInterval [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolRapidFailProtection",
+        "Description":  "Configure and verify Application Pool Rapid-Fail Protection settings for vulnerability 76879.",
+        "Tags":  "V-76879",
+        "Synopsis":  "Configure and verify Application Pool Rapid-Fail Protection settings for vulnerability 76879.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolRapidFailProtection",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolRapidFailProtection [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolRecycle",
+        "Description":  "Configure and verify Application Pool Recycling settings for vulnerability 76867.",
+        "Tags":  "V-76867",
+        "Synopsis":  "Configure and verify Application Pool Recycling settings for vulnerability 76867.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolRecycle",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolRecycle [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolRecyclePrivateMemory",
+        "Description":  "Configure and verify Application Pool Private Memory Recycling settings for vulnerability 76871.",
+        "Tags":  "V-76871",
+        "Synopsis":  "Configure and verify Application Pool Private Memory Recycling settings for vulnerability 76871.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolRecyclePrivateMemory",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolRecyclePrivateMemory [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolRecycleVirtualMemory",
+        "Description":  "Configure and verify Application Pool Virtual Memory Recycling settings for vulnerability 76869.",
+        "Tags":  "V-76869",
+        "Synopsis":  "Configure and verify Application Pool Virtual Memory Recycling settings for vulnerability 76869.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolRecycleVirtualMemory",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolRecycleVirtualMemory [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAppPoolTimeout",
+        "Description":  "Configure and verify Application Pool Time-Out settings for vulnerability 76839.",
+        "Tags":  "V-76839",
+        "Synopsis":  "Configure and verify Application Pool Time-Out settings for vulnerability 76839.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAppPoolTimeout",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAppPoolTimeout [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgArrProxy",
+        "Description":  "Disable proxy settings for Application Request Routing feature for vulnerability 76703.",
+        "Tags":  "V-76703",
+        "Synopsis":  "Disable proxy settings for Application Request Routing feature for vulnerability 76703.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgArrProxy",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgArrProxy [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgAuthRule",
+        "Description":  "Configure and verify Authorization Rules settings for vulnerability 76771.",
+        "Tags":  "V-76771",
+        "Synopsis":  "Configure and verify Authorization Rules settings for vulnerability 76771.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgAuthRule",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgAuthRule [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgCgiIsapi",
+        "Description":  "Configure and verify CGI and ISAPI module settings for vulnerability 76769.\n\nBy allowing unspecified file extensions to execute, the web servers attack surface is significantly increased. This increased risk can be reduced by only allowing specific ISAPI extensions or CGI extensions to run on the web server.",
+        "Tags":  "V-76769",
+        "Synopsis":  "Configure and verify CGI and ISAPI module settings for vulnerability 76769.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgCgiIsapi",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgCgiIsapi [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgClientCertificate",
+        "Description":  "Check, configure, and verify site SSL settings for vulnerability 76809, 76851, \u0026 76861.\n\nProtecting the confidentiality and integrity of received information requires that application servers take measures to employ approved cryptography in order to protect the information during transmission over the network. This is usually achieved through the use of Transport Layer Security (TLS), SSL VPN, or IPsec tunnel. The web server must utilize approved encryption when receiving transmitted data.",
+        "Tags":  [
+                     "V-76809",
+                     "V-76851",
+                     "V-76861"
+                 ],
+        "Synopsis":  "Check, configure, and verify site SSL settings for vulnerability 76809, 76851, \u0026 76861.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgClientCertificate",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgClientCertificate [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgCompression",
+        "Description":  "Configure and verify HTTP Cookies and Session Compression settings for vulnerability 76859.",
+        "Tags":  "V-76859",
+        "Synopsis":  "Configure and verify HTTP Cookies and Session Compression settings for vulnerability 76859.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgCompression",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgCompression [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgContentLength",
+        "Description":  "Configure and verify Maximum Content Length settings for vulnerability 76819.",
+        "Tags":  "V-76819",
+        "Synopsis":  "Configure and verify Maximum Content Length settings for vulnerability 76819.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgContentLength",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgContentLength [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgDebugSetting",
+        "Description":  "Configure and verify Debug Behavior settings for vulnerability 76837.",
+        "Tags":  "V-76837",
+        "Synopsis":  "Configure and verify Debug Behavior settings for vulnerability 76837.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgDebugSetting",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgDebugSetting [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgDefaultDocument",
+        "Description":  "Configure and verify Default Document settings for vulnerability 76831.",
+        "Tags":  "V-76831",
+        "Synopsis":  "Configure and verify Default Document settings for vulnerability 76831.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgDefaultDocument",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgDefaultDocument [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgDirectoryBrowsing",
+        "Description":  "Configure and verify Directory Browsing properties for vulnerability 76733 \u0026 76829.",
+        "Tags":  [
+                     "V-76733",
+                     "V-76829"
+                 ],
+        "Synopsis":  "Configure and verify Directory Browsing properties for vulnerability 76733 \u0026 76829.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgDirectoryBrowsing",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgDirectoryBrowsing [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgDoubleEscape",
+        "Description":  "Configure and verify Allow Double Escaping settings for vulnerability 76825.",
+        "Tags":  "V-76825",
+        "Synopsis":  "Configure and verify Allow Double Escaping settings for vulnerability 76825.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgDoubleEscape",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgDoubleEscape [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgEncryptionValidation",
+        "Description":  "Configure and verify Validation and Encryption properties for vulnerability 76731.",
+        "Tags":  "V-76731",
+        "Synopsis":  "Configure and verify Validation and Encryption properties for vulnerability 76731.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgEncryptionValidation",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgEncryptionValidation [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgFso",
+        "Description":  "Verify File System Component settings for vulnerability 76767.\n\nSome Component Object Model (COM) components are not required for most applications and should be removed if possible. Most notably, consider disabling the File System Object component; however, this will also remove the Dictionary object. Be aware some programs may require this component (e.g., Commerce Server), so it is highly recommended this be tested completely before implementing on the production web server.",
+        "Tags":  "V-76767",
+        "Synopsis":  "Verify File System Component settings for vulnerability 76767.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgFso",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgFso [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgGroupMembership",
+        "Description":  "Check baseline account/security group accesses for vulnerability 76707 \u0026 76719.",
+        "Tags":  [
+                     "V-76707",
+                     "V-76719"
+                 ],
+        "Synopsis":  "Check baseline account/security group accesses for vulnerability 76707 \u0026 76719.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgGroupMembership",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgGroupMembership [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgHighBit",
+        "Description":  "Configure and verify Allow High-Bit Characters settings for vulnerability 76823.",
+        "Tags":  "V-76823",
+        "Synopsis":  "Configure and verify Allow High-Bit Characters settings for vulnerability 76823.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgHighBit",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgHighBit [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgIndexConfiguration",
+        "Description":  "Configure and verify Indexing configurations for vulnerability 76735.",
+        "Tags":  "V-76735",
+        "Synopsis":  "Configure and verify Indexing configurations for vulnerability 76735.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgIndexConfiguration",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgIndexConfiguration [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgInstalledFeature",
+        "Description":  "Report installed Windows Features for vulnerability 76709.",
+        "Tags":  "V-76709",
+        "Synopsis":  "Report installed Windows Features for vulnerability 76709.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgInstalledFeature",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgInstalledFeature [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgInstalledSoftware",
+        "Description":  "Report installed software for vulnerability 76701. Needs to be assessed manually.",
+        "Tags":  [
+                     "V-76701",
+                     "Documentation"
+                 ],
+        "Synopsis":  "Report installed software for vulnerability 76701. Needs to be assessed manually.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgInstalledSoftware",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgInstalledSoftware [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgJavaFile",
+        "Description":  "Remove all *.jpp,*.java files for vulnerability 76717.",
+        "Tags":  "V-76717",
+        "Synopsis":  "Remove all *.jpp,*.java files for vulnerability 76717.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgJavaFile",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgJavaFile [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgLogAcl",
+        "Description":  "Report log file ACL settings for vulnerabilities 76695, 76697, \u0026 76795. Needs to be assessed manually.",
+        "Tags":  [
+                     "V-76695",
+                     "V-76697",
+                     "V-76795",
+                     "Documentation"
+                 ],
+        "Synopsis":  "Report log file ACL settings for vulnerabilities 76695, 76697, \u0026 76795. Needs to be assessed manually.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgLogAcl",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgLogAcl [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgLogBaseline",
+        "Description":  "Check, configure, and verify baseline logging setting for vulnerability 76683 \u0026 76787.",
+        "Tags":  [
+                     "V-76685",
+                     "V-76787"
+                 ],
+        "Synopsis":  "Check, configure, and verify baseline logging setting for vulnerability 76683 \u0026 76787.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgLogBaseline",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgLogBaseline [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgLogCustom",
+        "Description":  "Check, configure, and verify Custom Logging Fields for vulnerabilities 76687, 76689, 76789, \u0026 76791.",
+        "Tags":  [
+                     "V-76687",
+                     "V-76689",
+                     "V-76789",
+                     "V-76791"
+                 ],
+        "Synopsis":  "Check, configure, and verify Custom Logging Fields for vulnerabilities 76687, 76689, 76789, \u0026 76791.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgLogCustom",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgLogCustom [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgLogDataField",
+        "Description":  "Add STIG required data fields to the logging feature, including currently active fields for vulnerability 76681 \u0026 76783.",
+        "Tags":  [
+                     "V-76681",
+                     "V-76783"
+                 ],
+        "Synopsis":  "Add STIG required data fields to the logging feature, including currently active fields for vulnerability 76681 \u0026 76783.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgLogDataField",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ],
+                       [
+                           "webnames",
+                           "",
+                           "",
+                           false,
+                           "false",
+                           "(Get-Website).Name"
+                       ]
+                   ],
+        "Syntax":  "Get-StgLogDataField [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [[-webnames] \u003cString[]\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgLogSetting",
+        "Description":  "Check, configure, and verify baseline logging setting for vulnerability 76683 \u0026 76785.",
+        "Tags":  [
+                     "V-76683",
+                     "V-76785"
+                 ],
+        "Synopsis":  "Check, configure, and verify baseline logging setting for vulnerability 76683 \u0026 76785.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgLogSetting",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgLogSetting [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgMaxConnection",
+        "Description":  "Verify Maximum Connection settings for vulnerability 76773.",
+        "Tags":  "V-76773",
+        "Synopsis":  "Verify Maximum Connection settings for vulnerability 76773.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgMaxConnection",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgMaxConnection [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgMaxQueryString",
+        "Description":  "Configure and verify Maximum Query String settings for vulnerability 76821.",
+        "Tags":  "V-76821",
+        "Synopsis":  "Configure and verify Maximum Query String settings for vulnerability 76821.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgMaxQueryString",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgMaxQueryString [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgMimeMapping",
+        "Description":  "Remove required MIME mappings for vulnerability 76711 \u0026 76797.",
+        "Tags":  [
+                     "V-76711",
+                     "V-76797"
+                 ],
+        "Synopsis":  "Remove required MIME mappings for vulnerability 76711 \u0026 76797.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgMimeMapping",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgMimeMapping [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgPrintService",
+        "Description":  "Configure and verify Print Services settings for vulnerability 76753.",
+        "Tags":  "V-76753",
+        "Synopsis":  "Configure and verify Print Services settings for vulnerability 76753.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgPrintService",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgPrintService [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgSessionSecurity",
+        "Description":  "Configure and verify Session Security settings for vulnerability 76757 \u0026 76855.",
+        "Tags":  [
+                     "V-76757",
+                     "V-76855"
+                 ],
+        "Synopsis":  "Configure and verify Session Security settings for vulnerability 76757 \u0026 76855.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgSessionSecurity",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgSessionSecurity [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgSessionStateCookie",
+        "Description":  "Configure and verify cookieLess \u0026 regenerateExpiredSessionID properties for vulnerability 76725, 76727, \u0026 76777.",
+        "Tags":  [
+                     "V-76725",
+                     "V-76727",
+                     "V-76777"
+                 ],
+        "Synopsis":  "Configure and verify cookieLess \u0026 regenerateExpiredSessionID properties for vulnerability 76725, 76727, \u0026 76777.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgSessionStateCookie",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgSessionStateCookie [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgSessionStateInProc",
+        "Description":  "Configure and verify Session State Mode settings for vulnerability 76775 \u0026 76813.\n\nCommunication between a client and the web server is done using the HTTP protocol, but HTTP is a stateless protocol. In order to maintain a connection or session, a web server will generate a session identifier (ID) for each client session when the session is initiated. The session ID allows the web server to track a user session and, in many cases, the user, if the user previously logged into a hosted application. By being able to guess session IDs, an attacker can easily perform a man-in-the-middle attack. To truly generate random session identifiers that cannot be reproduced, the web server session ID generator, when used twice with the same input criteria, must generate an unrelated random ID. The session ID generator also needs to be a FIPS 140-2-approved generator.",
+        "Tags":  [
+                     "V-76775",
+                     "V-76813"
+                 ],
+        "Synopsis":  "Configure and verify Session State Mode settings for vulnerability 76775 \u0026 76813.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgSessionStateInProc",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgSessionStateInProc [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgSessionTimeout",
+        "Description":  "Configure and verify Session Time-Out settings for vulnerability 76841.",
+        "Tags":  "V-76841",
+        "Synopsis":  "Configure and verify Session Time-Out settings for vulnerability 76841.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgSessionTimeout",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgSessionTimeout [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgSSLSetting",
+        "Description":  "Check, configure, and verify site SSL settings for vulnerability 76679, 76779, \u0026 76781.",
+        "Tags":  [
+                     "V-76679",
+                     "V-76779",
+                     "V-76781"
+                 ],
+        "Synopsis":  "Check, configure, and verify site SSL settings for vulnerability 76679, 76779, \u0026 76781.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgSSLSetting",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgSSLSetting [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgTlsSetting",
+        "Description":  "Check, configure, and verify SSL/TLS registry keys for vulnerability 76759.\n\nTransport Layer Security (TLS) encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2-approved TLS version, and all non-FIPS-approved SSL versions must be disabled. FIPS 140-2-approved TLS versions include TLS V1.1 or greater. NIST SP 800-52 specifies the preferred configurations for government systems.",
+        "Tags":  "V-76759",
+        "Synopsis":  "Check, configure, and verify SSL/TLS registry keys for vulnerability 76759.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgTlsSetting",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgTlsSetting [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgTrustLevel",
+        "Description":  "Configure and verify .NET Trust Level settings for vulnerability 76805.",
+        "Tags":  "V-76805",
+        "Synopsis":  "Configure and verify .NET Trust Level settings for vulnerability 76805.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgTrustLevel",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgTrustLevel [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgUnlistedFileExtension",
+        "Description":  "Configure and verify Allow Unlisted File Extensions settings for vulnerability 76827.",
+        "Tags":  "V-76827",
+        "Synopsis":  "Configure and verify Allow Unlisted File Extensions settings for vulnerability 76827.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgUnlistedFileExtension",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgUnlistedFileExtension [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgUriRegistry",
+        "Description":  "Verify URI registry settings for vulnerability 76755.",
+        "Tags":  "V-76755",
+        "Synopsis":  "Verify URI registry settings for vulnerability 76755.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgUriRegistry",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgUriRegistry [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgUrlRequestLimit",
+        "Description":  "Configure and verify URL Request Limit settings for vulnerability 76817.",
+        "Tags":  "V-76817",
+        "Synopsis":  "Configure and verify URL Request Limit settings for vulnerability 76817.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgUrlRequestLimit",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgUrlRequestLimit [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    },
+    {
+        "Name":  "Get-StgWebDav",
+        "Description":  "Remove Windows feature Web-DAV-Publishing for vulnerability 76713 \u0026 76803.",
+        "Tags":  [
+                     "V-76713",
+                     "V-76803"
+                 ],
+        "Synopsis":  "Remove Windows feature Web-DAV-Publishing for vulnerability 76713 \u0026 76803.",
+        "Alias":  "",
+        "Author":  "Chrissy LeMaire (@cl), netnerds.net",
+        "CommandName":  "Get-StgWebDav",
+        "Availability":  "Windows, Linux, macOS",
+        "Links":  null,
+        "Examples":  "",
+        "Params":  [
+                       [
+                           "ComputerName",
+                           "The target server.",
+                           "",
+                           true,
+                           "true (ByValue)",
+                           ""
+                       ]
+                   ],
+        "Syntax":  "Get-StgWebDav [-ComputerName] \u003cComputerParameter[]\u003e [[-Credential] \u003cPSCredential\u003e] [-EnableException] [\u003cCommonParameters\u003e]"
+    }
+]
