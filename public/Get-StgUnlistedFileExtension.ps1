@@ -22,7 +22,6 @@ function Get-StgUnlistedFileExtension {
         Author: Chrissy LeMaire (@cl), netnerds.net
         Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
         License: MIT https://opensource.org/licenses/MIT
-        Caution: Commented out Set-ConfigurationProperty, this setting breaks the Web GUI for SolarWinds.
 
     .EXAMPLE
         PS C:\> Get-StgUnlistedFileExtension -ComputerName web01
