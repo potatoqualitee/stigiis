@@ -45,21 +45,12 @@ function Get-StgAppPoolRecycle {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.requests"
-            $RequestsDefault = 100000
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
+            foreach ($pool in $pools) {
+                $recycle = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
-                $Recycle = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
-
-                if ($Recycle -eq 0) {
-
-                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $RequestsDefault
-                }
-
-                $postconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
-
-                if ($postconfigRecycle.Value -gt 0) {
+                if ($recycle.Value -gt 0) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -69,8 +60,7 @@ function Get-StgAppPoolRecycle {
                     Id              = "V-76867"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value          = $Recycle.Value
-                    After           = $postconfigRecycle.Value
+                    Value           = $Recycle.Value
                     Compliant       = $compliant
                     Notes           = "Value must be set higher than 0"
                 }

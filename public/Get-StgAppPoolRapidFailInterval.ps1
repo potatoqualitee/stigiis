@@ -45,20 +45,11 @@ function Get-StgAppPoolRapidFailInterval {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "failure.rapidFailProtectionInterval"
-            $ProtectionInterval = "00:05:00"
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
-
-                $ProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
-
-                if ([Int]([TimeSpan]$ProtectionInterval).TotalMinutes -gt 5) {
-
-                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $ProtectionInterval
-                }
-
-                $postconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
-                if ([Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes -le 5) {
+            foreach ($pool in $pools) {
+                $protectioninterval = (Get-ItemPro$ey -"$($hIIS)"$($pool)"$($pool)" -Name $filterpath).Value
+                if ([Int]([TimeSpan]$protectioninterval).TotalMinutes -le 5) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -68,8 +59,7 @@ function Get-StgAppPoolRapidFailInterval {
                     Id              = "V-76881"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value          = [Int]([TimeSpan]$ProtectionInterval).TotalMinutes
-                    After           = [Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes
+                    Value           = [Int]([TimeSpan]$protectioninterval).TotalMinutes
                     Compliant       = $compliant
                     Notes           = "Value must be 5 or less"
                 }

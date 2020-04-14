@@ -1,5 +1,5 @@
 function Get-StgCompression {
-<#
+    <#
     .SYNOPSIS
         Configure and verify HTTP Cookies and Session Compression settings for vulnerability 76859.
 
@@ -47,28 +47,21 @@ function Get-StgCompression {
             $pspath = "MACHINE/WEBROOT"
             $filerpathCookies = "system.web/httpCookies"
             $filerpathCompression = "system.web/sessionState"
-            $Cookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
-            $Compression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
+            $cookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
+            $compression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
 
-            Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL -Value "True"
-            Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled -Value "False"
-
-            $postconfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
-            $postconfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
             if ($postconfigCookies.Value -and -not $postconfigCompression.Value) {
                 $compliant = $true
             } else {
                 $compliant = $false
             }
             [pscustomobject] @{
-                Id                       = "V-76859"
-                ComputerName             = $env:COMPUTERNAME
-                SiteName                 = $env:COMPUTERNAME
-                ValueCookiesSSL         = $Cookies.Value
-                AfterCookiesSSL          = $postconfigCookies.Value
-                ValueCompressionEnabled = $Compression.Value
-                AfterCompressionEnabled  = $postconfigCompression.Value
-                Compliant                = $compliant
+                Id                 = "V-76859"
+                ComputerName       = $env:COMPUTERNAME
+                SiteName           = $env:COMPUTERNAME
+                CookiesSSL         = $cookies.Value
+                CompressionEnabled = $compression.Value
+                Compliant          = $compliant
             }
         }
     }
@@ -76,7 +69,7 @@ function Get-StgCompression {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, ValueCookiesSSL, AfterCookiesSSL, ValueCompressionEnabled, AfterCompressionEnabled, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, CookiesSSL, CompressionEnabled, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

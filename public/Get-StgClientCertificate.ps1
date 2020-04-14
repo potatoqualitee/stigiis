@@ -50,86 +50,45 @@ function Get-StgClientCertificate {
             $webnames = (Get-Website).Name
             foreach ($webname in $webnames) {
                 #Pre-configuration SSL values for sites
-                $preflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
-
-                if ($preflags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $preflags -ne "Ssl,SslNegotiateCert" -or $preflags -ne "Ssl,SslNegotiateCert,Ssl128" -or $preflags -ne "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
-
-                    #Set SSL requirements
-                    Set-WebConfiguration -Location $webname -Filter "system.webserver/security/access" -Value "Ssl,SslNegotiateCert,Ssl128"
-                }
-
-                #Post-configuration SSL values
-                $postflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
+                $flags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
 
                 #Pre-configuration data results
                 $ = @(
-                    if ($preflags -eq "Ssl" ) {
+                    if ($flags -eq "Ssl" ) {
                         "SSL: Required | Client Certificates: Ignore"
-                    } elseif ($preflags -eq "Ssl,SslNegotiateCert" ) {
+                    } elseif ($flags -eq "Ssl,SslNegotiateCert" ) {
                         "SSL: Required | Client Certificates: Accept"
-                    } elseif ($preflags -eq "Ssl,SslRequireCert" ) {
+                    } elseif ($flags -eq "Ssl,SslRequireCert" ) {
                         "SSL: Required | Client Certificates: Require"
-                    } elseif ($preflags -eq "Ssl,Ssl128" ) {
+                    } elseif ($flags -eq "Ssl,Ssl128" ) {
                         "SSL: Required | Client Certificates: Ignore | SSL: 128"
-                    } elseif ($preflags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
+                    } elseif ($flags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
                         "SSL: Required | Client Certificates: Require"
-                    } elseif ($preflags -eq "Ssl,SslNegotiateCert,Ssl128" ) {
+                    } elseif ($flags -eq "Ssl,SslNegotiateCert,Ssl128" ) {
                         "SSL: Required | Client Certificates: Accept | SSL: 128"
-                    } elseif ($preflags -eq "Ssl,SslRequireCert,Ssl128" -or $preflags -eq "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
+                    } elseif ($flags -eq "Ssl,SslRequireCert,Ssl128" -or $flags -eq "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
                         "SSL: Required | Client Certificates: Require | SSL: 128"
-                    } elseif ($preflags -eq "SslNegotiateCert" ) {
+                    } elseif ($flags -eq "SslNegotiateCert" ) {
                         "SSL: Not Required | Client Certificates: Accept"
-                    } elseif ($preflags -eq "SslNegotiateCert,SslRequireCert" -or $preflags -eq "SslRequireCert") {
+                    } elseif ($flags -eq "SslNegotiateCert,SslRequireCert" -or $flags -eq "SslRequireCert") {
                         "SSL: Not Required | Client Certificates: Require"
-                    } elseif ($preflags -eq "SslRequireCert,Ssl128") {
+                    } elseif ($flags -eq "SslRequireCert,Ssl128") {
                         "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                    } elseif ($preflags -eq "SslNegotiateCert,Ssl128" ) {
+                    } elseif ($flags -eq "SslNegotiateCert,Ssl128" ) {
                         "SSL: Not Required | Client Certificates: Accept | SSL: 128"
-                    } elseif ($preflags -eq "SslNegotiateCert,SslRequireCert,Ssl128" ) {
+                    } elseif ($flags -eq "SslNegotiateCert,SslRequireCert,Ssl128" ) {
                         "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                    } elseif ($preflags -eq "Ssl128" ) {
+                    } elseif ($flags -eq "Ssl128" ) {
                         "SSL: Not Required | Client Certificates: Ignore | SSL: 128"
                     } else {
                         "SSL: Not Required | Client Certificates: Ignore"
                     }
                 )
 
-                #Post-configuration data results
-                $postconfig = @(
-                    if ($postflags -eq "Ssl" ) {
-                        "SSL: Required | Client Certificates: Ignore"
-                    } elseif ($postflags -eq "Ssl,SslNegotiateCert" ) {
-                        "SSL: Required | Client Certificates: Accept"
-                    } elseif ($postflags -eq "Ssl,SslRequireCert" ) {
-                        "SSL: Required | Client Certificates: Require"
-                    } elseif ($postflags -eq "Ssl,Ssl128" ) {
-                        "SSL: Required | Client Certificates: Ignore | SSL: 128"
-                    } elseif ($postflags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
-                        "SSL: Required | Client Certificates: Require"
-                    } elseif ($postflags -eq "Ssl,SslNegotiateCert,Ssl128" ) {
-                        "SSL: Required | Client Certificates: Accept | SSL: 128"
-                    } elseif ($postflags -eq "Ssl,SslRequireCert,Ssl128" -or $postflags -eq "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
-                        "SSL: Required | Client Certificates: Require | SSL: 128"
-                    } elseif ($postflags -eq "SslNegotiateCert" ) {
-                        "SSL: Not Required | Client Certificates: Accept"
-                    } elseif ($postflags -eq "SslNegotiateCert,SslRequireCert" -or $postflags -eq "SslRequireCert") {
-                        "SSL: Not Required | Client Certificates: Require"
-                    } elseif ($postflags -eq "SslRequireCert,Ssl128") {
-                        "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                    } elseif ($postflags -eq "SslNegotiateCert,Ssl128" ) {
-                        "SSL: Not Required | Client Certificates: Accept | SSL: 128"
-                    } elseif ($postflags -eq "SslNegotiateCert,SslRequireCert,Ssl128" ) {
-                        "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                    } elseif ($postflags -eq "Ssl128" ) {
-                        "SSL: Not Required | Client Certificates: Ignore | SSL: 128"
-                    } else {
-                        "SSL: Not Required | Client Certificates: Ignore"
-                    }
-                )
 
                 #Check SSL setting compliance
                 $compliant = @(
-                    if ($postconfig -eq "SSL: Required | Client Certificates: Require" -or $postconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
+                    if ($flags -eq "SSL: Required | Client Certificates: Require" -or $flags -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
                         $true
                     } else {
                         $false
@@ -140,87 +99,43 @@ function Get-StgClientCertificate {
                     Id           = "V-76861"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $
-                    After        = $postconfig
+                    Value        = $flags
                     Compliant    = $compliant
                     Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
                 }
             }
 
             #Pre-configuration SSL values for server
-            $preflags = Get-WebConfigurationProperty -Filter "system.webserver/security/access" -Name SSLFlags
-
-            if ($preflags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $preflags -ne "Ssl,SslNegotiateCert" -or $preflags -ne "Ssl,SslNegotiateCert,Ssl128" -or $preflags -ne "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
-
-                #Set SSL requirements
-                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter "system.webServer/security/access" -Name SSLFlags -Value "Ssl,SslNegotiateCert,Ssl128"
-            }
-
-            #Post-configuration SSL values
-            $postflags = Get-WebConfigurationProperty -Filter "system.webserver/security/access" -Name SSLFlags
+            $flags = Get-WebConfigurationProperty -Filter "system.webserver/security/access" -Name SSLFlags
 
             #Pre-configuration data results
             # should be a switch but it's already written >_<
-            $ = @(
-                if ($preflags -eq "Ssl" ) {
+            $flags = @(
+                if ($flags -eq "Ssl" ) {
                     "SSL: Required | Client Certificates: Ignore"
-                } elseif ($preflags -eq "Ssl,SslNegotiateCert" ) {
+                } elseif ($flags -eq "Ssl,SslNegotiateCert" ) {
                     "SSL: Required | Client Certificates: Accept"
-                } elseif ($preflags -eq "Ssl,SslRequireCert" ) {
+                } elseif ($flags -eq "Ssl,SslRequireCert" ) {
                     "SSL: Required | Client Certificates: Require"
-                } elseif ($preflags -eq "Ssl,Ssl128" ) {
+                } elseif ($flags -eq "Ssl,Ssl128" ) {
                     "SSL: Required | Client Certificates: Ignore | SSL: 128"
-                } elseif ($preflags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
+                } elseif ($flags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
                     "SSL: Required | Client Certificates: Require"
-                } elseif ($preflags -eq "Ssl,SslNegotiateCert,Ssl128" ) {
+                } elseif ($flags -eq "Ssl,SslNegotiateCert,Ssl128" ) {
                     "SSL: Required | Client Certificates: Accept | SSL: 128"
-                } elseif ($preflags -eq "Ssl,SslRequireCert,Ssl128" -or $preflags -eq "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
+                } elseif ($flags -eq "Ssl,SslRequireCert,Ssl128" -or $flags -eq "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
                     "SSL: Required | Client Certificates: Require | SSL: 128"
-                } elseif ($preflags -eq "SslNegotiateCert" ) {
+                } elseif ($flags -eq "SslNegotiateCert" ) {
                     "SSL: Not Required | Client Certificates: Accept"
-                } elseif ($preflags -eq "SslNegotiateCert,SslRequireCert" -or $preflags -eq "SslRequireCert") {
+                } elseif ($flags -eq "SslNegotiateCert,SslRequireCert" -or $flags -eq "SslRequireCert") {
                     "SSL: Not Required | Client Certificates: Require"
-                } elseif ($preflags -eq "SslRequireCert,Ssl128") {
+                } elseif ($flags -eq "SslRequireCert,Ssl128") {
                     "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                } elseif ($preflags -eq "SslNegotiateCert,Ssl128" ) {
+                } elseif ($flags -eq "SslNegotiateCert,Ssl128" ) {
                     "SSL: Not Required | Client Certificates: Accept | SSL: 128"
-                } elseif ($preflags -eq "SslNegotiateCert,SslRequireCert,Ssl128" ) {
+                } elseif ($flags -eq "SslNegotiateCert,SslRequireCert,Ssl128" ) {
                     "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                } elseif ($preflags -eq "Ssl128" ) {
-                    "SSL: Not Required | Client Certificates: Ignore | SSL: 128"
-                } else {
-                    "SSL: Not Required | Client Certificates: Ignore"
-                }
-            )
-
-            # Post-configuration data results
-            # should be a switch but it's already written >_<
-            $postconfig = @(
-                if ($postflags -eq "Ssl" ) {
-                    "SSL: Required | Client Certificates: Ignore"
-                } elseif ($postflags -eq "Ssl,SslNegotiateCert" ) {
-                    "SSL: Required | Client Certificates: Accept"
-                } elseif ($postflags -eq "Ssl,SslRequireCert" ) {
-                    "SSL: Required | Client Certificates: Require"
-                } elseif ($postflags -eq "Ssl,Ssl128" ) {
-                    "SSL: Required | Client Certificates: Ignore | SSL: 128"
-                } elseif ($postflags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
-                    "SSL: Required | Client Certificates: Require"
-                } elseif ($postflags -eq "Ssl,SslNegotiateCert,Ssl128" ) {
-                    "SSL: Required | Client Certificates: Accept | SSL: 128"
-                } elseif ($postflags -eq "Ssl,SslRequireCert,Ssl128" -or $postflags -eq "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
-                    "SSL: Required | Client Certificates: Require | SSL: 128"
-                } elseif ($postflags -eq "SslNegotiateCert" ) {
-                    "SSL: Not Required | Client Certificates: Accept"
-                } elseif ($postflags -eq "SslNegotiateCert,SslRequireCert" -or $postflags -eq "SslRequireCert") {
-                    "SSL: Not Required | Client Certificates: Require"
-                } elseif ($postflags -eq "SslRequireCert,Ssl128") {
-                    "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                } elseif ($postflags -eq "SslNegotiateCert,Ssl128" ) {
-                    "SSL: Not Required | Client Certificates: Accept | SSL: 128"
-                } elseif ($postflags -eq "SslNegotiateCert,SslRequireCert,Ssl128" ) {
-                    "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                } elseif ($postflags -eq "Ssl128" ) {
+                } elseif ($flags -eq "Ssl128" ) {
                     "SSL: Not Required | Client Certificates: Ignore | SSL: 128"
                 } else {
                     "SSL: Not Required | Client Certificates: Ignore"
@@ -228,7 +143,7 @@ function Get-StgClientCertificate {
             )
 
             #Check SSL setting compliance
-            if ($postconfig -eq "SSL: Required | Client Certificates: Require" -or $postconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
+            if ($flags -eq "SSL: Required | Client Certificates: Require" -or $flags -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -238,8 +153,7 @@ function Get-StgClientCertificate {
                 Id           = "V-76809", "V-76851"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Value       = $
-                After        = $postconfig
+                Value        = $flags
                 Compliant    = $compliant
                 Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
             }

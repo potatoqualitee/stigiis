@@ -46,18 +46,18 @@ function Set-StgAppPoolQueueLength {
         $scriptblock = {
             $filterpath = "queueLength"
             $QLength = 1000
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
+            foreach ($pool in $pools) {
 
-                $preconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                $preconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
                 if ($preconfigQLength.Value -gt 1000) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $QLength
+                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $QLength
                 }
 
-                $postconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                $postconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
                 if ($postconfigQLength -le 1000) {
                     $compliant = $true
                 } else {

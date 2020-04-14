@@ -45,12 +45,12 @@ function Get-StgAppPoolQueueLength {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "queueLength"
-            $QLength = 1000
-            $AppPools = (Get-IISAppPool).Name
+            $queueLength = 1000
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
-                $QLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
-                if ($QLength -le $QLength) {
+            foreach ($pool in $pools) {
+                $queueLength = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
+                if ($queueLength -le $queueLength) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -60,7 +60,7 @@ function Get-StgAppPoolQueueLength {
                     Id              = "V-76875"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Valuee           = $QLengt
+                    Value           = $queueLength
                     Compliant       = $compliant
                     Notes           = "Value must be 1000 or less"
                 }
@@ -71,7 +71,7 @@ function Get-StgAppPoolQueueLength {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Value,  After, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Value, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -1,5 +1,5 @@
 function Get-StgAppPoolTimeout {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Application Pool Time-Out settings for vulnerability 76839.
 
@@ -45,25 +45,19 @@ function Get-StgAppPoolTimeout {
         $scriptblock = {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.applicationHost/applicationPools/applicationPoolDefaults/processModel"
-            $TimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
+            $timeout = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
-            if (-not ([Int]([TimeSpan]$TimeOut.Value).TotalMinutes -le 20)) {
-                Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
-            }
-
-            $postconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
-            if ([Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes -le 20) {
+            if ([Int]([TimeSpan]$timeout.Value).TotalMinutes -le 20) {
                 $compliant = $true
             } else {
                 $compliant = $false
             }
 
             [pscustomobject] @{
-                Id              = "V-76839"
-                ComputerName    = $env:COMPUTERNAME
-                Value          = [Int]([TimeSpan]$TimeOut.Value).TotalMinutes
-                After           = [Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes
-                Compliant       = $compliant
+                Id           = "V-76839"
+                ComputerName = $env:COMPUTERNAME
+                Value        = [Int]([TimeSpan]$timeout.Value).TotalMinutes
+                Compliant    = $compliant
             }
         }
     }

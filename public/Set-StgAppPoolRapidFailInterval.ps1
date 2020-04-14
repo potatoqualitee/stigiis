@@ -46,18 +46,18 @@ function Set-StgAppPoolRapidFailInterval {
         $scriptblock = {
             $filterpath = "failure.rapidFailProtectionInterval"
             $ProtectionInterval = "00:05:00"
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
+            foreach ($pool in $pools) {
 
-                $preconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                $preconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
                 if ([Int]([TimeSpan]$preconfigProtectionInterval).TotalMinutes -gt 5) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $ProtectionInterval
+                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $ProtectionInterval
                 }
 
-                $postconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                $postconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
                 if ([Int]([TimeSpan]$postconfigProtectionInterval).TotalMinutes -le 5) {
                     $compliant = $true
                 } else {

@@ -50,17 +50,10 @@ function Get-StgCgiIsapi {
                 "notListedIsapisAllowed"
             )
             $filterpath = "system.webserver/security/isapiCgiRestriction"
+            $cgi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+            $isapi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
-            $CGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
-            $ISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
-
-            Set-WebConfigurationProperty -Filter $filterpath -Name notListedCgisAllowed -Value "False" -Force
-            Set-WebConfigurationProperty -Filter $filterpath -Name notListedIsapisAllowed -Value "False" -Force
-
-            $postconfigurationCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
-            $postconfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
-
-            if (-not $postconfigurationCGIExtension.Value -and -not $postconfigurationISAPIExtension.Value) {
+            if (-not $cgi.Value -and -not $isapi.Value) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -69,10 +62,8 @@ function Get-StgCgiIsapi {
             [pscustomobject] @{
                 Id           = "V-76769"
                 ComputerName = $env:COMPUTERNAME
-                ValueCGI    = $CGIExtension.Value
-                ValueISAPI  = $ISAPIExtension.Value
-                AfterCGI     = $postconfigurationCGIExtension.Value
-                AfterISAPI   = $postconfigurationISAPIExtension.Value
+                CGI          = $cgi.Value
+                ISAPI        = $isapi.Value
                 Compliant    = $compliant
                 Notes        = "If auto configuration failed, this section may be locked. Configure manually."
             }
@@ -82,7 +73,7 @@ function Get-StgCgiIsapi {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ValueCGI, ValueISAPI, AfterCGI, AfterISAPI, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, CGI, ISAPI Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

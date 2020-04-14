@@ -45,11 +45,11 @@ function Get-StgAppPoolPingSetting {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "processModel.pingingEnabled"
-            $AppPools = (Get-IISAppPool).Name
-            foreach ($pool in $AppPools) {
-                $Ping = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+            $pools = (Get-IISAppPool).Name
+            foreach ($pool in $pools) {
+                $ping = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
-                if ($Ping) {
+                if ($ping) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -59,7 +59,7 @@ function Get-StgAppPoolPingSetting {
                     Id              = "V-76877"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value           = $Ping
+                    Value           = $ping
                     Compliant       = $compliant
                 }
             }
@@ -69,7 +69,7 @@ function Get-StgAppPoolPingSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Value,, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Value, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -45,15 +45,15 @@ function Set-StgAppPoolRapidFailProtection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "failure.rapidFailProtection"
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
+            foreach ($pool in $pools) {
 
-                $preconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                $preconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
-                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $true
+                Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $true
 
-                $postconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                $postconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
                 if ($postconfigRapidFailEnabled -eq $true) {
                     $compliant = $true
                 } else {

@@ -46,18 +46,18 @@ function Set-StgAppPoolRecycle {
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.requests"
             $RequestsDefault = 100000
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
+            foreach ($pool in $pools) {
 
-                $preconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $preconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($preconfigRecycle -eq 0) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $RequestsDefault
+                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $RequestsDefault
                 }
 
-                $postconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $postconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($postconfigRecycle.Value -gt 0) {
                     $compliant = $true

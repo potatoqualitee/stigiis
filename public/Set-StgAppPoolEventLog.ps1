@@ -46,9 +46,9 @@ function Set-StgAppPoolEventLog {
 
         $scriptblock = {
             $filterpath = "recycling.logEventOnRecycle"
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
+            foreach ($pool in $pools) {
                 #STIG required log fields
                 $RequiredPoolFields = @(
                     "Time",
@@ -56,7 +56,7 @@ function Set-StgAppPoolEventLog {
                 )
 
                 #Current log fields
-                $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Split(",")
+                $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Split(",")
 
                 #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
                 [String[]]$PoolCollection = @(
@@ -66,9 +66,9 @@ function Set-StgAppPoolEventLog {
 
                 [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
                 $PoolReplace = $PoolCollectionString.Replace(" ", ",")
-                $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
-                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $PoolReplace
-                $postconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $PoolReplace
+                $postconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {
                     $compliant = $true

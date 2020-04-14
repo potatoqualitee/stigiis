@@ -1,5 +1,5 @@
 function Get-StgArrProxy {
-<#
+    <#
     .SYNOPSIS
         Disable proxy settings for Application Request Routing feature for vulnerability 76703.
 
@@ -42,25 +42,23 @@ function Get-StgArrProxy {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-        $scriptblock= {
+        $scriptblock = {
             $WebPath = "MACHINE/WEBROOT/APPHOST"
             $webnames = (Get-Website).Name
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
                 try {
-                    #Disable proxy for Application Request Routing
-                    Set-WebConfigurationProperty -Location $WebPath -Filter "system.webServer/proxy" -Name "Enabled" -Value "False"
-                    $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
+                    $proxyvalue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
 
                     [pscustomobject] @{
-                        Id = "V-76703"
+                        Id           = "V-76703"
                         ComputerName = $env:COMPUTERNAME
-                        Value = $ProxyValue
+                        Value        = $proxyvalue
                     }
                 } catch {
                     [pscustomobject] @{
-                        Id = "V-76703"
+                        Id           = "V-76703"
                         ComputerName = $env:COMPUTERNAME
-                        Value = "N/A: Application Request Routing not available"
+                        Value        = "N/A: Application Request Routing not available"
                     }
                 }
             }

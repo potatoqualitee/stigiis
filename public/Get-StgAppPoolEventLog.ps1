@@ -46,16 +46,16 @@ function Get-StgAppPoolEventLog {
 
         $scriptblock = {
             $filterpath = "recycling.logEventOnRecycle"
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
+            foreach ($pool in $pools) {
                 #Current log fields
-                $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Split(",")
+                $currentpoolfields = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Split(",")
 
                 #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
-                $Pool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $setting = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).ToString()
 
-                if ($Pool -like "*Time*" -and $Pool -like "*Schedule*") {
+                if ($setting -like "*Time*" -and $setting -like "*Schedule*") {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -65,7 +65,7 @@ function Get-StgAppPoolEventLog {
                     Id              = "V-76873"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value           = $CurrentPoolFields
+                    Value           = $currentpoolfields
                     Compliant       = $compliant
                     Notes           = "Time and Scheduled logging must be turned on"
                 }

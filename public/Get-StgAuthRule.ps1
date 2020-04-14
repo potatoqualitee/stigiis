@@ -1,5 +1,5 @@
 function Get-StgAuthRule {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Authorization Rules settings for vulnerability 76771.
 
@@ -44,26 +44,19 @@ function Get-StgAuthRule {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/authorization/allow"
-            $Settings = "[@roles='' and @users='*' and @verbs='']"
-            $Users = Get-WebConfigurationProperty -Filter $filterpath -Name Users
+            $users = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
-            Add-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "system.web/authorization" -Name "." -Value @{users="?"} -Type deny
-
-            $postconfigurationUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
-
-            if ($postconfigurationUsers.Value -eq "Administrators") {
+            if ($users.Value -eq "Administrators") {
                 $compliant = $true
             } else {
                 $compliant = $false
             }
 
             [pscustomobject] @{
-                Id = "V-76771"
+                Id           = "V-76771"
                 ComputerName = $env:COMPUTERNAME
-                Value = $Users.Value
-                After = $postconfigurationUsers.Value
-                Compliant = $compliant
+                Value        = $users.Value
+                Compliant    = $compliant
             }
         }
     }

@@ -45,16 +45,16 @@ function Set-StgAppPoolRecyclePrivateMemory {
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.privateMemory"
             $MemoryDefault = 1GB
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach ($pool in $AppPools) {
-                $preconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+            foreach ($pool in $pools) {
+                $preconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($preconfigMemory -eq 0) {
-                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $MemoryDefault
+                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $MemoryDefault
                 }
 
-                $postconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $postconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
                 if ($postconfigMemory.Value -gt 0) {
                     $compliant = $true
                 } else {

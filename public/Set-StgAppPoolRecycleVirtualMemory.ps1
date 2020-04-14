@@ -45,16 +45,16 @@ function Set-StgAppPoolRecycleVirtualMemory {
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.memory"
             $VMemoryDefault = 1GB
-            $AppPools = (Get-IISAppPool).Name
+            $pools = (Get-IISAppPool).Name
 
-            foreach($pool in $AppPools) {
-                $preconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+            foreach($pool in $pools) {
+                $preconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($preconfigVMemory -eq 0) {
-                    Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $VMemoryDefault
+                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $VMemoryDefault
                 }
 
-                $postconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $postconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
                 if ($postconfigVMemory.Value -gt 0) {
                     $compliant = $true
                 } else {

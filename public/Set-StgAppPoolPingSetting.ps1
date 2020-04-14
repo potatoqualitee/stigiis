@@ -45,11 +45,11 @@ function Set-StgAppPoolPingSetting {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "processModel.pingingEnabled"
-            $AppPools = (Get-IISAppPool).Name
-            foreach ($pool in $AppPools) {
-                $preconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
-                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $true
-                $postconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+            $pools = (Get-IISAppPool).Name
+            foreach ($pool in $pools) {
+                $preconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
+                Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $true
+                $postconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
                 if ($postconfigPing) {
                     $compliant = $true
