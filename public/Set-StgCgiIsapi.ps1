@@ -45,22 +45,18 @@ function Set-StgCgiIsapi {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $Extensions = @(
-                "notListedCgisAllowed",
-                "notListedIsapisAllowed"
-            )
             $filterpath = "system.webserver/security/isapiCgiRestriction"
 
-            $preconfigCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
-            $preconfigISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
+            $preconfigcgi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+            $preconfigisapi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
             $null = Set-WebConfigurationProperty -Filter $filterpath -Name notListedCgisAllowed -Value "False" -Force
             $null = Set-WebConfigurationProperty -Filter $filterpath -Name notListedIsapisAllowed -Value "False" -Force
 
-            $postconfigurationCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
-            $postconfigurationISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
+            $postconfigcgi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+            $postconfigisapi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
-            if (-not $postconfigurationCGIExtension.Value -and -not $postconfigurationISAPIExtension.Value) {
+            if (-not $postconfigcgi.Value -and -not $postconfigisapi.Value) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -69,10 +65,10 @@ function Set-StgCgiIsapi {
             [pscustomobject] @{
                 Id           = "V-76769"
                 ComputerName = $env:COMPUTERNAME
-                BeforeCGI    = $preconfigCGIExtension.Value
-                BeforeISAPI  = $preconfigISAPIExtension.Value
-                AfterCGI     = $postconfigurationCGIExtension.Value
-                AfterISAPI   = $postconfigurationISAPIExtension.Value
+                BeforeCGI    = $preconfigcgi.Value
+                BeforeISAPI  = $preconfigisapi.Value
+                AfterCGI     = $postconfigcgi.Value
+                AfterISAPI   = $postconfigisapi.Value
                 Compliant    = $compliant
                 Notes        = "If auto configuration failed, this section may be locked. Configure manually."
             }

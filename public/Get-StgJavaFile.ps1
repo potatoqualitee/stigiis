@@ -47,15 +47,12 @@ function Get-StgJavaFile {
             $javafiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
 
             if ($javafiles) {
-                $javafiles | Remove-Item -Force
-                $postfiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
-
-                if (-not ($postfiles)) {
+                if (-not ($javafiles)) {
                     $compliant = $true
-                    $notes = "Files found and removed"
+                    $notes = "No found files"
                 } else {
                     $compliant = $false
-                    $notes = "File removal incomplete"
+                    $notes = "Files must be removed"
                 }
 
                 [pscustomobject] @{

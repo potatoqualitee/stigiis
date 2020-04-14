@@ -1,10 +1,10 @@
-function Set-StgJavaFile {
+function Set-StgPrintService {
     <#
     .SYNOPSIS
-        Remove all *.jpp,*.java files for vulnerability 76717.
+        Configure and verify Print Services settings for vulnerability 76753.
 
     .DESCRIPTION
-        Remove all *.jpp,*.java files for vulnerability 76717.
+        Configure and verify Print Services settings for vulnerability 76753.
 
     .PARAMETER ComputerName
         The target server.
@@ -18,18 +18,18 @@ function Set-StgJavaFile {
         Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
 
     .NOTES
-        Tags: V-76717
+        Tags: V-76753
         Author: Chrissy LeMaire (@cl), netnerds.net
         Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
         License: MIT https://opensource.org/licenses/MIT
 
     .EXAMPLE
-        PS C:\> Set-StgJavaFile -ComputerName web01
+        PS C:\> Set-StgPrintService -ComputerName web01
 
         Updates specific setting to be compliant on web01
 
     .EXAMPLE
-        PS C:\> Set-StgJavaFile -ComputerName web01 -Credential ad\webadmin
+        PS C:\> Set-StgPrintService -ComputerName web01 -Credential ad\webadmin
 
         Logs into web01 as ad\webadmin and updates the necessary setting
 
@@ -44,33 +44,28 @@ function Set-StgJavaFile {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $javafiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
+            $PrintServices = @("Print-Services", "Print-Internet")
+            $PrintFeatures = Get-WindowsFeature -Name $PrintServices
 
-            if ($javafiles) {
-                $javafiles | Remove-Item -Force
-                $postfiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
+            if ($PrintFeatures) {
+                $PrintFeatures | Uninstall-WindowsFeature
+            }
 
-                if (-not ($postfiles)) {
-                    $compliant = $true
-                    $notes = "Files found and removed"
-                } else {
-                    $compliant = $false
-                    $notes = "File removal incomplete"
-                }
-
-                [pscustomobject] @{
-                    Id           = "V-76717"
-                    ComputerName = $env:COMPUTERNAME
-                    Files        = $javafiles
-                    Compliant    = $compliant
-                    Notes        = $notes
-                }
+            if ($Feature.InstallState -eq "Available") {
+                $compliant = $true
+                $notes = $null
             } else {
+                $compliant = $false
+                $notes = "Remove $($Feature.Name) Windows Feature"
+            }
+
+            foreach ($Feature in $PrintFeatures) {
                 [pscustomobject] @{
-                    Id           = "V-76717"
+                    Id           = "V-76753"
                     ComputerName = $env:COMPUTERNAME
-                    Files        = "No files found"
-                    Compliant    = $true
+                    Feature      = $Feature.Name
+                    InstallState = $Feature.InstallState
+                    Compliant    = $compliant
                     Notes        = $notes
                 }
             }
@@ -80,7 +75,7 @@ function Set-StgJavaFile {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Files, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, Feature, InstallState, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

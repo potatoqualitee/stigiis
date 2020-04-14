@@ -49,16 +49,14 @@ function Set-StgAppPoolRapidFailInterval {
             $pools = (Get-IISAppPool).Name
 
             foreach ($pool in $pools) {
+                $preconfig = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
-                $preconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
-
-                if ([int]([timespan]$preconfigProtectionInterval).TotalMinutes -gt 5) {
-
+                if ([int]([timespan]$preconfig).TotalMinutes -gt 5) {
                     $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $ProtectionInterval
                 }
 
-                $postconfigProtectionInterval = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
-                if ([int]([timespan]$postconfigProtectionInterval).TotalMinutes -le 5) {
+                $postconfig = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
+                if ([int]([timespan]$postconfig).TotalMinutes -le 5) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -68,8 +66,8 @@ function Set-StgAppPoolRapidFailInterval {
                     Id              = "V-76881"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = [int]([timespan]$preconfigProtectionInterval).TotalMinutes
-                    After           = [int]([timespan]$postconfigProtectionInterval).TotalMinutes
+                    Before          = [int]([timespan]$preconfig).TotalMinutes
+                    After           = [int]([timespan]$postconfig).TotalMinutes
                     Compliant       = $compliant
                     Notes           = "Value must be 5 or less"
                 }

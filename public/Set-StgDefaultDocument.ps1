@@ -55,13 +55,13 @@ function Set-StgDefaultDocument {
                 $preconfigDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
                 if ($preconfigDefaultDocumentFiles.Count -eq 0) {
-                    Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value = "Default.aspx"}
+                    $null = Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value = "Default.aspx"}
                 }
 
-                $postconfigurationDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
-                $postconfigurationDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
+                $postconfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+                $postconfigDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
-                if ($postconfigurationDefaultDocumentEnabled.Value -and $postconfigurationDefaultDocumentFiles.Count -gt 0) {
+                if ($postconfigDefaultDocumentEnabled.Value -and $postconfigDefaultDocumentFiles.Count -gt 0) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -73,8 +73,8 @@ function Set-StgDefaultDocument {
                     SiteName                     = $webname
                     BeforeDefaultDocumentEnabled = $preconfigDefaultDocumentEnabled.Value
                     BeforeDefaultDocumentFiles   = $preconfigDefaultDocumentFiles.Count
-                    AfterDefaultDocumentEnabled  = $postconfigurationDefaultDocumentEnabled.Value
-                    AfterDefaultDocumentFiles    = $postconfigurationDefaultDocumentFiles.Count
+                    AfterDefaultDocumentEnabled  = $postconfigDefaultDocumentEnabled.Value
+                    AfterDefaultDocumentFiles    = $postconfigDefaultDocumentFiles.Count
                     Compliant                    = $compliant
                 }
             }

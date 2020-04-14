@@ -53,9 +53,8 @@ function Set-StgClientCertificate {
                 $preflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
 
                 if ($preflags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $preflags -ne "Ssl,SslNegotiateCert" -or $preflags -ne "Ssl,SslNegotiateCert,Ssl128" -or $preflags -ne "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
-
                     #Set SSL requirements
-                    Set-WebConfiguration -Location $webname -Filter "system.webserver/security/access" -Value "Ssl,SslNegotiateCert,Ssl128"
+                    $null = Set-WebConfiguration -Location $webname -Filter "system.webserver/security/access" -Value "Ssl,SslNegotiateCert,Ssl128"
                 }
 
                 #Post-configuration SSL values
@@ -151,7 +150,6 @@ function Set-StgClientCertificate {
             $preflags = Get-WebConfigurationProperty -Filter "system.webserver/security/access" -Name SSLFlags
 
             if ($preflags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $preflags -ne "Ssl,SslNegotiateCert" -or $preflags -ne "Ssl,SslNegotiateCert,Ssl128" -or $preflags -ne "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
-
                 #Set SSL requirements
                 $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter "system.webServer/security/access" -Name SSLFlags -Value "Ssl,SslNegotiateCert,Ssl128"
             }

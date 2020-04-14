@@ -44,18 +44,18 @@ function Set-StgAppPoolRecyclePrivateMemory {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.privateMemory"
-            $MemoryDefault = 1GB
+            $default = 1GB
             $pools = (Get-IISAppPool).Name
 
             foreach ($pool in $pools) {
-                $preconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                $preconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
-                if ($preconfigMemory -eq 0) {
-                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $MemoryDefault
+                if ($preconfig -eq 0) {
+                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $default
                 }
 
-                $postconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
-                if ($postconfigMemory.Value -gt 0) {
+                $postconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                if ($postconfig.Value -gt 0) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -65,8 +65,8 @@ function Set-StgAppPoolRecyclePrivateMemory {
                     Id              = "V-76871"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = [string]$preconfigMemory.Value
-                    After           = [string]$postconfigMemory.Value
+                    Before          = [string]$preconfig.Value
+                    After           = [string]$postconfig.Value
                     Compliant       = $compliant
                     Notes           = "Value must be set higher than 0"
                 }

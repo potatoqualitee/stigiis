@@ -49,17 +49,15 @@ function Set-StgAppPoolRecycle {
             $pools = (Get-IISAppPool).Name
 
             foreach ($pool in $pools) {
+                $preconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
-                $preconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
-
-                if ($preconfigRecycle -eq 0) {
-
+                if ($preconfig -eq 0) {
                     $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $RequestsDefault
                 }
 
-                $postconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                $postconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
-                if ($postconfigRecycle.Value -gt 0) {
+                if ($postconfig.Value -gt 0) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -69,8 +67,8 @@ function Set-StgAppPoolRecycle {
                     Id              = "V-76867"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = $preconfigRecycle.Value
-                    After           = $postconfigRecycle.Value
+                    Before          = $preconfig.Value
+                    After           = $postconfig.Value
                     Compliant       = $compliant
                     Notes           = "Value must be set higher than 0"
                 }

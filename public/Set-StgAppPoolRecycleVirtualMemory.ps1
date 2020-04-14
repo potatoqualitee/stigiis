@@ -44,18 +44,18 @@ function Set-StgAppPoolRecycleVirtualMemory {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.memory"
-            $VMemoryDefault = 1GB
+            $default = 1GB
             $pools = (Get-IISAppPool).Name
 
             foreach($pool in $pools) {
-                $preconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                $preconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
-                if ($preconfigVMemory -eq 0) {
-                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $VMemoryDefault
+                if ($preconfig -eq 0) {
+                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $default
                 }
 
-                $postconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
-                if ($postconfigVMemory.Value -gt 0) {
+                $postconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                if ($postconfig.Value -gt 0) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -65,8 +65,8 @@ function Set-StgAppPoolRecycleVirtualMemory {
                     Id              = "V-76869"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = $preconfigVMemory.Value
-                    After           = $postconfigVMemory.Value
+                    Before          = $preconfig.Value
+                    After           = $postconfig.Value
                     Compliant       = $compliant
                     Notes           = "Value must be set higher than 0"
                 }

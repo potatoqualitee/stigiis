@@ -49,12 +49,12 @@ function Set-StgDoubleEscape {
 
             foreach ($webname in $webnames) {
 
-                $preconfigDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
+                $preconfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
 
                 $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowDoubleEscaping -Value "False"
 
-                $postconfigurationDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
-                if (-not $postconfigurationDoubleEscaping.Value) {
+                $postconfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
+                if (-not $postconfig.Value) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -64,8 +64,8 @@ function Set-StgDoubleEscape {
                     Id           = "V-76825"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Before       = $preconfigDoubleEscaping.Value
-                    After        = $postconfigurationDoubleEscaping.Value
+                    Before       = $preconfig.Value
+                    After        = $postconfig.Value
                     Compliant    = $compliant
                 }
             }

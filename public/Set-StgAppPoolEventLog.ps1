@@ -66,11 +66,11 @@ function Set-StgAppPoolEventLog {
 
                 [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
                 $PoolReplace = $PoolCollectionString.Replace(" ", ",")
-                $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                $preconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
                 $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $PoolReplace
-                $postconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
+                $postconfig = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
-                if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {
+                if ($postconfig -like "*Time*" -and $postconfig -like "*Schedule*") {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -80,8 +80,8 @@ function Set-StgAppPoolEventLog {
                     Id              = "V-76873"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = $preconfigPool
-                    After           = $postconfigPool
+                    Before          = $preconfig
+                    After           = $postconfig
                     Compliant       = $compliant
                     Notes           = "Time and Scheduled logging must be turned on"
                 }

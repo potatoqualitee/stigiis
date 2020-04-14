@@ -45,12 +45,12 @@ function Set-StgAnonymousAuth {
         $scriptblock = {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
-            $preconfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+            $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
             $null = Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
 
-            $postconfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
-            if (-not $postconfigurationAnonymousAuthentication.Value) {
+            $postconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+            if (-not $postconfig.Value) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -59,8 +59,8 @@ function Set-StgAnonymousAuth {
             [pscustomobject] @{
                 Id           = "V-76811"
                 ComputerName = $env:COMPUTERNAME
-                Before       = $preconfigAnonymousAuthentication.Value
-                After        = $postconfigurationAnonymousAuthentication.Value
+                Before       = $preconfig.Value
+                After        = $postconfig.Value
                 Compliant    = $compliant
             }
         }
