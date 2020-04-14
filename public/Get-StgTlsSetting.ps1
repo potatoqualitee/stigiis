@@ -36,14 +36,15 @@ function Get-StgTlsSetting {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $sriptblock = {
+            $notes = $null
             #TLS registry keys
-            $RegKeys0 = @(
+            $regkeys0 = @(
                 "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server",
                 "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Server"
             )
 
             #SSL registry keys
-            $RegKeys1 = @(
+            $regkeys1 = @(
                 "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 1.0\Server",
                 "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server",
                 "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server"
@@ -52,105 +53,85 @@ function Get-StgTlsSetting {
             #STIG required key name
             $SubKeyName = "DisabledByDefault"
 
-
-            foreach ($Key0 in $RegKeys0) {
-
+            foreach ($key0 in $regkeys0) {
                 $STIGValue0 = "0"
 
                 #If key doesn"t exist, create key
-                if (-not (Test-Path $Key0)) {
-
-                    New-Item $Key0 -Force | Out-Null
+                if (-not (Test-Path $key0)) {
+                    New-Item $key0 -Force | Out-Null
                 }
 
                 #Create STIG required key property and set proper value
-                if ((Get-ItemProperty $Key0).DisabledByDefault -ne "0") {
-
-                    New-ItemProperty $Key0 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue0 -ErrorAction SilentlyContinue -Force | Out-Null
+                if ((Get-ItemProperty $key0).DisabledByDefault -ne "0") {
+                    New-ItemProperty $key0 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue0 -ErrorAction SilentlyContinue -Force | Out-Null
                 }
 
                 #Get current key property values
-                $KeyValue0 = (Get-ItemProperty $Key0).DisabledByDefault
-                $ValueType0 = (Get-Item $Key0).GetValueKind("DisabledByDefault")
+                $keyValue0 = (Get-ItemProperty $key0).DisabledByDefault
+                $ValueType0 = (Get-Item $key0).GetValueKind("DisabledByDefault")
 
                 #Check compliance of each key according to STIG
-                $compliant0 = @(
 
-                    if ($ValueType0 -eq "DWORD") {
-
-                        if ($KeyValue0 -eq $STIGValue0) {
-
-                            $true
-                        }
-
-                        else {
-
-                            $false
-                        }
+                if ($ValueType0 -eq "DWORD") {
+                    if ($keyValue0 -eq $STIGValue0) {
+                        $compliant0 = $true
+                    } else {
+                        $compliant0 = $false
                     }
-
-                    else {
-
-                        "No - Incorrect Value Type"
-                    }
-                )
+                } else {
+                    $notes = "Incorrect Value Type"
+                }
 
                 [pscustomobject] @{
-
                     Id              = "V-76759"
                     ComputerName    = $env:COMPUTERNAME
-                    Key             = $Key0
+                    Key             = $key0
                     KeyPropertyName = $SubKeyName
                     ValueType       = $ValueType0
-                    KeyValue        = $KeyValue0
+                    KeyValue        = $keyValue0
                     STIGValue       = $STIGValue0
-                    Compliant       = "$compliant0"
+                    Compliant       = $compliant0
+                    Notes           = $notes
                 }
             }
 
-            foreach ($Key1 in $RegKeys1) {
-
+            foreach ($key1 in $regkeys1) {
                 $STIGValue1 = "1"
-
                 #If key doesn"t exist, create key
-                if (-not (Test-Path $Key1)) {
-
-                    New-Item $Key1 -Force | Out-Null
+                if (-not (Test-Path $key1)) {
+                    New-Item $key1 -Force | Out-Null
                 }
 
                 #Create STIG required key property and set proper value
-                if ((Get-ItemProperty $Key1).DisabledByDefault -ne "1") {
-
-                    New-ItemProperty $Key1 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue1 -ErrorAction SilentlyContinue -Force | Out-Null
+                if ((Get-ItemProperty $key1).DisabledByDefault -ne "1") {
+                    New-ItemProperty $key1 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue1 -ErrorAction SilentlyContinue -Force | Out-Null
                 }
 
                 #Get current key property values
-                $KeyValue1 = (Get-ItemProperty $Key1).DisabledByDefault
-                $ValueType1 = (Get-Item $Key1).GetValueKind("DisabledByDefault")
+                $keyValue1 = (Get-ItemProperty $key1).DisabledByDefault
+                $ValueType1 = (Get-Item $key1).GetValueKind("DisabledByDefault")
 
                 #Check compliance of each key according to STIG
-                $compliant1 = @(
-                    if ($ValueType1 -eq "DWORD") {
-                        if ($KeyValue1 -eq $STIGValue1) {
-                            $true
-                        } else {
-
-                            $false
-                        }
+                if ($ValueType1 -eq "DWORD") {
+                    if ($keyValue1 -eq $STIGValue1) {
+                        $compliant1 = $true
                     } else {
-                        "No - Incorrect Value Type"
+                        $compliant1 = $false
                     }
-                )
+                } else {
+                    $notes = "Incorrect Value Type"
+                }
 
                 [pscustomobject] @{
                     Id              = "V-76759"
                     ComputerName    = $env:COMPUTERNAME
-                    Key             = $Key1
+                    Key             = $key1
                     KeyPropertyName = $SubKeyName
                     ValueType       = $ValueType1
-                    KeyValue        = $KeyValue1
+                    KeyValue        = $keyValue1
                     StigValue       = $STIGValue1
-                    Compliant       = "$compliant1"
+                    Compliant       = $compliant1
+                    Notes           = $notes
                 }
             }
         }

@@ -48,12 +48,12 @@ function Get-StgSessionStateInProc {
             }
 
             [pscustomobject] @{
-                Id                    = "V-76775"
-                ComputerName          = $env:COMPUTERNAME
-                SiteName              = $env:COMPUTERNAME
-                PreConfigMode         = $preconfigMode
-                PostConfigurationMode = $postconfigurationMode
-                Compliant             = $compliant
+                Id           = "V-76775"
+                ComputerName = $env:COMPUTERNAME
+                SiteName     = $env:COMPUTERNAME
+                Before       = $preconfigMode
+                After        = $postconfigurationMode
+                Compliant    = $compliant
             }
 
             foreach ($webname in $webnames) {

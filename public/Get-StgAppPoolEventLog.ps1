@@ -63,7 +63,7 @@ function Get-StgAppPoolEventLog {
                 if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {
                     $compliant = $true
                 } else {
-                    $compliant = $false # "No: Time and Scheduled logging must be turned on"
+                    $compliant = $false
                 }
 
                 [pscustomobject] @{
@@ -73,6 +73,7 @@ function Get-StgAppPoolEventLog {
                     Before          = $preconfigPool
                     After           = $postconfigPool
                     Compliant       = $compliant
+                    Notes           = "Time and Scheduled logging must be turned on"
                 }
             }
         }
@@ -81,7 +82,7 @@ function Get-StgAppPoolEventLog {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

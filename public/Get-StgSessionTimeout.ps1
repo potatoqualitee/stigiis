@@ -37,14 +37,10 @@ function Get-StgSessionTimeout {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
             foreach ($webname in $webnames) {
-
                 $preconfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
-
                 if (-not ([Int]([TimeSpan]$preconfigSessionTimeOut.Value).TotalMinutes -le 20)) {
-
                     Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name Timeout -Value "00:20:00"
                 }
-
                 $postconfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
 
                 if ([Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes -le 20) {
@@ -54,12 +50,12 @@ function Get-StgSessionTimeout {
                 }
 
                 [pscustomobject] @{
-                    Id                       = "V-76841"
-                    ComputerName             = $env:COMPUTERNAME
-                    SiteName                 = $webname
-                    PreConfigSessionTimeOut  = [Int]([TimeSpan]$preconfigSessionTimeOut.Value).TotalMinutes
-                    PostConfigSessionTimeOut = [Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes
-                    Compliant                = $compliant
+                    Id           = "V-76841"
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName     = $webname
+                    Before       = [Int]([TimeSpan]$preconfigSessionTimeOut.Value).TotalMinutes
+                    After        = [Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes
+                    Compliant    = $compliant
                 }
             }
         }
@@ -68,7 +64,7 @@ function Get-StgSessionTimeout {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -44,7 +44,7 @@ function Get-StgUriRegistry {
                 $fullkey = "$($ParameterKey)\$($Key)"
 
                 if (-not (Test-Path $fullkey)) {
-                    $KeyCompliant = $false # "No: Key does not exist"
+                    $KeyCompliant = $false
                 } else {
                     $KeyCompliant = $true
                 }
@@ -54,6 +54,7 @@ function Get-StgUriRegistry {
                     ComputerName = $env:COMPUTERNAME
                     Key          = $fullkey
                     Compliant    = $KeyCompliant
+                    Notes        = "Key does not exist"
                 }
             }
         }
@@ -62,7 +63,7 @@ function Get-StgUriRegistry {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Key, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Key, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -42,17 +42,19 @@ function Get-StgDirectoryBrowsing {
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
                 $postDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
+                if (-not $postDirectoryBrowsing.Value) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
+
                 [pscustomobject] @{
                     Id                               = "V-76829"
                     ComputerName                     = $env:COMPUTERNAME
                     SiteName                         = $webname
                     PreConfigBrowsingEnabled         = $preDirectoryBrowsing.Value
                     PostConfigurationBrowsingEnabled = $postDirectoryBrowsing.Value
-                    Compliant                        = if (-not $postDirectoryBrowsing.Value) {
-                        $true
-                    } else {
-                        $false
-                    }
+                    Compliant                        = $compliant
                 }
             }
 

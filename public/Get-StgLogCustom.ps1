@@ -107,7 +107,7 @@ function Get-StgLogCustom {
                 [pscustomobject] @{
                     Id           = "V-76687", "V-76689", "V-76789", "V-76791"
                     SiteName     = $webname
-                    CustomFields = $($postconfig.logFieldName)
+                    CustomFields = $postconfig.logFieldName
                     Compliant    = $compliant
                 }
             }
@@ -117,7 +117,7 @@ function Get-StgLogCustom {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, CustomFields, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

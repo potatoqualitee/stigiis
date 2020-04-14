@@ -41,14 +41,16 @@ function Get-StgIndexConfiguration {
                     Id           = "V-76735"
                     ComputerName = $env:COMPUTERNAME
                     Key          = $RegPath
-                    Compliant    = "Not Applicable: Key does not exist"
+                    Compliant    = $true
+                    Notes        = "Not Applicable: Key does not exist"
                 }
             } else {
                 [pscustomobject]@{
                     Id           = "V-76735"
                     ComputerName = $env:COMPUTERNAME
                     Key          = $RegPath
-                    Compliant    = "No: Key exists; check Indexing Service snap-in from MMC console"
+                    Compliant    = $true
+                    Notes        = "Key exists; check Indexing Service snap-in from MMC console"
                 }
             }
         }
@@ -57,7 +59,7 @@ function Get-StgIndexConfiguration {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Key, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Key, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

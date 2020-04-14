@@ -42,11 +42,10 @@ function Get-StgMimeMapping {
 
             #Set new configurations
             Set-WebConfigurationProperty //staticContent -Name Collection -InputObject $NewCollection
-
             $postMimeConfig = (Get-WebConfiguration //staticcontent).Collection
 
             [pscustomobject] @{
-                Id                = "V-76711, V-76797"
+                Id                = "V-76711", "V-76797"
                 ComputerName      = $env:COMPUTERNAME
                 BeforeExtenstions = $preMimeConfig.FileExtension
                 BeforeCount       = $preMimeConfig.Count
@@ -59,7 +58,7 @@ function Get-StgMimeMapping {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, BeforeCount, AfterCount, BeforeExtenstions, AfterExtenstions |
+                    Select-DefaultView -Property Id, ComputerName, BeforeCount, AfterCount, BeforeExtenstions, AfterExtenstions, AfterCount |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

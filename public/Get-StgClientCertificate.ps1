@@ -1,5 +1,5 @@
 function Get-StgClientCertificate {
-<#
+    <#
     .SYNOPSIS
         Check, configure, and verify site SSL settings for vulnerability 76809, 76851, & 76861.
 
@@ -38,7 +38,7 @@ function Get-StgClientCertificate {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $webnames = (Get-Website).Name
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
                 #Pre-configuration SSL values for sites
                 $preflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
 
@@ -79,8 +79,7 @@ function Get-StgClientCertificate {
                         "SSL: Not Required | Client Certificates: Require | SSL: 128"
                     } elseif ($preflags -eq "Ssl128" ) {
                         "SSL: Not Required | Client Certificates: Ignore | SSL: 128"
-                    }
-                    else {
+                    } else {
                         "SSL: Not Required | Client Certificates: Ignore"
                     }
                 )
@@ -123,17 +122,18 @@ function Get-StgClientCertificate {
                     if ($postconfig -eq "SSL: Required | Client Certificates: Require" -or $postconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
                         $true
                     } else {
-                        $false # "No: Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
+                        $false
                     }
                 )
 
                 [pscustomobject] @{
-                    Id = "V-76861"
+                    Id           = "V-76861"
                     ComputerName = $env:COMPUTERNAME
-                    SiteName = $webname
-                    Before = $preconfig
-                    After = $postconfig
-                    Compliant = $compliant
+                    SiteName     = $webname
+                    Before       = $preconfig
+                    After        = $postconfig
+                    Compliant    = $compliant
+                    Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
                 }
             }
 
@@ -218,13 +218,11 @@ function Get-StgClientCertificate {
             )
 
             #Check SSL setting compliance
-            $compliant = @(
-                if ($postconfig -eq "SSL: Required | Client Certificates: Require" -or $postconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
-                    $true
-                } else {
-                    $false # "No: Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
-                }
-            )
+            if ($postconfig -eq "SSL: Required | Client Certificates: Require" -or $postconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
 
             [pscustomobject] @{
                 Id           = "V-76809", "V-76851"
@@ -233,6 +231,7 @@ function Get-StgClientCertificate {
                 Before       = $preconfig
                 After        = $postconfig
                 Compliant    = $compliant
+                Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
             }
         }
     }
@@ -240,7 +239,7 @@ function Get-StgClientCertificate {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

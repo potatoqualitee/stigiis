@@ -60,7 +60,7 @@ function Get-StgLogAcl {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Directory, Permissions, Inherited |
+                    Select-DefaultView -Property Id, ComputerName, Directory, Account, Permissions, Inherited |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

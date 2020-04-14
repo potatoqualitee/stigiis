@@ -49,7 +49,7 @@ function Get-StgAppPoolRecyclePrivateMemory {
                 if ($postconfigMemory.Value -gt 0) {
                     $compliant = $true
                 } else {
-                    $compliant = $false # "No: Value must be set higher than 0"
+                    $compliant = $false
                 }
 
                 [pscustomobject] @{
@@ -59,6 +59,7 @@ function Get-StgAppPoolRecyclePrivateMemory {
                     Before          = [string]$preconfigMemory.Value
                     After           = [string]$postconfigMemory.Value
                     Compliant       = $compliant
+                    Notes           = "Value must be set higher than 0"
                 }
             }
         }
@@ -67,7 +68,7 @@ function Get-StgAppPoolRecyclePrivateMemory {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant, Notes|
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

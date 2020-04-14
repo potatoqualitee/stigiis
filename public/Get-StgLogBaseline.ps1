@@ -36,7 +36,6 @@ function Get-StgLogBaseline {
             $LogFilePath = "C:\inetpub\logs\LogFiles\W3SVC2"
             $WebIP = (Get-NetIPAddress | Where-Object { $_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
 
-
             #Retrieve most recent log file
             $CurrentLog = Get-ChildItem $LogFilePath -Force | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
@@ -50,24 +49,25 @@ function Get-StgLogBaseline {
 
             foreach ($tail in $logtail) {
                 [pscustomobject] @{
-
-                    Date        = $tail.Split(" ")[0]
-                    Time        = $tail.Split(" ")[1]
-                    WebServerIP = $WebIP
-                    SourceIP    = $tail.Split(" ")[2]
-                    Method      = $tail.Split(" ")[3]
-                    URIStem     = $tail.Split(" ")[4]
-                    URIQuery    = $tail.Split(" ")[5]
-                    SourcePort  = $tail.Split(" ")[6]
-                    UserName    = $tail.Split(" ")[7]
-                    ClientIP    = $tail.Split(" ")[8]
-                    UserAgent   = $tail.Split(" ")[9]
-                    Referer     = $tail.Split(" ")[10]
-                    HTTPstatus  = $tail.Split(" ")[11]
-                    HTTPSstatus = $tail.Split(" ")[12]
-                    Win32status = $tail.Split(" ")[13]
-                    TimeTaken   = $tail.Split(" ")[14]
-                    Compliant   = $compliant
+                    Id           = "V-76685", "V-76787"
+                    ComputerName = $env:COMPUTERNAME
+                    Date         = $tail.Split(" ")[0]
+                    Time         = $tail.Split(" ")[1]
+                    WebServerIP  = $WebIP
+                    SourceIP     = $tail.Split(" ")[2]
+                    Method       = $tail.Split(" ")[3]
+                    URIStem      = $tail.Split(" ")[4]
+                    URIQuery     = $tail.Split(" ")[5]
+                    SourcePort   = $tail.Split(" ")[6]
+                    UserName     = $tail.Split(" ")[7]
+                    ClientIP     = $tail.Split(" ")[8]
+                    UserAgent    = $tail.Split(" ")[9]
+                    Referer      = $tail.Split(" ")[10]
+                    HTTPstatus   = $tail.Split(" ")[11]
+                    HTTPSstatus  = $tail.Split(" ")[12]
+                    Win32Status  = $tail.Split(" ")[13]
+                    TimeTaken    = $tail.Split(" ")[14]
+                    Compliant    = $compliant
                 }
             }
         }
@@ -76,7 +76,7 @@ function Get-StgLogBaseline {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Date, Time, WebServerIP, SourceIP, Method, URIStem, URIQuery, SourcePort, UserName, ClientIP, UserAgent, Referer, HTTPStatus, HTTPSStatus, Win32Status, TimeTaken, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

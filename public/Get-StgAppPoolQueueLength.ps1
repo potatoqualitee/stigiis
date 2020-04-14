@@ -51,7 +51,7 @@ function Get-StgAppPoolQueueLength {
                 if ($postconfigQLength -le 1000) {
                     $compliant = $true
                 } else {
-                    $compliant = $false # "No: Value must be 1000 or less"
+                    $compliant = $false
                 }
 
                 [pscustomobject] @{
@@ -61,6 +61,7 @@ function Get-StgAppPoolQueueLength {
                     Before          = $preconfigQLength
                     After           = $postconfigQLength
                     Compliant       = $compliant
+                    Notes           = "Value must be 1000 or less"
                 }
             }
         }
@@ -69,7 +70,7 @@ function Get-StgAppPoolQueueLength {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

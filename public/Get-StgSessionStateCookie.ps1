@@ -37,7 +37,6 @@ function Get-StgSessionStateCookie {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
             foreach ($webname in $webnames) {
-
                 $preCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
                 $preSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
                 $preTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout

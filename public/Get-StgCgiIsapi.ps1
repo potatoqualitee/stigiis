@@ -53,7 +53,7 @@ function Get-StgCgiIsapi {
             if (-not $postconfigurationCGIExtension.Value -and -not $postconfigurationISAPIExtension.Value) {
                 $compliant = $true
             } else {
-                $compliant = $false # "No: If auto configuration failed, this section may be locked. Configure manually."
+                $compliant = $false
             }
 
             [pscustomobject] @{
@@ -64,6 +64,7 @@ function Get-StgCgiIsapi {
                 AfterCGI     = $postconfigurationCGIExtension.Value
                 AfterISAPI   = $postconfigurationISAPIExtension.Value
                 Compliant    = $compliant
+                Notes        = "If auto configuration failed, this section may be locked. Configure manually."
             }
         }
     }
@@ -71,7 +72,7 @@ function Get-StgCgiIsapi {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, BeforeCGI, BeforeISAPI, AfterCGI, AfterISAPI, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, BeforeCGI, BeforeISAPI, AfterCGI, AfterISAPI, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

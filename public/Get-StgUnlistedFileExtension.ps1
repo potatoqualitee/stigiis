@@ -1,5 +1,5 @@
 function Get-StgUnlistedFileExtension {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Allow Unlisted File Extensions settings for vulnerability 76827.
 
@@ -38,7 +38,7 @@ function Get-StgUnlistedFileExtension {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering/fileExtensions"
 
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
                 $preconfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
                 $postconfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
@@ -46,16 +46,17 @@ function Get-StgUnlistedFileExtension {
                 if ($postconfigurationUnlistedExtensions.Value -eq $false) {
                     $compliant = $true
                 } else {
-                    $compliant = $false # "No: Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
+                    $compliant = $false
                 }
 
                 [pscustomobject] @{
-                    Id = "V-76827"
+                    Id           = "V-76827"
                     ComputerName = $env:COMPUTERNAME
-                    SiteName = $webname
-                    PreConfigUnlistedExtensions = $preconfigUnlistedExtensions.Value
-                    PostConfigurationUnlistedExtensions = $postconfigurationUnlistedExtensions.Value
-                    Compliant = $compliant
+                    SiteName     = $webname
+                    Before       = $preconfigUnlistedExtensions.Value
+                    After        = $postconfigurationUnlistedExtensions.Value
+                    Compliant    = $compliant
+                    Notes        = "Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
                 }
             }
         }
@@ -64,7 +65,7 @@ function Get-StgUnlistedFileExtension {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

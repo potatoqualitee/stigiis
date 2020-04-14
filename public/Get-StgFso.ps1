@@ -46,9 +46,11 @@ function Get-StgFso {
             }
 
             if (Test-Path $FSOKey) {
-                $compliant = $false # "No: Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
+                $compliant = $false
+                $notes = "Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
             } else {
                 $compliant = $true
+                $notes = $null
             }
 
             [pscustomobject] @{
@@ -57,6 +59,7 @@ function Get-StgFso {
                 Key          = $FSOKey
                 Value        = $ComponentEnabled
                 Compliant    = $compliant
+                Notes        = $notes
             }
         }
     }
@@ -64,7 +67,7 @@ function Get-StgFso {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Key, Value, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Key, Value, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -46,7 +46,7 @@ function Get-StgMaxQueryString {
                 if ($postconfigurationMaxQueryString.Value -le $MaxQueryString) {
                     $compliant = $true
                 } else {
-                    $compliant = $false # "No: Value must be $MaxQueryString or less"
+                    $compliant = $false
                 }
 
                 [pscustomobject] @{
@@ -56,6 +56,7 @@ function Get-StgMaxQueryString {
                     Before       = $preconfigMaxQueryString.Value
                     After        = $postconfigurationMaxQueryString.Value
                     Compliant    = $compliant
+                    Notes        = "Value must be $MaxQueryString or less"
                 }
             }
         }
@@ -64,7 +65,7 @@ function Get-StgMaxQueryString {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -40,8 +40,10 @@ function Get-StgPrintService {
 
             if ($Feature.InstallState -eq "Available") {
                 $compliant = $true
+                $notes = $null
             } else {
-                $compliant = $false # "No: Remove $($Feature.Name) Windows Feature"
+                $compliant = $false
+                $notes = "Remove $($Feature.Name) Windows Feature"
             }
 
             foreach ($Feature in $PrintFeatures) {
@@ -51,6 +53,7 @@ function Get-StgPrintService {
                     Feature      = $Feature.Name
                     InstallState = $Feature.InstallState
                     Compliant    = $compliant
+                    Notes        = $notes
                 }
             }
         }
@@ -59,7 +62,7 @@ function Get-StgPrintService {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Feature, InstallState, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Feature, InstallState, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

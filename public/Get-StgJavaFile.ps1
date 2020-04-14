@@ -41,9 +41,11 @@ function Get-StgJavaFile {
                 $postfiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
 
                 if (-not ($postfiles)) {
-                    $compliant = $true # "Yes: Files found and removed"
+                    $compliant = $true
+                    $notes = "Files found and removed"
                 } else {
-                    $compliant = $false # "No: File removal incomplete"
+                    $compliant = $false
+                    $notes = "File removal incomplete"
                 }
 
                 [pscustomobject] @{
@@ -51,6 +53,7 @@ function Get-StgJavaFile {
                     ComputerName = $env:COMPUTERNAME
                     Files        = $javafiles
                     Compliant    = $compliant
+                    Notes        = $notes
                 }
             } else {
                 [pscustomobject] @{
@@ -58,6 +61,7 @@ function Get-StgJavaFile {
                     ComputerName = $env:COMPUTERNAME
                     Files        = "No files found"
                     Compliant    = $true
+                    Notes        = $notes
                 }
             }
         }
@@ -66,7 +70,7 @@ function Get-StgJavaFile {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Files, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Files, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -39,14 +39,15 @@ function Get-StgMaxConnection {
             if ($maxconnections.MaxConnections -gt 0) {
                 $compliant = $true
             } else {
-                $compliant = $false # "No: Configure MaxConnections attribute higher than 0"
+                $compliant = $false
             }
 
             [pscustomobject] @{
                 Id           = "V-76773"
                 ComputerName = $env:COMPUTERNAME
-                Value        = $($maxconnections.MaxConnections)
+                Value        = $maxconnections.MaxConnections
                 Compliant    = $compliant
+                Notes        = "Configure MaxConnections attribute higher than 0"
             }
         }
     }
@@ -54,7 +55,7 @@ function Get-StgMaxConnection {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Value, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Value, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
