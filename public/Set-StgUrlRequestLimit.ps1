@@ -51,8 +51,8 @@ function Set-StgUrlRequestLimit {
             foreach ($webname in $webnames) {
                 $preconfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
                 $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
-                $postconfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
-                if ($postconfigurationMaxUrl.Value -le $MaxUrl) {
+                $postconfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+                if ($postconfigMaxUrl.Value -le $MaxUrl) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -63,7 +63,7 @@ function Set-StgUrlRequestLimit {
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
                     Before       = $preconfigMaxUrl.Value
-                    After        = $postconfigurationMaxUrl.Value
+                    After        = $postconfigMaxUrl.Value
                     Compliant    = $compliant
                     Notes        = "Value must be $MaxUrl or less"
                 }

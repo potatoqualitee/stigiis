@@ -47,15 +47,15 @@ function Set-StgTrustLevel {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/trust"
             foreach ($webname in $webnames) {
+                $preconfig = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
-                $preconfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
-
-                if ($postconfigTrustLevel -ne "Full" -or $postconfigTrustLevel -ne "Medium" -or $postconfigTrustLevel -ne "Low" -or $postconfigTrustLevel -ne "Minimal") {
+                if ($postconfig -ne "Full" -or $postconfig -ne "Medium" -or $postconfig -ne "Low" -or $postconfig -ne "Minimal") {
                     $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
                 }
-                $postconfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
-                if ($postconfigTrustLevel -eq "Full" -or $postconfigTrustLevel -eq "Medium" -or $postconfigTrustLevel -eq "Low" -or $postconfigTrustLevel -eq "Minimal") {
+                $postconfig = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
+
+                if ($postconfig -eq "Full" -or $postconfig -eq "Medium" -or $postconfig -eq "Low" -or $postconfig -eq "Minimal") {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -65,8 +65,8 @@ function Set-StgTrustLevel {
                     Id                  = "V-76805"
                     ComputerName        = $env:COMPUTERNAME
                     SiteName            = $webname
-                    Before              = $preconfigTrustLevel
-                    After               = $preconfigTrustLevel
+                    Before              = $preconfig
+                    After               = $preconfig
                     SuggestedTrustLevel = "Full or less"
                     Compliant           = $compliant
                 }

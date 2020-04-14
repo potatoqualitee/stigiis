@@ -51,10 +51,10 @@ function Set-StgEncryptionValidation {
             $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
             $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
 
-            $postconfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-            $postconfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
+            $postconfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+            $postconfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
-            if ($postconfigurationValidation -eq "HMACSHA256" -and $postconfigurationEncryption.Value -eq "Auto") {
+            if ($postconfigValidation -eq "HMACSHA256" -and $postconfigEncryption.Value -eq "Auto") {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -65,8 +65,8 @@ function Set-StgEncryptionValidation {
                 ComputerName     = $env:COMPUTERNAME
                 BeforeValidation = $preconfigValidation
                 BeforeEncryption = $preconfigEncryption.Value
-                AfterValidation  = $postconfigurationValidation
-                AfterEncryption  = $postconfigurationEncryption.Value
+                AfterValidation  = $postconfigValidation
+                AfterEncryption  = $postconfigEncryption.Value
                 Compliant        = $compliant
             }
         }

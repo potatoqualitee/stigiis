@@ -45,7 +45,7 @@ function Set-StgTlsSetting {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-        $sriptblock = {
+        $scriptblock = {
             $notes = $null
             #TLS registry keys
             $regkeys0 = @(
@@ -109,12 +109,12 @@ function Set-StgTlsSetting {
                 $STIGValue1 = "1"
                 #If key doesn"t exist, create key
                 if (-not (Test-Path $key1)) {
-                    New-Item $key1 -Force | Out-Null
+                    $null = New-Item $key1 -Force | Out-Null
                 }
 
                 #Create STIG required key property and set proper value
                 if ((Get-ItemProperty $key1).DisabledByDefault -ne "1") {
-                    New-ItemProperty $key1 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue1 -ErrorAction SilentlyContinue -Force | Out-Null
+                    $null = New-ItemProperty $key1 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue1 -ErrorAction SilentlyContinue -Force | Out-Null
                 }
 
                 #Get current key property values

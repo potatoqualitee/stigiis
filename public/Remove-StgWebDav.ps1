@@ -1,10 +1,10 @@
-function Set-StgInstalledFeature {
+function Remove-StgWebDav {
 <#
     .SYNOPSIS
-        Report installed Windows Features for vulnerability 76709.
+        Remove Windows feature Web-DAV-Publishing for vulnerability 76713 & 76803.
 
     .DESCRIPTION
-        Report installed Windows Features for vulnerability 76709.
+        Remove Windows feature Web-DAV-Publishing for vulnerability 76713 & 76803.
 
     .PARAMETER ComputerName
         The target server.
@@ -18,18 +18,18 @@ function Set-StgInstalledFeature {
         Using this switch turns this "nice by default" feature off and enables you to catch exceptions with your own try/catch.
 
     .NOTES
-        Tags: V-76709
+        Tags: V-76713, V-76803
         Author: Chrissy LeMaire (@cl), netnerds.net
         Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
         License: MIT https://opensource.org/licenses/MIT
 
     .EXAMPLE
-        PS C:\> Set-StgInstalledFeature -ComputerName web01
+        PS C:\> Remove-StgWebDav -ComputerName web01
 
         Updates specific setting to be compliant on web01
 
     .EXAMPLE
-        PS C:\> Set-StgInstalledFeature -ComputerName web01 -Credential ad\webadmin
+        PS C:\> Remove-StgWebDav -ComputerName web01 -Credential ad\webadmin
 
         Logs into web01 as ad\webadmin and updates the necessary setting
 
@@ -44,16 +44,25 @@ function Set-StgInstalledFeature {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            #Get all installed Windows Features
-            $features = Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending"}
+            $DAVFeature = "Web-DAV-Publishing"
 
-            foreach ($feature in $features) {
-                [pscustomobject] @{
-                    Id           = "V-76709"
-                    ComputerName = $env:COMPUTERNAME
-                    Name         = $feature.Name
-                    InstallState = $feature.InstallState
-                }
+            #Remove Web-DAV-Publishing feature
+            $RemoveFeature = Remove-WindowsFeature -Name $DAVFeature
+
+            if ($RemoveFeature.Success -eq $true) {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
+
+            [pscustomobject] @{
+                Id              = "V-76713", "V-76803"
+                ComputerName    = $env:COMPUTERNAME
+                FeatureName     = $DAVFeature
+                RemovedFeatures = $RemoveFeature.FeatureResult
+                ExitCode        = $RemoveFeature.ExitCode
+                RestartNeeded   = $RemoveFeature.RestartNeeded
+                Compliant       = $compliant
             }
         }
     }
@@ -61,7 +70,7 @@ function Set-StgInstalledFeature {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Name, InstallState |
+                    Select-DefaultView -Property Id, ComputerName, FeatureName, RemovedFeatures, ExitCode, RestartNeeded, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

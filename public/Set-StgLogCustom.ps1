@@ -81,7 +81,7 @@ function Set-StgLogCustom {
                 SourceName   = "HTTP_USER_AGENT"
             }
 
-            $CustomFields = @(
+            $fields = @(
                 $Connection,
                 $Warning,
                 $HTTPConnection,
@@ -93,11 +93,11 @@ function Set-StgLogCustom {
             #All website names
             $webnames = (Get-Website).Name
 
-            foreach ($Custom in $CustomFields) {
+            foreach ($field in $fields) {
                 foreach ($webname in $webnames) {
                     try {
                         #Set custom logging fields
-                        New-ItemProperty "IIS:\Sites\$webname" -Name "logfile.customFields.collection" -Value $Custom -ErrorAction Stop
+                        $null = New-ItemProperty "IIS:\Sites\$webname" -Name "logfile.customFields.collection" -Value $field -ErrorAction Stop
                     } catch {
                         # usually duplication errors
                         Write-Verbose -Message "$_"

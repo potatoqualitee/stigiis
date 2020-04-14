@@ -47,11 +47,11 @@ function Set-StgSessionStateInProc {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
-            $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+            $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
             $null = Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
-            $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+            $postconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
-            if ($postconfigurationMode -eq "InProc") {
+            if ($postconfig -eq "InProc") {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -61,17 +61,17 @@ function Set-StgSessionStateInProc {
                 Id           = "V-76775"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Before       = $preconfigMode
-                After        = $postconfigurationMode
+                Before       = $preconfig
+                After        = $postconfig
                 Compliant    = $compliant
             }
 
             foreach ($webname in $webnames) {
-                $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+                $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
                 $null = Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
-                $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+                $postconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
-                if ($postconfigurationMode -eq "InProc") {
+                if ($postconfig -eq "InProc") {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -81,8 +81,8 @@ function Set-StgSessionStateInProc {
                     Id           = "V-76813"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Before       = $preconfigMode
-                    After        = $postconfigurationMode
+                    Before       = $preconfig
+                    After        = $postconfig
                     Compliant    = $compliant
                 }
             }
