@@ -26,12 +26,12 @@ function Set-StgDirectoryBrowsing {
     .EXAMPLE
         PS C:\> Set-StgDirectoryBrowsing -ComputerName web01
 
-        Gets required information from web01
+        Updates specific setting to be compliant on web01
 
     .EXAMPLE
         PS C:\> Set-StgDirectoryBrowsing -ComputerName web01 -Credential ad\webadmin
 
-        Logs into web01 as ad\webadmin and reports the necessary information
+        Logs into web01 as ad\webadmin and updates the necessary setting
 
 #>
     [CmdletBinding()]
