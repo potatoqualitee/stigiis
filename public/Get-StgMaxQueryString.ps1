@@ -1,5 +1,5 @@
 function Get-StgMaxQueryString {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Maximum Query String settings for vulnerability 76821.
 
@@ -38,7 +38,7 @@ function Get-StgMaxQueryString {
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
             [Int]$MaxQueryString = 2048
 
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
                 $preconfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxQueryString -Value $MaxQueryString -Force
                 $postconfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
@@ -50,12 +50,12 @@ function Get-StgMaxQueryString {
                 }
 
                 [pscustomobject] @{
-                    Id = "V-76821"
+                    Id           = "V-76821"
                     ComputerName = $env:COMPUTERNAME
-                    SiteName = $webname
-                    Before = $preconfigMaxQueryString.Value
-                    After = $postconfigurationMaxQueryString.Value
-                    Compliant = $compliant
+                    SiteName     = $webname
+                    Before       = $preconfigMaxQueryString.Value
+                    After        = $postconfigurationMaxQueryString.Value
+                    Compliant    = $compliant
                 }
             }
         }

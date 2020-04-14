@@ -1,5 +1,5 @@
 function Get-StgTlsSetting {
-<#
+    <#
     .SYNOPSIS
         Check, configure, and verify SSL/TLS registry keys for vulnerability 76759.
 
@@ -53,7 +53,7 @@ function Get-StgTlsSetting {
             $SubKeyName = "DisabledByDefault"
 
 
-            foreach($Key0 in $RegKeys0) {
+            foreach ($Key0 in $RegKeys0) {
 
                 $STIGValue0 = "0"
 
@@ -97,18 +97,18 @@ function Get-StgTlsSetting {
 
                 [pscustomobject] @{
 
-                    Id = "V-76759"
-                    ComputerName = $env:COMPUTERNAME
-                    Key = $Key0
+                    Id              = "V-76759"
+                    ComputerName    = $env:COMPUTERNAME
+                    Key             = $Key0
                     KeyPropertyName = $SubKeyName
-                    ValueType = $ValueType0
-                    KeyValue = $KeyValue0
-                    STIGValue = $STIGValue0
-                    Compliant = "$compliant0"
+                    ValueType       = $ValueType0
+                    KeyValue        = $KeyValue0
+                    STIGValue       = $STIGValue0
+                    Compliant       = "$compliant0"
                 }
             }
 
-            foreach($Key1 in $RegKeys1) {
+            foreach ($Key1 in $RegKeys1) {
 
                 $STIGValue1 = "1"
 
@@ -143,14 +143,14 @@ function Get-StgTlsSetting {
                 )
 
                 [pscustomobject] @{
-                    Id = "V-76759"
-                    ComputerName = $env:COMPUTERNAME
-                    Key = $Key1
+                    Id              = "V-76759"
+                    ComputerName    = $env:COMPUTERNAME
+                    Key             = $Key1
                     KeyPropertyName = $SubKeyName
-                    ValueType = $ValueType1
-                    KeyValue = $KeyValue1
-                    STIGValue = $STIGValue1
-                    Compliant = "$compliant1"
+                    ValueType       = $ValueType1
+                    KeyValue        = $KeyValue1
+                    StigValue       = $STIGValue1
+                    Compliant       = "$compliant1"
                 }
             }
         }
@@ -159,7 +159,7 @@ function Get-StgTlsSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Key, KeyPropertyName, ValueType, KeyValue, StigValue, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

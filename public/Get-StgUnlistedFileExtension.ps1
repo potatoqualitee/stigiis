@@ -39,12 +39,15 @@ function Get-StgUnlistedFileExtension {
             $filterpath = "system.webServer/security/requestFiltering/fileExtensions"
 
             foreach($webname in $webnames) {
-
                 $preconfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
-
-                #Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
-
+                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
                 $postconfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
+
+                if ($postconfigurationUnlistedExtensions.Value -eq $false) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
+                }
 
                 [pscustomobject] @{
                     Id = "V-76827"
@@ -52,11 +55,7 @@ function Get-StgUnlistedFileExtension {
                     SiteName = $webname
                     PreConfigUnlistedExtensions = $preconfigUnlistedExtensions.Value
                     PostConfigurationUnlistedExtensions = $postconfigurationUnlistedExtensions.Value
-                    Compliant = if ($postconfigurationUnlistedExtensions.Value -eq $false) {
-                        $true
-                    } else {
-                        "No: Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
-                    }
+                    Compliant = $compliant
                 }
             }
         }

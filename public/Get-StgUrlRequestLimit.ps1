@@ -1,5 +1,5 @@
 function Get-StgUrlRequestLimit {
-<#
+    <#
     .SYNOPSIS
         Configure and verify URL Request Limit settings for vulnerability 76817.
 
@@ -38,25 +38,23 @@ function Get-StgUrlRequestLimit {
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
             $MaxUrl = 4096
 
-            foreach($webname in $webnames) {
-
+            foreach ($webname in $webnames) {
                 $preconfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
-
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
-
                 $postconfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+                if ($postconfigurationMaxUrl.Value -le $MaxUrl) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false # "No: Value must be $MaxUrl or less"
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76817"
+                    Id           = "V-76817"
                     ComputerName = $env:COMPUTERNAME
-                    SiteName = $webname
-                    PreConfiugrationMaxUrl = $preconfigMaxUrl.Value
-                    PostConfiugrationMaxUrl = $postconfigurationMaxUrl.Value
-                    Compliant = if ($postconfigurationMaxUrl.Value -le $MaxUrl) {
-                        $true
-                    } else {
-                        "No: Value must be $MaxUrl or less"
-                    }
+                    SiteName     = $webname
+                    Before       = $preconfigMaxUrl.Value
+                    After        = $postconfigurationMaxUrl.Value
+                    Compliant    = $compliant
                 }
             }
         }

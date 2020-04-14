@@ -1,5 +1,5 @@
 function Get-StgPrintService {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Print Services settings for vulnerability 76753.
 
@@ -38,17 +38,19 @@ function Get-StgPrintService {
             $PrintServices = @("Print-Services", "Print-Internet")
             $PrintFeatures = Get-WindowsFeature -Name $PrintServices
 
-            foreach($Feature in $PrintFeatures) {
+            if ($Feature.InstallState -eq "Available") {
+                $compliant = $true
+            } else {
+                $compliant = $false # "No: Remove $($Feature.Name) Windows Feature"
+            }
+
+            foreach ($Feature in $PrintFeatures) {
                 [pscustomobject] @{
-                    Id = "V-76753"
+                    Id           = "V-76753"
                     ComputerName = $env:COMPUTERNAME
-                    Feature = $Feature.Name
+                    Feature      = $Feature.Name
                     InstallState = $Feature.InstallState
-                    Compliant = if ($Feature.InstallState -eq "Available") {
-                        $true
-                    } else {
-                        "No: Remove $($Feature.Name) Windows Feature"
-                    }
+                    Compliant    = $compliant
                 }
             }
         }
@@ -57,7 +59,7 @@ function Get-StgPrintService {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Feature, InstallState, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

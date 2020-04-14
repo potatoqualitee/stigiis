@@ -35,6 +35,7 @@ function Get-StgMaxConnection {
         $scriptblock = {
             $filterpath = "system.applicationHost/sites/siteDefaults"
             $maxconnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
+
             if ($maxconnections.MaxConnections -gt 0) {
                 $compliant = $true
             } else {

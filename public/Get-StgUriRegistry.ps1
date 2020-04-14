@@ -1,5 +1,5 @@
 function Get-StgUriRegistry {
-<#
+    <#
     .SYNOPSIS
         Verify URI registry settings for vulnerability 76755.
 
@@ -38,20 +38,22 @@ function Get-StgUriRegistry {
                 "URIEnableCache",
                 "UriMaxUriBytes",
                 "UriScavengerPeriod"
-                )
+            )
 
-            foreach($Key in $Keys) {
-                $KeyCompliant = if (-not (Test-Path "$($ParameterKey)\$($Key)")) {
-                    "No: Key does not exist"
+            foreach ($Key in $Keys) {
+                $fullkey = "$($ParameterKey)\$($Key)"
+
+                if (-not (Test-Path $fullkey)) {
+                    $KeyCompliant = $false # "No: Key does not exist"
                 } else {
-                    $true
+                    $KeyCompliant = $true
                 }
 
                 [pscustomobject] @{
-                    Id = "V-76755"
+                    Id           = "V-76755"
                     ComputerName = $env:COMPUTERNAME
-                    Key = "$($ParameterKey)\$($Key)"
-                    Compliant = $KeyCompliant
+                    Key          = $fullkey
+                    Compliant    = $KeyCompliant
                 }
             }
         }
@@ -60,7 +62,7 @@ function Get-StgUriRegistry {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Key, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

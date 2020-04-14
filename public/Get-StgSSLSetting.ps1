@@ -34,7 +34,7 @@ function Get-StgSSLSetting {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
 
                 #Pre-configuration SSL values
                 $preflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
@@ -94,10 +94,10 @@ function Get-StgSSLSetting {
                 )
 
                 [pscustomobject] @{
-                    Id = "V-76679", "V-76779", "V-76781"
-                    SiteName = $webname
-                    PreConfigFlags = $preconfig
-                    PostConfigurationFlags = $postconfig
+                    Id        = "V-76679", "V-76779", "V-76781"
+                    SiteName  = $webname
+                    Before    = $preconfig
+                    After     = $postconfig
                     Compliant = $compliant
                 }
             }
@@ -107,7 +107,7 @@ function Get-StgSSLSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

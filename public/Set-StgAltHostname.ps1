@@ -1,5 +1,5 @@
 function Set-StgAltHostname {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Alternate Hostname settings for vulnerability 76883.
 
@@ -39,28 +39,29 @@ function Set-StgAltHostname {
             $webnames = (Get-Website).Name
             $filterpath = "system.webserver/serverRuntime"
 
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
                 $hostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
 
                 if (-not $hostname) {
                     $AlternateHostName = "$(($webname).Replace(' ','')).$((Get-CimInstance -ClassName Win32_ComputerSystem).Domain)"
-                    write-warning $AlternateHostName
-                    #Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name alternateHostname -Value $AlternateHostName
+                    Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name alternateHostname -Value $AlternateHostName
                 }
 
                 $postconfigHostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value
 
+                if ($postconfigHostname) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
+
                 [pscustomobject] @{
-                    Id = "V-76883"
+                    Id           = "V-76883"
                     ComputerName = $env:COMPUTERNAME
-                    SiteName = $webname
-                    PreConfigHostname  = $hostname
-                    PostConfigHostname = $postconfigHostname
-                    Compliant          = if ($postconfigHostname) {
-                        $true
-                    } else {
-                        $false
-                    }
+                    SiteName     = $webname
+                    Before       = $hostname
+                    After        = $postconfigHostname
+                    Compliant    = $compliant
                 }
             }
         }
@@ -69,7 +70,7 @@ function Set-StgAltHostname {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Compliant, PreConfigHostname, PostConfigHostname |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

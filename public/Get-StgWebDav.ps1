@@ -38,19 +38,20 @@ function Get-StgWebDav {
 
             #Remove Web-DAV-Publishing feature
             $RemoveFeature = Remove-WindowsFeature -Name $DAVFeature
+            if ($RemoveFeature.Success -eq $true) {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
 
             [pscustomobject] @{
-                Id = "V-76713, V-76803"
-                ComputerName = $env:COMPUTERNAME
-                FeatureName = $DAVFeature
+                Id              = "V-76713", "V-76803"
+                ComputerName    = $env:COMPUTERNAME
+                FeatureName     = $DAVFeature
                 RemovedFeatures = $RemoveFeature.FeatureResult
-                ExitCode = $RemoveFeature.ExitCode
-                RestartNeeded = $RemoveFeature.RestartNeeded
-                Compliant = if ($RemoveFeature.Success -eq $true) {
-                    $true
-                } else {
-                    $false
-                }
+                ExitCode        = $RemoveFeature.ExitCode
+                RestartNeeded   = $RemoveFeature.RestartNeeded
+                Compliant       = $compliant
             }
         }
     }
@@ -58,7 +59,7 @@ function Get-StgWebDav {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, FeatureName, RemovedFeatures, ExitCode, RestartNeeded, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

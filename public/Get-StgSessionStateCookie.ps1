@@ -1,5 +1,5 @@
 function Get-StgSessionStateCookie {
-<#
+    <#
     .SYNOPSIS
         Configure and verify cookieLess & regenerateExpiredSessionID properties for vulnerability 76725, 76727, & 76777.
 
@@ -36,37 +36,37 @@ function Get-StgSessionStateCookie {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
 
-                $PreCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
-                $PreSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
-                $PreTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
+                $preCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
+                $preSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
+                $preTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
 
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess -Value "UseCookies"
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID -Value "True"
                 Set-WebConfigurationProperty -Location $webname -Filter "system.webServer/asp/session" -Name TimeOut -Value "00:20:00"
 
-                $PostCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
-                $PostSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
-                $PostTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
+                $postCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
+                $postSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
+                $postTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
+
+                if ($postCookieConfig -eq "UseCookies" -and $postSessionConfig.Value -eq "True" -and $postTimeoutConfig.Value -eq "00:20:00") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
 
                 [pscustomobject] @{
-                    Id = "V-76725, V-76727, V-76777"
-                    ComputerName = $env:COMPUTERNAME
-                    SiteName = $webname
-                    PreConfigCookiesLess = $PreCookieConfig
-                    PreConfigSessionID = $PreSessionConfig.Value
-                    PreConfigTimeout = $PreTimeoutConfig.Value
-                    PostConfigurationCookiesLess = $PostCookieConfig
-                    PostConfigurationSessionID = $PostSessionConfig.Value
-                    PostConfigurationTimeout = $PreTimeoutConfig.Value
-                    Compliant = if ($PostCookieConfig -eq "UseCookies" -and $PostSessionConfig.Value -eq "True" -and $PostTimeoutConfig.Value -eq "00:20:00") {
-
-                        $true
-                    } else {
-
-                        $false
-                    }
+                    Id                        = "V-76725", "V-76727", "V-76777"
+                    ComputerName              = $env:COMPUTERNAME
+                    SiteName                  = $webname
+                    BeforeCookiesLess         = $preCookieConfig
+                    BeforeSessionID           = $preSessionConfig.Value
+                    BeforeTimeout             = $preTimeoutConfig.Value
+                    AfterCookiesLess          = $postCookieConfig
+                    AfterSessionID            = $postSessionConfig.Value
+                    AfterConfigurationTimeout = $preTimeoutConfig.Value
+                    Compliant                 = $compliant
                 }
             }
         }
@@ -75,7 +75,7 @@ function Get-StgSessionStateCookie {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, BeforeCookiesLess, BeforeSessionID, BeforeTimeout, AfterCookiesLess, AfterSessionID, AfterConfigurationTimeout, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

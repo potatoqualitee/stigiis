@@ -40,14 +40,14 @@ function Get-StgLogSetting {
             $LogValues = "File,ETW"
 
             #Get pre-configuration values
-            $PreWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
-            $PreWeb = $PreWeb.Split(",")
+            $preWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
+            $preWeb = $preWeb.Split(",")
 
             #Output which radio buttons are set
-            $PreWeb = @(
-                if ($PreWeb -notcontains "ETW") {
+            $preWeb = @(
+                if ($preWeb -notcontains "ETW") {
                     "Log File Only"
-                } elseif ($PreWeb -notcontains "File") {
+                } elseif ($preWeb -notcontains "File") {
                     "ETW Event Only"
                 } else {
                     "Both log file and ETW Event"
@@ -59,21 +59,21 @@ function Get-StgLogSetting {
 
             Start-Sleep -Seconds 2
             #Get pre-configuration values
-            $PostWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
-            $PostWeb = $PostWeb.Split(",")
+            $postWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
+            $postWeb = $postWeb.Split(",")
 
             #Output which radio buttons are set
-            $PostWeb = @(
-                if ($PostWeb -notcontains "ETW") {
+            $postWeb = @(
+                if ($postWeb -notcontains "ETW") {
                     "Log File Only"
-                } elseif ($PostWeb -notcontains "File") {
+                } elseif ($postWeb -notcontains "File") {
                     "ETW Event Only"
                 } else {
                     "Both log file and ETW Event"
                 }
             )
 
-            if ($PostWeb -eq "Both log file and ETW Event") {
+            if ($postWeb -eq "Both log file and ETW Event") {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -81,8 +81,8 @@ function Get-StgLogSetting {
 
             [pscustomobject] @{
                 Id        = "V-76683", "V-76785"
-                Before    = $PreWeb
-                After     = $PostWeb
+                Before    = $preWeb
+                After     = $postWeb
                 Compliant = $compliant
             }
         }

@@ -1,5 +1,5 @@
 function Get-StgSessionTimeout {
-<#
+    <#
     .SYNOPSIS
         Configure and verify Session Time-Out settings for vulnerability 76841.
 
@@ -36,7 +36,7 @@ function Get-StgSessionTimeout {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
-            foreach($webname in $webnames) {
+            foreach ($webname in $webnames) {
 
                 $preconfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
 
@@ -47,17 +47,19 @@ function Get-StgSessionTimeout {
 
                 $postconfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
 
+                if ([Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes -le 20) {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
+
                 [pscustomobject] @{
-                    Id = "V-76841"
-                    ComputerName = $env:COMPUTERNAME
-                    SiteName = $webname
-                    PreConfigSessionTimeOut = [Int]([TimeSpan]$preconfigSessionTimeOut.Value).TotalMinutes
+                    Id                       = "V-76841"
+                    ComputerName             = $env:COMPUTERNAME
+                    SiteName                 = $webname
+                    PreConfigSessionTimeOut  = [Int]([TimeSpan]$preconfigSessionTimeOut.Value).TotalMinutes
                     PostConfigSessionTimeOut = [Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes
-                    Compliant = if ([Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes -le 20) {
-                        $true
-                    } else {
-                        $false
-                    }
+                    Compliant                = $compliant
                 }
             }
         }

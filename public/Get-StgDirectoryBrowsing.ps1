@@ -38,17 +38,17 @@ function Get-StgDirectoryBrowsing {
             $filterpath = "system.webServer/directoryBrowse"
 
             foreach ($webname in $webnames) {
-                $PreDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+                $preDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
-                $PostDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+                $postDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
                 [pscustomobject] @{
                     Id                               = "V-76829"
                     ComputerName                     = $env:COMPUTERNAME
                     SiteName                         = $webname
-                    PreConfigBrowsingEnabled         = $PreDirectoryBrowsing.Value
-                    PostConfigurationBrowsingEnabled = $PostDirectoryBrowsing.Value
-                    Compliant                        = if (-not $PostDirectoryBrowsing.Value) {
+                    PreConfigBrowsingEnabled         = $preDirectoryBrowsing.Value
+                    PostConfigurationBrowsingEnabled = $postDirectoryBrowsing.Value
+                    Compliant                        = if (-not $postDirectoryBrowsing.Value) {
                         $true
                     } else {
                         $false
@@ -56,11 +56,11 @@ function Get-StgDirectoryBrowsing {
                 }
             }
 
-            $PreDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
+            $preDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
             Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
-            $PostDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
+            $postDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
 
-            if ($PostDirectoryBrowsing.Value -eq $false) {
+            if ($postDirectoryBrowsing.Value -eq $false) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -70,8 +70,8 @@ function Get-StgDirectoryBrowsing {
                 Id           = "V-76733"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Before       = $PreDirectoryBrowsing.Value
-                After        = $PostDirectoryBrowsing.Value
+                Before       = $preDirectoryBrowsing.Value
+                After        = $postDirectoryBrowsing.Value
                 Compliant    = $compliant
             }
         }
