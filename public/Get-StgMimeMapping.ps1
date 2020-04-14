@@ -57,8 +57,8 @@ function Get-StgMimeMapping {
             [pscustomobject] @{
                 Id                = "V-76711", "V-76797"
                 ComputerName      = $env:COMPUTERNAME
-                BeforeExtenstions = $preMimeConfig.FileExtension
-                BeforeCount       = $preMimeConfig.Count
+                ValueExtenstions = $preMimeConfig.FileExtension
+                ValueCount       = $preMimeConfig.Count
                 AfterExtenstions  = $postMimeConfig.FileExtension
                 AfterCount        = $postMimeConfig.Count
             }
@@ -68,7 +68,7 @@ function Get-StgMimeMapping {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, BeforeCount, AfterCount, BeforeExtenstions, AfterExtenstions, AfterCount |
+                    Select-DefaultView -Property Id, ComputerName, ValueCount, AfterCount, ValueExtenstions, AfterExtenstions, AfterCount |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

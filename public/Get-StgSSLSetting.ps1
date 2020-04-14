@@ -106,7 +106,7 @@ function Get-StgSSLSetting {
                 [pscustomobject] @{
                     Id        = "V-76679", "V-76779", "V-76781"
                     SiteName  = $webname
-                    Before    = $preconfig
+                    Value    = $preconfig
                     After     = $postconfig
                     Compliant = $compliant
                 }
@@ -117,7 +117,7 @@ function Get-StgSSLSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Value, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

@@ -71,8 +71,8 @@ function Get-StgDefaultDocument {
                     Id                           = "V-76831"
                     ComputerName                 = $env:COMPUTERNAME
                     SiteName                     = $webname
-                    BeforeDefaultDocumentEnabled = $preconfigDefaultDocumentEnabled.Value
-                    BeforeDefaultDocumentFiles   = $preconfigDefaultDocumentFiles.Count
+                    ValueDefaultDocumentEnabled = $preconfigDefaultDocumentEnabled.Value
+                    ValueDefaultDocumentFiles   = $preconfigDefaultDocumentFiles.Count
                     AfterDefaultDocumentEnabled  = $postconfigurationDefaultDocumentEnabled.Value
                     AfterDefaultDocumentFiles    = $postconfigurationDefaultDocumentFiles.Count
                     Compliant                    = $compliant
@@ -84,7 +84,7 @@ function Get-StgDefaultDocument {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, SiteName, BeforeDefaultDocumentEnabled, AfterDefaultDocumentEnabled, BeforeDefaultDocumentFiles, AfterDefaultDocumentFiles, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Value, SiteName, ValueDefaultDocumentEnabled, AfterDefaultDocumentEnabled, ValueDefaultDocumentFiles, AfterDefaultDocumentFiles, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

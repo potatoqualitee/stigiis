@@ -69,8 +69,8 @@ function Get-StgCgiIsapi {
             [pscustomobject] @{
                 Id           = "V-76769"
                 ComputerName = $env:COMPUTERNAME
-                BeforeCGI    = $preconfigCGIExtension.Value
-                BeforeISAPI  = $preconfigISAPIExtension.Value
+                ValueCGI    = $preconfigCGIExtension.Value
+                ValueISAPI  = $preconfigISAPIExtension.Value
                 AfterCGI     = $postconfigurationCGIExtension.Value
                 AfterISAPI   = $postconfigurationISAPIExtension.Value
                 Compliant    = $compliant
@@ -82,7 +82,7 @@ function Get-StgCgiIsapi {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, BeforeCGI, BeforeISAPI, AfterCGI, AfterISAPI, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, ValueCGI, ValueISAPI, AfterCGI, AfterISAPI, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

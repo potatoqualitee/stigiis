@@ -91,7 +91,7 @@ function Get-StgLogSetting {
 
             [pscustomobject] @{
                 Id        = "V-76683", "V-76785"
-                Before    = $preWeb
+                Value    = $preWeb
                 After     = $postWeb
                 Compliant = $compliant
             }
@@ -101,7 +101,7 @@ function Get-StgLogSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Value, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

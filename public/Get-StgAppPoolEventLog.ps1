@@ -49,28 +49,13 @@ function Get-StgAppPoolEventLog {
             $AppPools = (Get-IISAppPool).Name
 
             foreach ($pool in $AppPools) {
-                #STIG required log fields
-                $RequiredPoolFields = @(
-                    "Time",
-                    "Schedule"
-                )
-
                 #Current log fields
                 $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Split(",")
 
                 #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
-                [String[]]$PoolCollection = @(
-                    $RequiredPoolFields
-                    $CurrentPoolFields
-                )
-
-                [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
-                $PoolReplace = $PoolCollectionString.Replace(" ", ",")
                 $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
-                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $PoolReplace
-                $postconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
-                if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {
+                if ($preconfigPool -like "*Time*" -and $preconfigPool -like "*Schedule*") {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -80,8 +65,7 @@ function Get-StgAppPoolEventLog {
                     Id              = "V-76873"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = $preconfigPool
-                    After           = $postconfigPool
+                    Value           = $CurrentPoolFields
                     Compliant       = $compliant
                     Notes           = "Time and Scheduled logging must be turned on"
                 }
@@ -92,7 +76,7 @@ function Get-StgAppPoolEventLog {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Value, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

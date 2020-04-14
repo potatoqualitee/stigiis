@@ -63,7 +63,7 @@ function Get-StgUnlistedFileExtension {
                     Id           = "V-76827"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Before       = $preconfigUnlistedExtensions.Value
+                    Value       = $preconfigUnlistedExtensions.Value
                     After        = $postconfigurationUnlistedExtensions.Value
                     Compliant    = $compliant
                     Notes        = "Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"
@@ -75,7 +75,7 @@ function Get-StgUnlistedFileExtension {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Value, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

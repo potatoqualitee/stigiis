@@ -63,8 +63,8 @@ function Get-StgEncryptionValidation {
             [pscustomobject] @{
                 Id               = "V-76731"
                 ComputerName     = $env:COMPUTERNAME
-                BeforeValidation = $preconfigValidation
-                BeforeEncryption = $preconfigEncryption.Value
+                ValueValidation = $preconfigValidation
+                ValueEncryption = $preconfigEncryption.Value
                 AfterValidation  = $postconfigurationValidation
                 AfterEncryption  = $postconfigurationEncryption.Value
                 Compliant        = $compliant
@@ -75,7 +75,7 @@ function Get-StgEncryptionValidation {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, BeforeEncryption, AfterEncryption, BeforeValidation, AfterValidation, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ValueEncryption, AfterEncryption, ValueValidation, AfterValidation, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

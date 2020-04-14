@@ -48,10 +48,8 @@ function Get-StgAppPoolPingSetting {
             $AppPools = (Get-IISAppPool).Name
             foreach ($pool in $AppPools) {
                 $preconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
-                Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $true
-                $postconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
-                if ($postconfigPing) {
+                if ($preconfigPing) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -61,8 +59,7 @@ function Get-StgAppPoolPingSetting {
                     Id              = "V-76877"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = $preconfigPing
-                    After           = $postconfigPing
+                    Value           = $preconfigPing
                     Compliant       = $compliant
                 }
             }
@@ -72,7 +69,7 @@ function Get-StgAppPoolPingSetting {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Value,, After, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

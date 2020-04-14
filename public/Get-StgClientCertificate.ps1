@@ -140,7 +140,7 @@ function Get-StgClientCertificate {
                     Id           = "V-76861"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Before       = $preconfig
+                    Value       = $preconfig
                     After        = $postconfig
                     Compliant    = $compliant
                     Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
@@ -238,7 +238,7 @@ function Get-StgClientCertificate {
                 Id           = "V-76809", "V-76851"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Before       = $preconfig
+                Value       = $preconfig
                 After        = $postconfig
                 Compliant    = $compliant
                 Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
@@ -249,7 +249,7 @@ function Get-StgClientCertificate {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Value, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

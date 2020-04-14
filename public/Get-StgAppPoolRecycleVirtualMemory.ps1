@@ -65,7 +65,7 @@ function Get-StgAppPoolRecycleVirtualMemory {
                     Id              = "V-76869"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Before          = $preconfigVMemory.Value
+                    Value          = $preconfigVMemory.Value
                     After           = $postconfigVMemory.Value
                     Compliant       = $compliant
                     Notes           = "Value must be set higher than 0"
@@ -77,7 +77,7 @@ function Get-StgAppPoolRecycleVirtualMemory {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Before, After, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, ApplicationPool, Value, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

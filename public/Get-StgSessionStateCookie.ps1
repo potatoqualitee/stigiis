@@ -69,9 +69,9 @@ function Get-StgSessionStateCookie {
                     Id                        = "V-76725", "V-76727", "V-76777"
                     ComputerName              = $env:COMPUTERNAME
                     SiteName                  = $webname
-                    BeforeCookiesLess         = $preCookieConfig
-                    BeforeSessionID           = $preSessionConfig.Value
-                    BeforeTimeout             = $preTimeoutConfig.Value
+                    ValueCookiesLess         = $preCookieConfig
+                    ValueSessionID           = $preSessionConfig.Value
+                    ValueTimeout             = $preTimeoutConfig.Value
                     AfterCookiesLess          = $postCookieConfig
                     AfterSessionID            = $postSessionConfig.Value
                     AfterConfigurationTimeout = $preTimeoutConfig.Value
@@ -84,7 +84,7 @@ function Get-StgSessionStateCookie {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, BeforeCookiesLess, BeforeSessionID, BeforeTimeout, AfterCookiesLess, AfterSessionID, AfterConfigurationTimeout, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, ValueCookiesLess, ValueSessionID, ValueTimeout, AfterCookiesLess, AfterSessionID, AfterConfigurationTimeout, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

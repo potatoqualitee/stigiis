@@ -79,7 +79,7 @@ function Get-StgSessionSecurity {
                     Id           = "V-76855"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Before       = $preconfigSessionID.Value
+                    Value       = $preconfigSessionID.Value
                     After        = $postconfigurationSessionID.Value
                     Compliant    = $compliant
                 }
@@ -90,7 +90,7 @@ function Get-StgSessionSecurity {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Value, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

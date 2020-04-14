@@ -61,7 +61,7 @@ function Get-StgAppPoolTimeout {
             [pscustomobject] @{
                 Id              = "V-76839"
                 ComputerName    = $env:COMPUTERNAME
-                Before          = [Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes
+                Value          = [Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes
                 After           = [Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes
                 Compliant       = $compliant
             }
@@ -71,7 +71,7 @@ function Get-StgAppPoolTimeout {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Value, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
