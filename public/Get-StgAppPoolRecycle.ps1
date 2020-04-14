@@ -24,12 +24,12 @@ function Get-StgAppPoolRecycle {
         License: MIT https://opensource.org/licenses/MIT
 
     .EXAMPLE
-        PS C:\> Get-StgAltHostname -ComputerName web01
+        PS C:\> Get-StgAppPoolRecycle -ComputerName web01
 
         Gets required information from web01
 
     .EXAMPLE
-        PS C:\> Get-StgAltHostname -ComputerName web01 -Credential ad\webadmin
+        PS C:\> Get-StgAppPoolRecycle -ComputerName web01 -Credential ad\webadmin
 
         Logs into web01 as ad\webadmin and reports the necessary information
 
