@@ -24,6 +24,16 @@ function Get-StgUnlistedFileExtension {
         License: MIT https://opensource.org/licenses/MIT
         Caution: Commented out Set-ConfigurationProperty, this setting breaks the Web GUI for SolarWinds.
 
+    .EXAMPLE
+        PS C:\> Get-StgAltHostname -ComputerName web01
+
+        Gets required information from web01
+
+    .EXAMPLE
+        PS C:\> Get-StgAltHostname -ComputerName web01 -Credential ad\webadmin
+
+        Logs into web01 as ad\webadmin and reports the necessary information
+
 #>
     [CmdletBinding()]
     param (

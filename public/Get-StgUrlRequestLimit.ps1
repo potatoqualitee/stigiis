@@ -23,6 +23,16 @@ function Get-StgUrlRequestLimit {
         Copyright: (c) 2020 by Chrissy LeMaire, licensed under MIT
         License: MIT https://opensource.org/licenses/MIT
 
+    .EXAMPLE
+        PS C:\> Get-StgAltHostname -ComputerName web01
+
+        Gets required information from web01
+
+    .EXAMPLE
+        PS C:\> Get-StgAltHostname -ComputerName web01 -Credential ad\webadmin
+
+        Logs into web01 as ad\webadmin and reports the necessary information
+
 #>
     [CmdletBinding()]
     param (
@@ -45,7 +55,7 @@ function Get-StgUrlRequestLimit {
                 if ($postconfigurationMaxUrl.Value -le $MaxUrl) {
                     $compliant = $true
                 } else {
-                    $compliant = $false # "Value must be $MaxUrl or less"
+                    $compliant = $false
                 }
 
                 [pscustomobject] @{
@@ -55,6 +65,7 @@ function Get-StgUrlRequestLimit {
                     Before       = $preconfigMaxUrl.Value
                     After        = $postconfigurationMaxUrl.Value
                     Compliant    = $compliant
+                    Notes        = "Value must be $MaxUrl or less"
                 }
             }
         }
@@ -63,7 +74,7 @@ function Get-StgUrlRequestLimit {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Before, After, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
