@@ -51,7 +51,7 @@ function Set-StgMimeMapping {
             $NewCollection = ($preMimeConfig | where {$_.fileextension -ne ".exe" -and $_.fileextension -ne ".dll" -and $_.fileextension -ne ".com" -and $_.fileextension -ne ".bat" -and $_.fileextension -ne ".csh"})
 
             #Set new configurations
-            Set-WebConfigurationProperty //staticContent -Name Collection -InputObject $NewCollection
+            $null = Set-WebConfigurationProperty //staticContent -Name Collection -InputObject $NewCollection
             $postMimeConfig = (Get-WebConfiguration //staticcontent).Collection
 
             [pscustomobject] @{

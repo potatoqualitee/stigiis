@@ -48,7 +48,7 @@ function Set-StgSessionStateInProc {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
             $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
-            Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
+            $null = Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
             $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
             if ($postconfigurationMode -eq "InProc") {
@@ -68,7 +68,7 @@ function Set-StgSessionStateInProc {
 
             foreach ($webname in $webnames) {
                 $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
-                Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
+                $null = Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
                 $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
                 if ($postconfigurationMode -eq "InProc") {

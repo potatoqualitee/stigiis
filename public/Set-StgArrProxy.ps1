@@ -48,7 +48,7 @@ function Set-StgArrProxy {
             foreach($webname in $webnames) {
                 try {
                     #Disable proxy for Application Request Routing
-                    Set-WebConfigurationProperty -Location $WebPath -Filter "system.webServer/proxy" -Name "Enabled" -Value "False"
+                    $null = Set-WebConfigurationProperty -Location $WebPath -Filter "system.webServer/proxy" -Name "Enabled" -Value "False"
                     $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
 
                     [pscustomobject] @{

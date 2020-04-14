@@ -51,7 +51,7 @@ function Set-StgAppPoolRecyclePrivateMemory {
                 $preconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($preconfigMemory -eq 0) {
-                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $MemoryDefault
+                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $MemoryDefault
                 }
 
                 $postconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath

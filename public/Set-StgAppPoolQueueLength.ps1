@@ -54,7 +54,7 @@ function Set-StgAppPoolQueueLength {
 
                 if ($preconfigQLength.Value -gt 1000) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $QLength
+                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $QLength
                 }
 
                 $postconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value

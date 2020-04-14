@@ -54,7 +54,7 @@ function Set-StgAppPoolRecycle {
 
                 if ($preconfigRecycle -eq 0) {
 
-                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $RequestsDefault
+                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $RequestsDefault
                 }
 
                 $postconfigRecycle = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath

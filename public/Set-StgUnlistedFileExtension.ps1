@@ -50,7 +50,7 @@ function Set-StgUnlistedFileExtension {
 
             foreach ($webname in $webnames) {
                 $preconfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
-                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
+                $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
                 $postconfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
 
                 if ($postconfigurationUnlistedExtensions.Value -eq $false) {

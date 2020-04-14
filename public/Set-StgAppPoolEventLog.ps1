@@ -67,7 +67,7 @@ function Set-StgAppPoolEventLog {
                 [string]$PoolCollectionString = ($PoolCollection | Select-Object -Unique)
                 $PoolReplace = $PoolCollectionString.Replace(" ", ",")
                 $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
-                Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $PoolReplace
+                $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $PoolReplace
                 $postconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($postconfigPool -like "*Time*" -and $postconfigPool -like "*Schedule*") {

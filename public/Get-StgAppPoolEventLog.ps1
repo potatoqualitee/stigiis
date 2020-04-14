@@ -49,10 +49,7 @@ function Get-StgAppPoolEventLog {
             $pools = (Get-IISAppPool).Name
 
             foreach ($pool in $pools) {
-                #Current log fields
                 $currentpoolfields = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Split(",")
-
-                #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
                 $setting = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).ToString()
 
                 if ($setting -like "*Time*" -and $setting -like "*Schedule*") {

@@ -69,7 +69,7 @@ function Set-StgLogDataField {
             $Replace = $CollectionString.Replace(" ", ",")
 
             #Set all necessary log fields
-            Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $Replace
+            $null = Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $Replace
 
             #All fields presented after new properties have been set
             $postFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")

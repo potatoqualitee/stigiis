@@ -51,7 +51,7 @@ function Set-StgAppPoolRapidFailProtection {
 
                 $preconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
-                Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $true
+                $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $true
 
                 $postconfigRapidFailEnabled = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
                 if ($postconfigRapidFailEnabled -eq $true) {

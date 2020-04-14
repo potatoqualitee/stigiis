@@ -51,7 +51,7 @@ function Set-StgV-76737-76835 {
 
             foreach ($webname in $webnames) {
                 $preErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
-                Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
+                $null = Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
                 $postErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
 
                 if ($postErrorMode -eq "DetailedLocalOnly") {

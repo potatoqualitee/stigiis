@@ -51,9 +51,9 @@ function Set-StgSessionStateCookie {
                 $preSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID
                 $preTimeoutConfig = Get-WebConfigurationProperty -Location $webname -Filter "/system.webserver/asp/session" -Name Timeout
 
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess -Value "UseCookies"
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID -Value "True"
-                Set-WebConfigurationProperty -Location $webname -Filter "system.webServer/asp/session" -Name TimeOut -Value "00:20:00"
+                $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess -Value "UseCookies"
+                $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID -Value "True"
+                $null = Set-WebConfigurationProperty -Location $webname -Filter "system.webServer/asp/session" -Name TimeOut -Value "00:20:00"
 
                 $postCookieConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name CookieLess
                 $postSessionConfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name RegenerateExpiredSessionID

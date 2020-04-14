@@ -49,7 +49,7 @@ function Set-StgSessionTimeout {
             foreach ($webname in $webnames) {
                 $preconfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
                 if (-not ([int]([timespan]$preconfigSessionTimeOut.Value).TotalMinutes -le 20)) {
-                    Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name Timeout -Value "00:20:00"
+                    $null = Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name Timeout -Value "00:20:00"
                 }
                 $postconfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
 

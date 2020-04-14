@@ -65,7 +65,7 @@ function Set-StgLogSetting {
             )
 
             #Set Logging options to log file and ETW events (both)
-            Set-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget -Value $LogValues
+            $null = Set-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget -Value $LogValues
 
             Start-Sleep -Seconds 2
             #Get pre-configuration values

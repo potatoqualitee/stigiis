@@ -47,7 +47,7 @@ function Set-StgAnonymousAuth {
             $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
             $preconfigAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
-            Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
+            $null = Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"
 
             $postconfigurationAnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
             if (-not $postconfigurationAnonymousAuthentication.Value) {

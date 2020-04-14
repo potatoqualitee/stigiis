@@ -48,8 +48,8 @@ function Set-StgEncryptionValidation {
             $preconfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
             $preconfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
+            $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
+            $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
 
             $postconfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
             $postconfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption

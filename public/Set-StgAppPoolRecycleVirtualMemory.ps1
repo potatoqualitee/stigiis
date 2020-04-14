@@ -51,7 +51,7 @@ function Set-StgAppPoolRecycleVirtualMemory {
                 $preconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath
 
                 if ($preconfigVMemory -eq 0) {
-                    Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $VMemoryDefault
+                    $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $VMemoryDefault
                 }
 
                 $postconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath

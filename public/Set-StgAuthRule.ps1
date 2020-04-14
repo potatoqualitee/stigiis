@@ -47,7 +47,7 @@ function Set-StgAuthRule {
             $Settings = "[@roles='' and @users='*' and @verbs='']"
             $preconfigUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
+            $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
             Add-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "system.web/authorization" -Name "." -Value @{users="?"} -Type deny
 
             $postconfigurationUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users

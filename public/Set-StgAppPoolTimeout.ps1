@@ -48,7 +48,7 @@ function Set-StgAppPoolTimeout {
             $preconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
             if (-not ([int]([timespan]$preconfigTimeOut.Value).TotalMinutes -le 20)) {
-                Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
+                $null = Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
             }
 
             $postconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut

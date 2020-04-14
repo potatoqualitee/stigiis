@@ -47,7 +47,7 @@ function Set-StgSessionSecurity {
             $filterpath = "system.webServer/asp/session"
             $preconfigSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
-            Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
+            $null = Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
 
             $postconfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
@@ -66,7 +66,7 @@ function Set-StgSessionSecurity {
 
             foreach ($webname in $webname) {
                 $preconfigSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
+                $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
                 $postconfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
                 if ($postconfigurationSessionID.Value -eq $true) {

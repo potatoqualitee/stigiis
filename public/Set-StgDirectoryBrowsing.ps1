@@ -49,7 +49,7 @@ function Set-StgDirectoryBrowsing {
 
             foreach ($webname in $webnames) {
                 $preDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
+                $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
                 $postDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
                 if (-not $postDirectoryBrowsing.Value) {
@@ -69,7 +69,7 @@ function Set-StgDirectoryBrowsing {
             }
 
             $preDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
+            $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
             $postDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
 
             if ($postDirectoryBrowsing.Value -eq $false) {

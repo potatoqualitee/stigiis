@@ -47,7 +47,7 @@ function Set-StgDebugSetting {
             $filterpath = "system.web/compilation"
             foreach ($webname in $webnames) {
                 $preconfigDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
-                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Debug -Value "False"
+                $null = Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Debug -Value "False"
                 $postconfigurationDebugBehavior = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Debug
                 if (-not $postconfigurationDebugBehavior.Value) {
                     $compliant = $true

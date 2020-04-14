@@ -62,7 +62,7 @@ function Get-StgAltHostname {
                     Id              = "V-76883"
                     ComputerName    = $env:COMPUTERNAME
                     SiteName        = $webname
-                    Hostname        = $config
+                    Value           = $config
                     Compliant       = $compliant
                 }
             }

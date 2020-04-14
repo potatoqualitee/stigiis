@@ -51,7 +51,7 @@ function Set-StgTrustLevel {
                 $preconfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
                 if ($postconfigTrustLevel -ne "Full" -or $postconfigTrustLevel -ne "Medium" -or $postconfigTrustLevel -ne "Low" -or $postconfigTrustLevel -ne "Minimal") {
-                    Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
+                    $null = Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
                 }
                 $postconfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 

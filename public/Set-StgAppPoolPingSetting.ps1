@@ -48,7 +48,7 @@ function Set-StgAppPoolPingSetting {
             $pools = (Get-IISAppPool).Name
             foreach ($pool in $pools) {
                 $preconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
-                Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $true
+                $null = Set-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath -Value $true
                 $postconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$pool" -Name $filterpath).Value
 
                 if ($postconfigPing) {
