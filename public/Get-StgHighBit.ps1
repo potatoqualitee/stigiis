@@ -48,7 +48,7 @@ function Get-StgHighBit {
             $filterpath = "system.webServer/security/requestFiltering"
 
             foreach ($webname in $webnames) {
-                $preconfigHighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
+                $HighBit = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters
 
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name "allowHighBitCharacters" -Value "False"
 
@@ -64,7 +64,7 @@ function Get-StgHighBit {
                     Id           = "V-76823"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfigHighBit.Value
+                    Value       = $HighBit.Value
                     After        = $postconfigurationHighBit.Value
                     Compliant    = $compliant
                 }

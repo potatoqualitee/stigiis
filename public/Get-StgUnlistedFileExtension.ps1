@@ -49,7 +49,7 @@ function Get-StgUnlistedFileExtension {
             $filterpath = "system.webServer/security/requestFiltering/fileExtensions"
 
             foreach ($webname in $webnames) {
-                $preconfigUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
+                $UnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
                 Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowUnlisted -Value "False"
                 $postconfigurationUnlistedExtensions = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowUnlisted
 
@@ -63,7 +63,7 @@ function Get-StgUnlistedFileExtension {
                     Id           = "V-76827"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfigUnlistedExtensions.Value
+                    Value       = $UnlistedExtensions.Value
                     After        = $postconfigurationUnlistedExtensions.Value
                     Compliant    = $compliant
                     Notes        = "Setting Allow Unlisted File Extensions to False breaks SolarWinds Web GUI"

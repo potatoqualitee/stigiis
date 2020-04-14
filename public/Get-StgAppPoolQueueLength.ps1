@@ -49,8 +49,8 @@ function Get-StgAppPoolQueueLength {
             $AppPools = (Get-IISAppPool).Name
 
             foreach ($pool in $AppPools) {
-                $preconfigQLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
-                if ($preconfigQLength -le $QLength) {
+                $QLength = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                if ($QLength -le $QLength) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -60,7 +60,7 @@ function Get-StgAppPoolQueueLength {
                     Id              = "V-76875"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Valuee           = $preconfigQLengt
+                    Valuee           = $QLengt
                     Compliant       = $compliant
                     Notes           = "Value must be 1000 or less"
                 }

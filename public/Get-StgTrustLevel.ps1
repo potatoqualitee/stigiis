@@ -48,7 +48,7 @@ function Get-StgTrustLevel {
             $filterpath = "system.web/trust"
             foreach ($webname in $webnames) {
 
-                $preconfigTrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
+                $TrustLevel = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 
                 if ($postconfigTrustLevel -ne "Full" -or $postconfigTrustLevel -ne "Medium" -or $postconfigTrustLevel -ne "Low" -or $postconfigTrustLevel -ne "Minimal") {
                     Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level -Value "Full"
@@ -65,8 +65,8 @@ function Get-StgTrustLevel {
                     Id                  = "V-76805"
                     ComputerName        = $env:COMPUTERNAME
                     SiteName            = $webname
-                    Value              = $preconfigTrustLevel
-                    After               = $preconfigTrustLevel
+                    Value              = $TrustLevel
+                    After               = $TrustLevel
                     SuggestedTrustLevel = "Full or less"
                     Compliant           = $compliant
                 }

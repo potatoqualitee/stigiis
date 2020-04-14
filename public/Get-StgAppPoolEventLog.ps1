@@ -53,9 +53,9 @@ function Get-StgAppPoolEventLog {
                 $CurrentPoolFields = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Split(",")
 
                 #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
-                $preconfigPool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $Pool = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
-                if ($preconfigPool -like "*Time*" -and $preconfigPool -like "*Schedule*") {
+                if ($Pool -like "*Time*" -and $Pool -like "*Schedule*") {
                     $compliant = $true
                 } else {
                     $compliant = $false

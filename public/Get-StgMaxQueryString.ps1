@@ -49,7 +49,7 @@ function Get-StgMaxQueryString {
             [Int]$MaxQueryString = 2048
 
             foreach ($webname in $webnames) {
-                $preconfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
+                $MaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxQueryString -Value $MaxQueryString -Force
                 $postconfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
 
@@ -63,7 +63,7 @@ function Get-StgMaxQueryString {
                     Id           = "V-76821"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfigMaxQueryString.Value
+                    Value       = $MaxQueryString.Value
                     After        = $postconfigurationMaxQueryString.Value
                     Compliant    = $compliant
                     Notes        = "Value must be $MaxQueryString or less"

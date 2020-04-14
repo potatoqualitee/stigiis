@@ -62,7 +62,7 @@ function Get-StgClientCertificate {
                 $postflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
 
                 #Pre-configuration data results
-                $preconfig = @(
+                $ = @(
                     if ($preflags -eq "Ssl" ) {
                         "SSL: Required | Client Certificates: Ignore"
                     } elseif ($preflags -eq "Ssl,SslNegotiateCert" ) {
@@ -140,7 +140,7 @@ function Get-StgClientCertificate {
                     Id           = "V-76861"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfig
+                    Value       = $
                     After        = $postconfig
                     Compliant    = $compliant
                     Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
@@ -161,7 +161,7 @@ function Get-StgClientCertificate {
 
             #Pre-configuration data results
             # should be a switch but it's already written >_<
-            $preconfig = @(
+            $ = @(
                 if ($preflags -eq "Ssl" ) {
                     "SSL: Required | Client Certificates: Ignore"
                 } elseif ($preflags -eq "Ssl,SslNegotiateCert" ) {
@@ -238,7 +238,7 @@ function Get-StgClientCertificate {
                 Id           = "V-76809", "V-76851"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Value       = $preconfig
+                Value       = $
                 After        = $postconfig
                 Compliant    = $compliant
                 Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"

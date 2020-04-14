@@ -52,7 +52,7 @@ function Get-StgContentLength {
 
             foreach ($webname in $webnames) {
 
-                $preconfigMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
+                $MaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxAllowedContentLength -Value $MaxContentLength -Force
 
@@ -68,7 +68,7 @@ function Get-StgContentLength {
                     Id           = "V-76819"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfigMaxContentLength.Value
+                    Value       = $MaxContentLength.Value
                     After        = $postconfigurationMaxContentLength.Value
                     Compliant    = $compliant
                     Notes        = "Value must be $MaxContentLength or less"

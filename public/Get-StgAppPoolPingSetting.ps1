@@ -47,9 +47,9 @@ function Get-StgAppPoolPingSetting {
             $filterpath = "processModel.pingingEnabled"
             $AppPools = (Get-IISAppPool).Name
             foreach ($pool in $AppPools) {
-                $preconfigPing = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                $Ping = (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
 
-                if ($preconfigPing) {
+                if ($Ping) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -59,7 +59,7 @@ function Get-StgAppPoolPingSetting {
                     Id              = "V-76877"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value           = $preconfigPing
+                    Value           = $Ping
                     Compliant       = $compliant
                 }
             }

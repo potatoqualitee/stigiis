@@ -48,9 +48,9 @@ function Get-StgAppPoolRecycleVirtualMemory {
             $AppPools = (Get-IISAppPool).Name
 
             foreach($pool in $AppPools) {
-                $preconfigVMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $VMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
-                if ($preconfigVMemory -eq 0) {
+                if ($VMemory -eq 0) {
                     Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $VMemoryDefault
                 }
 
@@ -65,7 +65,7 @@ function Get-StgAppPoolRecycleVirtualMemory {
                     Id              = "V-76869"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value          = $preconfigVMemory.Value
+                    Value          = $VMemory.Value
                     After           = $postconfigVMemory.Value
                     Compliant       = $compliant
                     Notes           = "Value must be set higher than 0"

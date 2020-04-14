@@ -47,7 +47,7 @@ function Get-StgSessionStateInProc {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
-            $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+            $Mode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
             Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
             $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
@@ -61,13 +61,13 @@ function Get-StgSessionStateInProc {
                 Id           = "V-76775"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Value       = $preconfigMode
+                Value       = $Mode
                 After        = $postconfigurationMode
                 Compliant    = $compliant
             }
 
             foreach ($webname in $webnames) {
-                $preconfigMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+                $Mode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
                 Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
                 $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
@@ -81,7 +81,7 @@ function Get-StgSessionStateInProc {
                     Id           = "V-76813"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfigMode
+                    Value       = $Mode
                     After        = $postconfigurationMode
                     Compliant    = $compliant
                 }

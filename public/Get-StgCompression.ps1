@@ -47,8 +47,8 @@ function Get-StgCompression {
             $pspath = "MACHINE/WEBROOT"
             $filerpathCookies = "system.web/httpCookies"
             $filerpathCompression = "system.web/sessionState"
-            $preconfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
-            $preconfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
+            $Cookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
+            $Compression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
 
             Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL -Value "True"
             Set-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled -Value "False"
@@ -64,9 +64,9 @@ function Get-StgCompression {
                 Id                       = "V-76859"
                 ComputerName             = $env:COMPUTERNAME
                 SiteName                 = $env:COMPUTERNAME
-                ValueCookiesSSL         = $preconfigCookies.Value
+                ValueCookiesSSL         = $Cookies.Value
                 AfterCookiesSSL          = $postconfigCookies.Value
-                ValueCompressionEnabled = $preconfigCompression.Value
+                ValueCompressionEnabled = $Compression.Value
                 AfterCompressionEnabled  = $postconfigCompression.Value
                 Compliant                = $compliant
             }

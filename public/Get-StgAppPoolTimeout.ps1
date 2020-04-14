@@ -45,9 +45,9 @@ function Get-StgAppPoolTimeout {
         $scriptblock = {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.applicationHost/applicationPools/applicationPoolDefaults/processModel"
-            $preconfigTimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
+            $TimeOut = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
-            if (-not ([Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes -le 20)) {
+            if (-not ([Int]([TimeSpan]$TimeOut.Value).TotalMinutes -le 20)) {
                 Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name idleTimeout -Value "00:20:00"
             }
 
@@ -61,7 +61,7 @@ function Get-StgAppPoolTimeout {
             [pscustomobject] @{
                 Id              = "V-76839"
                 ComputerName    = $env:COMPUTERNAME
-                Value          = [Int]([TimeSpan]$preconfigTimeOut.Value).TotalMinutes
+                Value          = [Int]([TimeSpan]$TimeOut.Value).TotalMinutes
                 After           = [Int]([TimeSpan]$postconfigTimeOut.Value).TotalMinutes
                 Compliant       = $compliant
             }

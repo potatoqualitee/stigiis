@@ -45,7 +45,7 @@ function Get-StgAuthRule {
         $scriptblock = {
             $filterpath = "system.web/authorization/allow"
             $Settings = "[@roles='' and @users='*' and @verbs='']"
-            $preconfigUsers = Get-WebConfigurationProperty -Filter $filterpath -Name Users
+            $Users = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
             Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "$($filterpath)$($Settings)" -Name Users -Value "Administrators"
             Add-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter "system.web/authorization" -Name "." -Value @{users="?"} -Type deny
@@ -61,7 +61,7 @@ function Get-StgAuthRule {
             [pscustomobject] @{
                 Id = "V-76771"
                 ComputerName = $env:COMPUTERNAME
-                Value = $preconfigUsers.Value
+                Value = $Users.Value
                 After = $postconfigurationUsers.Value
                 Compliant = $compliant
             }

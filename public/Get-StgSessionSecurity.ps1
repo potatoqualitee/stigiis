@@ -45,7 +45,7 @@ function Get-StgSessionSecurity {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/asp/session"
-            $preconfigSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
+            $SessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
             Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
 
@@ -55,7 +55,7 @@ function Get-StgSessionSecurity {
                 Id                         = "V-76757"
                 ComputerName               = $env:COMPUTERNAME
                 SiteName                   = $env:COMPUTERNAME
-                PreConfigSessionID         = $preconfigSessionID.Value
+                PreConfigSessionID         = $SessionID.Value
                 PostConfigurationSessionID = $postconfigurationSessionID.Value
                 Compliant                  = if ($postconfigurationSessionID.Value -eq "True") {
                     $true
@@ -65,7 +65,7 @@ function Get-StgSessionSecurity {
             }
 
             foreach ($webname in $webname) {
-                $preconfigSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
+                $SessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
                 $postconfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
@@ -79,7 +79,7 @@ function Get-StgSessionSecurity {
                     Id           = "V-76855"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfigSessionID.Value
+                    Value       = $SessionID.Value
                     After        = $postconfigurationSessionID.Value
                     Compliant    = $compliant
                 }

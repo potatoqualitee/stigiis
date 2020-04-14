@@ -48,9 +48,9 @@ function Get-StgAppPoolRecyclePrivateMemory {
             $AppPools = (Get-IISAppPool).Name
 
             foreach ($pool in $AppPools) {
-                $preconfigMemory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
+                $Memory = Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath
 
-                if ($preconfigMemory -eq 0) {
+                if ($Memory -eq 0) {
                     Set-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath -Value $MemoryDefault
                 }
 
@@ -65,7 +65,7 @@ function Get-StgAppPoolRecyclePrivateMemory {
                     Id              = "V-76871"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value          = [string]$preconfigMemory.Value
+                    Value          = [string]$Memory.Value
                     After           = [string]$postconfigMemory.Value
                     Compliant       = $compliant
                     Notes           = "Value must be set higher than 0"

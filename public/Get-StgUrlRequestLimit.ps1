@@ -49,7 +49,7 @@ function Get-StgUrlRequestLimit {
             $MaxUrl = 4096
 
             foreach ($webname in $webnames) {
-                $preconfigMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+                $MaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
                 Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
                 $postconfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
                 if ($postconfigurationMaxUrl.Value -le $MaxUrl) {
@@ -62,7 +62,7 @@ function Get-StgUrlRequestLimit {
                     Id           = "V-76817"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preconfigMaxUrl.Value
+                    Value       = $MaxUrl.Value
                     After        = $postconfigurationMaxUrl.Value
                     Compliant    = $compliant
                     Notes        = "Value must be $MaxUrl or less"

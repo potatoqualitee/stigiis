@@ -51,8 +51,8 @@ function Get-StgCgiIsapi {
             )
             $filterpath = "system.webserver/security/isapiCgiRestriction"
 
-            $preconfigCGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
-            $preconfigISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
+            $CGIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
+            $ISAPIExtension = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
 
             Set-WebConfigurationProperty -Filter $filterpath -Name notListedCgisAllowed -Value "False" -Force
             Set-WebConfigurationProperty -Filter $filterpath -Name notListedIsapisAllowed -Value "False" -Force
@@ -69,8 +69,8 @@ function Get-StgCgiIsapi {
             [pscustomobject] @{
                 Id           = "V-76769"
                 ComputerName = $env:COMPUTERNAME
-                ValueCGI    = $preconfigCGIExtension.Value
-                ValueISAPI  = $preconfigISAPIExtension.Value
+                ValueCGI    = $CGIExtension.Value
+                ValueISAPI  = $ISAPIExtension.Value
                 AfterCGI     = $postconfigurationCGIExtension.Value
                 AfterISAPI   = $postconfigurationISAPIExtension.Value
                 Compliant    = $compliant

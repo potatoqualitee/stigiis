@@ -45,8 +45,8 @@ function Get-StgEncryptionValidation {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/machineKey"
-            $preconfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-            $preconfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
+            $Validation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+            $Encryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
             Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
             Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
@@ -63,8 +63,8 @@ function Get-StgEncryptionValidation {
             [pscustomobject] @{
                 Id               = "V-76731"
                 ComputerName     = $env:COMPUTERNAME
-                ValueValidation = $preconfigValidation
-                ValueEncryption = $preconfigEncryption.Value
+                ValueValidation = $Validation
+                ValueEncryption = $Encryption.Value
                 AfterValidation  = $postconfigurationValidation
                 AfterEncryption  = $postconfigurationEncryption.Value
                 Compliant        = $compliant
