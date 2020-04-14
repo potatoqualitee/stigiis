@@ -44,9 +44,9 @@ function Get-StgMaxConnection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.applicationHost/sites/siteDefaults"
-            $maxconnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
+            $config = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
 
-            if ($maxconnections.MaxConnections -gt 0) {
+            if ($config.MaxConnections -gt 0) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -55,7 +55,7 @@ function Get-StgMaxConnection {
             [pscustomobject] @{
                 Id           = "V-76773"
                 ComputerName = $env:COMPUTERNAME
-                Value        = $maxconnections.MaxConnections
+                Value        = $config.MaxConnections
                 Compliant    = $compliant
                 Notes        = "Configure MaxConnections attribute higher than 0"
             }

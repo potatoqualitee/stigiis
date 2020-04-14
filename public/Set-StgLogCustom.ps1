@@ -97,7 +97,7 @@ function Set-StgLogCustom {
                 foreach ($webname in $webnames) {
                     try {
                         #Set custom logging fields
-                        New-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection" -Value $Custom -ErrorAction Stop
+                        New-ItemProperty "IIS:\Sites\$webname" -Name "logfile.customFields.collection" -Value $Custom -ErrorAction Stop
                     } catch {
                         # usually duplication errors
                         Write-Verbose -Message "$_"
@@ -107,7 +107,7 @@ function Set-StgLogCustom {
 
             foreach ($webname in $webnames) {
                 #Post-Configuration custom fields
-                $postconfig = (Get-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection")
+                $postconfig = (Get-ItemProperty "IIS:\Sites\$webname" -Name "logfile.customFields.collection")
                 if ($postconfig.logFieldName -contains "Connection" -and $postconfig.logFieldName -contains "Warning" -and $postconfig.logFieldName -contains "HTTPConnection" -and $postconfig.logFieldName -contains "User-Agent" -and $postconfig.logFieldName -contains "Content-Type" -and $postconfig.logFieldName -contains "HTTP_USER_AGENT") {
                     $compliant = $true
                 } else {

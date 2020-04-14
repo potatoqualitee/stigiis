@@ -44,70 +44,12 @@ function Get-StgLogCustom {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            #Custom logging fields
-            $Connection = [pscustomobject] @{
-                LogFieldName = "Connection"
-                SourceType   = "RequestHeader"
-                SourceName   = "Connection"
-            }
-
-            $Warning = [pscustomobject] @{
-                LogFieldName = "Warning"
-                SourceType   = "RequestHeader"
-                SourceName   = "Warning"
-            }
-
-            $HTTPConnection = [pscustomobject] @{
-                LogFieldName = "HTTPConnection"
-                SourceType   = "ServerVariable"
-                SourceName   = "HTTPConnection"
-            }
-
-            $UserAgent = [pscustomobject] @{
-                LogFieldName = "User-Agent"
-                SourceType   = "RequestHeader"
-                SourceName   = "User-Agent"
-            }
-
-            $ContentType = [pscustomobject] @{
-                LogFieldName = "Content-Type"
-                SourceType   = "RequestHeader"
-                SourceName   = "Content-Type"
-            }
-
-            $HTTPUserAgent = [pscustomobject] @{
-                LogFieldName = "HTTP_USER_AGENT"
-                SourceType   = "ServerVariable"
-                SourceName   = "HTTP_USER_AGENT"
-            }
-
-            $CustomFields = @(
-                $Connection,
-                $Warning,
-                $HTTPConnection,
-                $UserAgent,
-                $ContentType,
-                $HTTPUserAgent
-            )
-
             #All website names
             $webnames = (Get-Website).Name
 
-            foreach ($Custom in $CustomFields) {
-                foreach ($webname in $webnames) {
-                    try {
-                        #Set custom logging fields
-                        New-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection" -Value $Custom -ErrorAction Stop
-                    } catch {
-                        # usually duplication errors
-                        Write-Verbose -Message "$_"
-                    }
-                }
-            }
-
             foreach ($webname in $webnames) {
                 #Post-Configuration custom fields
-                $postconfig = (Get-ItemProperty "IIS:\Sites\$($webname)" -Name "logfile.customFields.collection")
+                $postconfig = (Get-ItemProperty "IIS:\Sites\$webname" -Name "logfile.customFields.collection")
                 if ($postconfig.logFieldName -contains "Connection" -and $postconfig.logFieldName -contains "Warning" -and $postconfig.logFieldName -contains "HTTPConnection" -and $postconfig.logFieldName -contains "User-Agent" -and $postconfig.logFieldName -contains "Content-Type" -and $postconfig.logFieldName -contains "HTTP_USER_AGENT") {
                     $compliant = $true
                 } else {

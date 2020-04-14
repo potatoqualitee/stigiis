@@ -47,11 +47,9 @@ function Get-StgSessionStateInProc {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
-            $Mode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
-            Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
-            $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+            $config = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
-            if ($postconfigurationMode -eq "InProc") {
+            if ($config -eq "InProc") {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -61,17 +59,14 @@ function Get-StgSessionStateInProc {
                 Id           = "V-76775"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Value       = $Mode
-                After        = $postconfigurationMode
+                Value        = $config
                 Compliant    = $compliant
             }
 
             foreach ($webname in $webnames) {
-                $Mode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
-                Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
-                $postconfigurationMode = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
+                $config = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
 
-                if ($postconfigurationMode -eq "InProc") {
+                if ($config -eq "InProc") {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -81,8 +76,7 @@ function Get-StgSessionStateInProc {
                     Id           = "V-76813"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $Mode
-                    After        = $postconfigurationMode
+                    Value        = $config
                     Compliant    = $compliant
                 }
             }

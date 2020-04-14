@@ -50,22 +50,19 @@ function Get-StgV-76737-76835 {
             $filterpath = "system.webServer/httpErrors"
 
             foreach ($webname in $webnames) {
-                $preErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
-                Set-WebConfigurationProperty -Filter $filterpath -Name ErrorMode -Value "DetailedLocalOnly"
-                $postErrorMode = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
+                $config = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode
 
-                if ($postErrorMode -eq "DetailedLocalOnly") {
+                if ($config -eq "DetailedLocalOnly") {
                     $compliant = $true
                 } else {
                     $compliant = $false
                 }
 
                 [pscustomobject] @{
-                    Id           = "V-76733, V-76835"
+                    Id           = "V-76733", "V-76835"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $preErrorMode
-                    After        = $postErrorMode
+                    Value        = $config
                     Compliant    = $compliant
                 }
             }

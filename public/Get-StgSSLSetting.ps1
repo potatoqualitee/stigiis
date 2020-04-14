@@ -45,38 +45,10 @@ function Get-StgSSLSetting {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             foreach ($webname in $webnames) {
-
-                #Pre-configuration SSL values
-                $preflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
-
-                if ($preflags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $preflags -ne "Ssl,SslNegotiateCert") {
-
-                    #Set SSL requirements
-                    Set-WebConfiguration -Location $webname -Filter "system.webserver/security/access" -Value "Ssl,SslNegotiateCert"
-                }
-
-                #Post-configuration SSL values
                 $postflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
 
-                #Pre-configuration data results
-                $preconfig = @(
-                    if ($preflags -eq "Ssl" ) {
-                        "SSL: Required | Client Certificates: Ignore"
-                    } elseif ($preflags -eq "Ssl,SslNegotiateCert" ) {
-                        "SSL: Required | Client Certificates: Accept"
-                    } elseif ($preflags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
-                        "SSL: Required | Client Certificates: Require"
-                    } elseif ($preflags -eq "SslNegotiateCert" ) {
-                        "SSL: Not Required | Client Certificates: Accept"
-                    } elseif ($preflags -eq "SslNegotiateCert,SslRequireCert" ) {
-                        "SSL: Not Required | Client Certificates: Require"
-                    } else {
-                        "SSL: Not Required | Client Certificates: Ignore"
-                    }
-                )
-
                 #Post-configuration data results
-                $postconfig = @(
+                $config = @(
                     if ($postflags -eq "Ssl" ) {
                         "SSL: Required | Client Certificates: Ignore"
                     } elseif ($postflags -eq "Ssl,SslNegotiateCert" ) {
@@ -94,9 +66,9 @@ function Get-StgSSLSetting {
 
                 #Check SSL setting compliance
                 $compliant = @(
-                    if ($postconfig -eq "SSL: Required | Client Certificates: Accept") {
+                    if ($config -eq "SSL: Required | Client Certificates: Accept") {
                         $true
-                    } elseif ($postconfig -eq "SSL: Required | Client Certificates: Require") {
+                    } elseif ($config -eq "SSL: Required | Client Certificates: Require") {
                         $true
                     } else {
                         $false
@@ -106,8 +78,7 @@ function Get-StgSSLSetting {
                 [pscustomobject] @{
                     Id        = "V-76679", "V-76779", "V-76781"
                     SiteName  = $webname
-                    Value    = $preconfig
-                    After     = $postconfig
+                    Value     = $config
                     Compliant = $compliant
                 }
             }

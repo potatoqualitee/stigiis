@@ -51,7 +51,7 @@ function Get-StgUriRegistry {
             )
 
             foreach ($Key in $Keys) {
-                $fullkey = "$($ParameterKey)\$($Key)"
+                $fullkey = "$ParameterKey\$Key"
 
                 if (-not (Test-Path $fullkey)) {
                     $KeyCompliant = $false

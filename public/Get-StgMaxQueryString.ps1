@@ -46,14 +46,12 @@ function Get-StgMaxQueryString {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
-            [Int]$MaxQueryString = 2048
+            $max = 2048
 
             foreach ($webname in $webnames) {
-                $MaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxQueryString -Value $MaxQueryString -Force
-                $postconfigurationMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
+                $config = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString
 
-                if ($postconfigurationMaxQueryString.Value -le $MaxQueryString) {
+                if ($config.Value -le $max) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -63,10 +61,9 @@ function Get-StgMaxQueryString {
                     Id           = "V-76821"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $MaxQueryString.Value
-                    After        = $postconfigurationMaxQueryString.Value
+                    Value        = $config.Value
                     Compliant    = $compliant
-                    Notes        = "Value must be $MaxQueryString or less"
+                    Notes        = "Value must be $max or less"
                 }
             }
         }

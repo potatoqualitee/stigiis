@@ -44,23 +44,13 @@ function Get-StgMimeMapping {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            #Pre-Configuration MIME map collection
-            $preMimeConfig = (Get-WebConfiguration //staticcontent).Collection
-
-            #Adjusted MIM map collection
-            $NewCollection = ($preMimeConfig | where {$_.fileextension -ne ".exe" -and $_.fileextension -ne ".dll" -and $_.fileextension -ne ".com" -and $_.fileextension -ne ".bat" -and $_.fileextension -ne ".csh"})
-
-            #Set new configurations
-            Set-WebConfigurationProperty //staticContent -Name Collection -InputObject $NewCollection
-            $postMimeConfig = (Get-WebConfiguration //staticcontent).Collection
+            $config = (Get-WebConfiguration //staticcontent).Collection
 
             [pscustomobject] @{
-                Id                = "V-76711", "V-76797"
-                ComputerName      = $env:COMPUTERNAME
-                ValueExtenstions = $preMimeConfig.FileExtension
-                ValueCount       = $preMimeConfig.Count
-                AfterExtenstions  = $postMimeConfig.FileExtension
-                AfterCount        = $postMimeConfig.Count
+                Id           = "V-76711", "V-76797"
+                ComputerName = $env:COMPUTERNAME
+                Extenstions  = $config.FileExtension
+                Count        = $config.Count
             }
         }
     }
@@ -68,7 +58,7 @@ function Get-StgMimeMapping {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ValueCount, AfterCount, ValueExtenstions, AfterExtenstions, AfterCount |
+                    Select-DefaultView -Property Id, ComputerName, Extenstions, Count |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

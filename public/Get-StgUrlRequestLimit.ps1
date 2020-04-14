@@ -46,13 +46,11 @@ function Get-StgUrlRequestLimit {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
-            $MaxUrl = 4096
+            $max = 4096
 
             foreach ($webname in $webnames) {
-                $MaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name MaxUrl -Value $MaxUrl -Force
-                $postconfigurationMaxUrl = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
-                if ($postconfigurationMaxUrl.Value -le $MaxUrl) {
+                $config = Get-WebConfigurationProperty -Filter $filterpath -Name MaxUrl
+                if ($config.Value -le $max) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -62,10 +60,9 @@ function Get-StgUrlRequestLimit {
                     Id           = "V-76817"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $MaxUrl.Value
-                    After        = $postconfigurationMaxUrl.Value
+                    Value        = $config.Value
                     Compliant    = $compliant
-                    Notes        = "Value must be $MaxUrl or less"
+                    Notes        = "Value must be $max or less"
                 }
             }
         }

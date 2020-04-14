@@ -65,20 +65,11 @@ function Get-StgTlsSetting {
 
             foreach ($key0 in $regkeys0) {
                 $STIGValue0 = "0"
-
-                #If key doesn"t exist, create key
-                if (-not (Test-Path $key0)) {
-                    New-Item $key0 -Force | Out-Null
+                $keyValue0 = (Get-ItemProperty $key0 -ErrorAction SilentlyContinue).DisabledByDefault
+                $keything = Get-Item $key0
+                if ($keything) {
+                    $ValueType0 = $keything.GetValueKind("DisabledByDefault")
                 }
-
-                #Create STIG required key property and set proper value
-                if ((Get-ItemProperty $key0).DisabledByDefault -ne "0") {
-                    New-ItemProperty $key0 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue0 -ErrorAction SilentlyContinue -Force | Out-Null
-                }
-
-                #Get current key property values
-                $keyValue0 = (Get-ItemProperty $key0).DisabledByDefault
-                $ValueType0 = (Get-Item $key0).GetValueKind("DisabledByDefault")
 
                 #Check compliance of each key according to STIG
 
@@ -107,19 +98,13 @@ function Get-StgTlsSetting {
 
             foreach ($key1 in $regkeys1) {
                 $STIGValue1 = "1"
-                #If key doesn"t exist, create key
-                if (-not (Test-Path $key1)) {
-                    New-Item $key1 -Force | Out-Null
-                }
-
-                #Create STIG required key property and set proper value
-                if ((Get-ItemProperty $key1).DisabledByDefault -ne "1") {
-                    New-ItemProperty $key1 -Name $SubKeyName -PropertyType DWORD -Value $STIGValue1 -ErrorAction SilentlyContinue -Force | Out-Null
-                }
 
                 #Get current key property values
                 $keyValue1 = (Get-ItemProperty $key1).DisabledByDefault
-                $ValueType1 = (Get-Item $key1).GetValueKind("DisabledByDefault")
+                $keything = Get-Item $key1
+                if ($keything) {
+                    $ValueType1 = $keything.GetValueKind("DisabledByDefault")
+                }
 
                 #Check compliance of each key according to STIG
                 if ($ValueType1 -eq "DWORD") {

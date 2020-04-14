@@ -47,35 +47,22 @@ function Get-StgDefaultDocument {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/defaultDocument"
             foreach ($webname in $webnames) {
-                $DefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
-                if ($DefaultDocumentEnabled -eq $false) {
-                    Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name Enabled -Value "True"
-                }
+                $defaultdoc = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+                $defaultfiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
 
-                $DefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
-
-                if ($DefaultDocumentFiles.Count -eq 0) {
-                    Add-WebConfigurationProperty -pspath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter "system.webServer/defaultDocument/files" -Name "." -Value @{value = "Default.aspx"}
-                }
-
-                $postconfigurationDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
-                $postconfigurationDefaultDocumentFiles = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Files
-
-                if ($postconfigurationDefaultDocumentEnabled.Value -and $postconfigurationDefaultDocumentFiles.Count -gt 0) {
+                if ($defaultdoc.Value -and $defaultfiles.Count -gt 0) {
                     $compliant = $true
                 } else {
                     $compliant = $false
                 }
 
                 [pscustomobject] @{
-                    Id                           = "V-76831"
-                    ComputerName                 = $env:COMPUTERNAME
-                    SiteName                     = $webname
-                    ValueDefaultDocumentEnabled = $DefaultDocumentEnabled.Value
-                    ValueDefaultDocumentFiles   = $DefaultDocumentFiles.Count
-                    AfterDefaultDocumentEnabled  = $postconfigurationDefaultDocumentEnabled.Value
-                    AfterDefaultDocumentFiles    = $postconfigurationDefaultDocumentFiles.Count
-                    Compliant                    = $compliant
+                    Id           = "V-76831"
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName     = $webname
+                    Enabled      = $defaultdoc.Value
+                    Files        = $defaultfiles.Count
+                    Compliant    = $compliant
                 }
             }
         }
@@ -84,7 +71,7 @@ function Get-StgDefaultDocument {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Value, SiteName, ValueDefaultDocumentEnabled, AfterDefaultDocumentEnabled, ValueDefaultDocumentFiles, AfterDefaultDocumentFiles, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Value, SiteName, Enabled, Files, ValueDefaultDocumentFiles, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

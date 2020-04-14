@@ -45,10 +45,6 @@ function Get-StgCgiIsapi {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $Extensions = @(
-                "notListedCgisAllowed",
-                "notListedIsapisAllowed"
-            )
             $filterpath = "system.webserver/security/isapiCgiRestriction"
             $cgi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
             $isapi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"

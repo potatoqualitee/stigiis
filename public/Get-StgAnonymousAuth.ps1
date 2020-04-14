@@ -44,9 +44,9 @@ function Get-StgAnonymousAuth {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
-            $AnonymousAuthentication = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
+            $config = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
-            if (-not $AnonymousAuthentication.Value) {
+            if (-not $config.Value) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -55,7 +55,7 @@ function Get-StgAnonymousAuth {
             [pscustomobject] @{
                 Id           = "V-76811"
                 ComputerName = $env:COMPUTERNAME
-                Value        = $AnonymousAuthentication.Value
+                Value        = $config.Value
                 Compliant    = $compliant
             }
         }

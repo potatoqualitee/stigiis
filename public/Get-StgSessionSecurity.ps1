@@ -45,31 +45,26 @@ function Get-StgSessionSecurity {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/asp/session"
-            $SessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
+            $config = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
 
-            Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
-
-            $postconfigurationSessionID = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
+            if ($config.Value -eq "True") {
+                $compliant = $true
+            } else {
+                $compliant = $false
+            }
 
             [pscustomobject] @{
                 Id                         = "V-76757"
                 ComputerName               = $env:COMPUTERNAME
                 SiteName                   = $env:COMPUTERNAME
-                PreConfigSessionID         = $SessionID.Value
-                PostConfigurationSessionID = $postconfigurationSessionID.Value
-                Compliant                  = if ($postconfigurationSessionID.Value -eq "True") {
-                    $true
-                } else {
-                    $false
-                }
+                Value                      = $config.Value
+                Compliant                  = $compliant
             }
 
-            foreach ($webname in $webname) {
-                $SessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name KeepSessionIdSecure -Value $true
-                $postconfigurationSessionID = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
+            foreach ($webname in $webnames) {
+                $config = Get-WebConfigurationProperty -Location $webname -Filter $filterpath  -Name KeepSessionIdSecure
 
-                if ($postconfigurationSessionID.Value -eq $true) {
+                if ($config.Value -eq $true) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -79,8 +74,7 @@ function Get-StgSessionSecurity {
                     Id           = "V-76855"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $SessionID.Value
-                    After        = $postconfigurationSessionID.Value
+                    Value        = $config.Value
                     Compliant    = $compliant
                 }
             }

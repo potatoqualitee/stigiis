@@ -52,7 +52,7 @@ function Get-StgIndexConfiguration {
                     ComputerName = $env:COMPUTERNAME
                     Key          = $RegPath
                     Compliant    = $true
-                    Notes        = "Not Applicable: Key does not exist"
+                    Notes        = "Not Applicable: key does not exist"
                 }
             } else {
                 [pscustomobject]@{

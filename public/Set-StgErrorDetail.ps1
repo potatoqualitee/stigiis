@@ -61,7 +61,7 @@ function Set-StgV-76737-76835 {
                 }
 
                 [pscustomobject] @{
-                    Id           = "V-76733, V-76835"
+                    Id           = "V-76733", "V-76835"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
                     Before       = $preErrorMode

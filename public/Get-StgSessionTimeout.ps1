@@ -47,13 +47,9 @@ function Get-StgSessionTimeout {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
             foreach ($webname in $webnames) {
-                $SessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
-                if (-not ([Int]([TimeSpan]$SessionTimeOut.Value).TotalMinutes -le 20)) {
-                    Set-WebConfigurationProperty -PSPath $pspath/$($webname) -Filter $filterpath -Name Timeout -Value "00:20:00"
-                }
-                $postconfigSessionTimeOut = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
+                $config = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
 
-                if ([Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes -le 20) {
+                if ([int]([timespan]$config.Value).TotalMinutes -le 20) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -63,8 +59,7 @@ function Get-StgSessionTimeout {
                     Id           = "V-76841"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = [Int]([TimeSpan]$SessionTimeOut.Value).TotalMinutes
-                    After        = [Int]([TimeSpan]$postconfigSessionTimeOut.Value).TotalMinutes
+                    Value        = [int]([timespan]$config.Value).TotalMinutes
                     Compliant    = $compliant
                 }
             }

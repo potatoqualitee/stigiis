@@ -43,15 +43,15 @@ function Get-StgLogBaseline {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $LogFilePath = "C:\inetpub\logs\LogFiles\W3SVC2"
-            $WebIP = (Get-NetIPAddress | Where-Object { $_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
+            $logfilepath = "C:\inetpub\logs\LogFiles\W3SVC2"
+            $webip = (Get-NetIPAddress | Where-Object { $_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
 
             #Retrieve most recent log file
-            $CurrentLog = Get-ChildItem $LogFilePath -Force | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            $currentlog = Get-ChildItem $logfilepath -Force | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
             #Parse log files for data
-            $logtail = Get-Content -Path "$LogFilePath\$($CurrentLog.Name)" -Tail 200 -Force
-            if ($WebIP -match $tail.Split(" ")[2]) {
+            $logtail = Get-Content -Path "$logfilepath\$($currentlog.Name)" -Tail 200 -Force
+            if ($webip -match $tail.Split(" ")[2]) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -63,7 +63,7 @@ function Get-StgLogBaseline {
                     ComputerName = $env:COMPUTERNAME
                     Date         = $tail.Split(" ")[0]
                     Time         = $tail.Split(" ")[1]
-                    WebServerIP  = $WebIP
+                    WebServerIP  = $webip
                     SourceIP     = $tail.Split(" ")[2]
                     Method       = $tail.Split(" ")[3]
                     URIStem      = $tail.Split(" ")[4]

@@ -44,9 +44,9 @@ function Get-StgAuthRule {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/authorization/allow"
-            $users = Get-WebConfigurationProperty -Filter $filterpath -Name Users
+            $config = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 
-            if ($users.Value -eq "Administrators") {
+            if ($config.Value -eq "Administrators") {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -55,7 +55,7 @@ function Get-StgAuthRule {
             [pscustomobject] @{
                 Id           = "V-76771"
                 ComputerName = $env:COMPUTERNAME
-                Value        = $users.Value
+                Value        = $config.Value
                 Compliant    = $compliant
             }
         }

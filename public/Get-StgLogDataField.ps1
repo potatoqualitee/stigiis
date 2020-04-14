@@ -44,33 +44,6 @@ function Get-StgLogDataField {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            #STIG required log fields
-            $RequiredFields = @(
-                "Date",
-                "Time",
-                "ClientIP",
-                "UserName",
-                "Method",
-                "UriQuery",
-                "HttpStatus",
-                "Referer"
-            )
-
-            #Current log fields
-            $CurrentFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
-
-            #Combine STIG fields and current fields (to ensure nothing is turned off, only turned on)
-            [String[]]$Collection = @(
-                $RequiredFields
-                $CurrentFields
-            )
-
-            $CollectionString = ($Collection | Select-Object -Unique)
-            $Replace = $CollectionString.Replace(" ", ",")
-
-            #Set all necessary log fields
-            Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $Replace
-
             #All fields presented after new properties have been set
             $postFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")
 
@@ -82,7 +55,7 @@ function Get-StgLogDataField {
 
             [pscustomobject] @{
                 Id                      = "V-76681", "V-76783"
-                PreConfigFields         = "$CurrentFields"
+                ComputerName            = $env:COMPUTERNAME
                 Date                    = ($postFields -contains "Date")
                 Time                    = ($postFields -contains "Time")
                 ClientIP                = ($postFields -contains "ClientIP")
@@ -91,7 +64,7 @@ function Get-StgLogDataField {
                 URIQuery                = ($postFields -contains "UriQuery")
                 ProtocolStatus          = ($postFields -contains "HTTPstatus")
                 Referer                 = ($postFields -contains "Referer")
-                PostConfigurationFields = "$postFields"
+                Fields                  = $postFields
                 Compliant               = $compliant
             }
         }
@@ -100,7 +73,7 @@ function Get-StgLogDataField {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Value, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Date, Time, ClientIP, UserName, Method, URIQuery, ProtocolStatus, Fields, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

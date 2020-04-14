@@ -43,24 +43,24 @@ function Get-StgLogAcl {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $WebPath = "MACHINE/WEBROOT/APPHOST"
-            $LogDirectory = (Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.applicationHost/sites/sitedefaults/logfile" -Name Directory).Value.Replace("%SystemDrive%",$env:SystemDrive)
+            $webpath = "MACHINE/WEBROOT/APPHOST"
+            $logdirectory = (Get-WebConfigurationProperty -PSPath $webpath -Filter "system.applicationHost/sites/sitedefaults/logfile" -Name Directory).Value.Replace("%SystemDrive%",$env:SystemDrive)
 
             #Child directories of IIS log directory
-            $LogDirectoryChildren = (Get-ChildItem -Path $LogDirectory -Directory -Recurse -Force)
+            $files = (Get-ChildItem -Path $logdirectory -Directory -Recurse -Force)
 
-            foreach($LDC in $LogDirectoryChildren) {
+            foreach($file in $files) {
                 #Get permissions for each user/security group
-                $ACL = (Get-Acl -Path $LDC.FullName).Access
+                $acl = (Get-Acl -Path $file.FullName).Access
 
-                foreach($Access in $ACL) {
+                foreach($access in $acl) {
                     [pscustomobject] @{
                         Id           = "V-76695", "V-76697", "V-76795"
                         ComputerName = $env:COMPUTERNAME
-                        Directory    = $LDC.FullName
-                        Account      = $Access.IdentityReference
-                        Permissions  = $Access.FileSystemRights
-                        Inherited    = $Access.IsInherited
+                        Directory    = $file.FullName
+                        Account      = $access.IdentityReference
+                        Permissions  = $access.FileSystemRights
+                        Inherited    = $access.IsInherited
                     }
                 }
             }

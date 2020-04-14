@@ -45,7 +45,7 @@ function Get-StgInstalledFeature {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             #Get all installed Windows Features
-            $features = Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending"}
+            $features = Get-WindowsFeature | Where-Object { $_.InstallState -eq "Installed" -or $_.InstallState -eq "InstallPending" }
 
             foreach ($feature in $features) {
                 [pscustomobject] @{

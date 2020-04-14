@@ -46,7 +46,7 @@ function Set-StgMaxQueryString {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
-            [Int]$MaxQueryString = 2048
+            [int]$MaxQueryString = 2048
 
             foreach ($webname in $webnames) {
                 $preconfigMaxQueryString = Get-WebConfigurationProperty -Filter $filterpath -Name maxQueryString

@@ -46,19 +46,12 @@ function Get-StgContentLength {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
-            $MaxContentLength = 30000000
-
-
+            $maxlength = 30000000
 
             foreach ($webname in $webnames) {
+                $config = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
 
-                $MaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
-
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name maxAllowedContentLength -Value $MaxContentLength -Force
-
-                $postconfigurationMaxContentLength = Get-WebConfigurationProperty -Filter $filterpath -Name maxAllowedContentLength
-
-                if ($postconfigurationMaxContentLength.Value -le $MaxContentLength) {
+                if ($config.Value -le $maxlength) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -68,10 +61,9 @@ function Get-StgContentLength {
                     Id           = "V-76819"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $MaxContentLength.Value
-                    After        = $postconfigurationMaxContentLength.Value
+                    Value        = $config.Value
                     Compliant    = $compliant
-                    Notes        = "Value must be $MaxContentLength or less"
+                    Notes        = "Value must be $config or less"
                 }
             }
         }

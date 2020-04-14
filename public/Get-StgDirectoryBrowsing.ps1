@@ -1,10 +1,10 @@
 function Get-StgDirectoryBrowsing {
     <#
-.SYNOPSIS
-    Configure and verify Directory Browsing properties for vulnerability 76733 & 76829.
+    .SYNOPSIS
+        Configure and verify Directory Browsing properties for vulnerability 76733 & 76829.
 
-.DESCRIPTION
-    Configure and verify Directory Browsing properties for vulnerability 76733 & 76829.
+    .DESCRIPTION
+        Configure and verify Directory Browsing properties for vulnerability 76733 & 76829.
 
     .PARAMETER ComputerName
         The target server.
@@ -48,31 +48,26 @@ function Get-StgDirectoryBrowsing {
             $filterpath = "system.webServer/directoryBrowse"
 
             foreach ($webname in $webnames) {
-                $preDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
-                Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
-                $postDirectoryBrowsing = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
+                $config = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
 
-                if (-not $postDirectoryBrowsing.Value) {
+                if (-not $config.Value) {
                     $compliant = $true
                 } else {
                     $compliant = $false
                 }
 
                 [pscustomobject] @{
-                    Id                               = "V-76829"
-                    ComputerName                     = $env:COMPUTERNAME
-                    SiteName                         = $webname
-                    PreConfigBrowsingEnabled         = $preDirectoryBrowsing.Value
-                    PostConfigurationBrowsingEnabled = $postDirectoryBrowsing.Value
-                    Compliant                        = $compliant
+                    Id           = "V-76829"
+                    ComputerName = $env:COMPUTERNAME
+                    SiteName     = $webname
+                    Enabled      = $config.Value
+                    Compliant    = $compliant
                 }
             }
 
-            $preDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
-            Set-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled -Value "False"
-            $postDirectoryBrowsing = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
+            $config = Get-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST" -Filter $filterpath -Name Enabled
 
-            if ($postDirectoryBrowsing.Value -eq $false) {
+            if (-not $config.Value) {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -82,8 +77,7 @@ function Get-StgDirectoryBrowsing {
                 Id           = "V-76733"
                 ComputerName = $env:COMPUTERNAME
                 SiteName     = $env:COMPUTERNAME
-                Value       = $preDirectoryBrowsing.Value
-                After        = $postDirectoryBrowsing.Value
+                Enabled      = $config.Value
                 Compliant    = $compliant
             }
         }
@@ -92,7 +86,7 @@ function Get-StgDirectoryBrowsing {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, SiteName, Value, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, SiteName, Enabled, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

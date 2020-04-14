@@ -56,20 +56,20 @@ function Get-StgInstalledSoftware {
                     }
 
                     foreach ($app in $apps) {
-                        $Program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine", $Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
-                        $Name = $Program.GetValue("DisplayName")
+                        $program = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine", $Computer).OpenSubKey("SOFTWARE$Key\Microsoft\Windows\CurrentVersion\Uninstall\$app")
+                        $name = $program.GetValue("DisplayName")
 
-                        if ($Name -and $Name -match $NameRegex) {
+                        if ($name -and $name -match $nameRegex) {
                             [pscustomobject]@{
                                 ID              = "V-76701"
                                 ComputerName    = $Computer
-                                Software        = $Name
-                                Version         = $Program.GetValue("DisplayVersion")
-                                Publisher       = $Program.GetValue("Publisher")
-                                InstallDate     = $Program.GetValue("InstallDate")
-                                UninstallString = $Program.GetValue("UninstallString")
+                                Software        = $name
+                                Version         = $program.GetValue("DisplayVersion")
+                                Publisher       = $program.GetValue("Publisher")
+                                InstallDate     = $program.GetValue("InstallDate")
+                                UninstallString = $program.GetValue("UninstallString")
                                 Bits            = $(if ($Key -eq "\Wow6432Node") {"64"} else {"32"})
-                                Path            = $Program.name
+                                Path            = $program.name
                             }
                         }
                     }

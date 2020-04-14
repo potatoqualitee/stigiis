@@ -44,20 +44,20 @@ function Get-StgV-76715 {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $RO = [System.Security.Cryptography.X509Certificates.OpenFlags]"ReadOnly"
-            $LM = [System.Security.Cryptography.X509Certificates.StoreLocation]"LocalMachine"
+            $ro = [System.Security.Cryptography.X509Certificates.OpenFlags]"ReadOnly"
+            $lm = [System.Security.Cryptography.X509Certificates.StoreLocation]"LocalMachine"
 
-            $Stores = New-Object System.Security.Cryptography.X509Certificates.X509Store("\\$env:COMPUTERNAME\root",$LM)
-            $Stores.Open($RO)
-            $Certs = $Stores.Certificates
+            $stores = New-Object System.Security.Cryptography.X509Certificates.X509Store("\\$env:COMPUTERNAME\root",$lm)
+            $stores.Open($ro)
+            $certs = $stores.Certificates
 
-            foreach($Cert in $Certs) {
+            foreach($cert in $certs) {
                 [pscustomobject] @{
                     ComputerName = $env:COMPUTERNAME
-                    DNS = $Cert.DNSNameList
-                    ExpirationDate = $Cert.NotAfter
-                    Version = $Cert.Version
-                    HasPrivateKey = $Cert.HasPrivateKey
+                    DNS = $cert.DNSNameList
+                    ExpirationDate = $cert.NotAfter
+                    Version = $cert.Version
+                    HasPrivateKey = $cert.HasPrivateKey
                 }
             }
         }

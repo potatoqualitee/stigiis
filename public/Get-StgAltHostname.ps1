@@ -50,9 +50,9 @@ function Get-StgAltHostname {
         $scriptblock = {
             $webnames = (Get-Website).Name
             foreach($webname in $webnames) {
-                $hostname = (Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/serverRuntime" -Name alternateHostname).Value
+                $config = (Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/serverRuntime" -Name alternateHostname).Value
 
-                if ($hostname) {
+                if ($config) {
                         $compliant = $true
                     } else {
                         $compliant = $false
@@ -62,7 +62,7 @@ function Get-StgAltHostname {
                     Id              = "V-76883"
                     ComputerName    = $env:COMPUTERNAME
                     SiteName        = $webname
-                    Hostname        = $hostname
+                    Hostname        = $config
                     Compliant       = $compliant
                 }
             }

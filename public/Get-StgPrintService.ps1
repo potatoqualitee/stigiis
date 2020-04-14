@@ -44,24 +44,23 @@ function Get-StgPrintService {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $PrintPath = "$($env:windir)\web\printers"
-            $PrintServices = @("Print-Services", "Print-Internet")
-            $PrintFeatures = Get-WindowsFeature -Name $PrintServices
+            $services = @("Print-Services", "Print-Internet")
+            $features = Get-WindowsFeature -Name $services
 
-            if ($Feature.InstallState -eq "Available") {
+            if ($feature.InstallState -eq "Available") {
                 $compliant = $true
                 $notes = $null
             } else {
                 $compliant = $false
-                $notes = "Remove $($Feature.Name) Windows Feature"
+                $notes = "Remove $($feature.Name) Windows Feature"
             }
 
-            foreach ($Feature in $PrintFeatures) {
+            foreach ($feature in $features) {
                 [pscustomobject] @{
                     Id           = "V-76753"
                     ComputerName = $env:COMPUTERNAME
-                    Feature      = $Feature.Name
-                    InstallState = $Feature.InstallState
+                    Feature      = $feature.Name
+                    InstallState = $feature.InstallState
                     Compliant    = $compliant
                     Notes        = $notes
                 }

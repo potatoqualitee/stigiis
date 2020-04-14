@@ -44,46 +44,25 @@ function Get-StgLogSetting {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $WebPath = "MACHINE/WEBROOT/APPHOST"
+            $configPath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.applicationHost/sites/sitedefaults/logfile"
             $LogTarget = "logTargetW3C"
-            $LogValues = "File,ETW"
 
-            #Get pre-configuration values
-            $preWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
-            $preWeb = $preWeb.Split(",")
+            $config = Get-WebConfigurationProperty -PSPath $configPath -Filter $filterpath -Name $LogTarget
+            $config = $config.Split(",")
 
             #Output which radio buttons are set
-            $preWeb = @(
-                if ($preWeb -notcontains "ETW") {
+            $config = @(
+                if ($config -notcontains "ETW") {
                     "Log File Only"
-                } elseif ($preWeb -notcontains "File") {
+                } elseif ($config -notcontains "File") {
                     "ETW Event Only"
                 } else {
                     "Both log file and ETW Event"
                 }
             )
 
-            #Set Logging options to log file and ETW events (both)
-            Set-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget -Value $LogValues
-
-            Start-Sleep -Seconds 2
-            #Get pre-configuration values
-            $postWeb = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name $LogTarget
-            $postWeb = $postWeb.Split(",")
-
-            #Output which radio buttons are set
-            $postWeb = @(
-                if ($postWeb -notcontains "ETW") {
-                    "Log File Only"
-                } elseif ($postWeb -notcontains "File") {
-                    "ETW Event Only"
-                } else {
-                    "Both log file and ETW Event"
-                }
-            )
-
-            if ($postWeb -eq "Both log file and ETW Event") {
+            if ($config -eq "Both log file and ETW Event") {
                 $compliant = $true
             } else {
                 $compliant = $false
@@ -91,8 +70,7 @@ function Get-StgLogSetting {
 
             [pscustomobject] @{
                 Id        = "V-76683", "V-76785"
-                Value    = $preWeb
-                After     = $postWeb
+                Value     = $config
                 Compliant = $compliant
             }
         }

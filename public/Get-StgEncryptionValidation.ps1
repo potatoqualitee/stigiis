@@ -45,29 +45,21 @@ function Get-StgEncryptionValidation {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/machineKey"
-            $Validation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-            $Encryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
+            $validation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
+            $encryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Validation" -Value "HMACSHA256"
-            Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT" -Filter $filterpath -Name "Decryption" -Value "Auto"
-
-            $postconfigurationValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
-            $postconfigurationEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
-
-            if ($postconfigurationValidation -eq "HMACSHA256" -and $postconfigurationEncryption.Value -eq "Auto") {
+            if ($validation -eq "HMACSHA256" -and $encryption.Value -eq "Auto") {
                 $compliant = $true
             } else {
                 $compliant = $false
             }
 
             [pscustomobject] @{
-                Id               = "V-76731"
-                ComputerName     = $env:COMPUTERNAME
-                ValueValidation = $Validation
-                ValueEncryption = $Encryption.Value
-                AfterValidation  = $postconfigurationValidation
-                AfterEncryption  = $postconfigurationEncryption.Value
-                Compliant        = $compliant
+                Id           = "V-76731"
+                ComputerName = $env:COMPUTERNAME
+                Validation   = $validation
+                Encryption   = $encryption.Value
+                Compliant    = $compliant
             }
         }
     }
@@ -75,7 +67,7 @@ function Get-StgEncryptionValidation {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, ValueEncryption, AfterEncryption, ValueValidation, AfterValidation, Compliant |
+                    Select-DefaultView -Property Id, ComputerName, Validation, Encryption, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

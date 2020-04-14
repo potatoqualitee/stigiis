@@ -50,7 +50,7 @@ function Get-StgCompression {
             $cookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
             $compression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
 
-            if ($postconfigCookies.Value -and -not $postconfigCompression.Value) {
+            if ($cookies.Value -and -not $compression.Value) {
                 $compliant = $true
             } else {
                 $compliant = $false

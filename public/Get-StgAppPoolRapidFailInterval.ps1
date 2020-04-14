@@ -48,8 +48,8 @@ function Get-StgAppPoolRapidFailInterval {
             $pools = (Get-IISAppPool).Name
 
             foreach ($pool in $pools) {
-                $protectioninterval = (Get-ItemPro$ey -"$($hIIS)"$($pool)"$($pool)" -Name $filterpath).Value
-                if ([Int]([TimeSpan]$protectioninterval).TotalMinutes -le 5) {
+                $protectioninterval =  (Get-ItemProperty -Path "IIS:\AppPools\$($pool)" -Name $filterpath).Value
+                if ([int]([timespan]$protectioninterval).TotalMinutes -le 5) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -59,7 +59,7 @@ function Get-StgAppPoolRapidFailInterval {
                     Id              = "V-76881"
                     ComputerName    = $env:COMPUTERNAME
                     ApplicationPool = $pool
-                    Value           = [Int]([TimeSpan]$protectioninterval).TotalMinutes
+                    Value           = [int]([timespan]$protectioninterval).TotalMinutes
                     Compliant       = $compliant
                     Notes           = "Value must be 5 or less"
                 }

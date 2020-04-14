@@ -48,13 +48,9 @@ function Get-StgDoubleEscape {
             $filterpath = "system.webServer/security/requestFiltering"
 
             foreach ($webname in $webnames) {
+                $config = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
 
-                $DoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
-
-                Set-WebConfigurationProperty -PSPath "MACHINE/WEBROOT/APPHOST/$($webname)" -Filter $filterpath -Name allowDoubleEscaping -Value "False"
-
-                $postconfigurationDoubleEscaping = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowDoubleEscaping
-                if (-not $postconfigurationDoubleEscaping.Value) {
+                if (-not $config.Value) {
                     $compliant = $true
                 } else {
                     $compliant = $false
@@ -64,8 +60,7 @@ function Get-StgDoubleEscape {
                     Id           = "V-76825"
                     ComputerName = $env:COMPUTERNAME
                     SiteName     = $webname
-                    Value       = $DoubleEscaping.Value
-                    After        = $postconfigurationDoubleEscaping.Value
+                    Value        = $config.Value
                     Compliant    = $compliant
                 }
             }

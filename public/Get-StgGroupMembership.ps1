@@ -45,16 +45,16 @@ function Get-StgGroupMembership {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             #Get Local administrators and groups
-            $LocalGroups = net localgroup | where {$_ -notmatch "command completed successfully" -or $_ -notmatch ""} | select -Skip 6 | ForEach-Object {$_.Replace("*", "")}
-            $LocalAdmin = net localgroup Administrators | where {$_ -notmatch "command completed successfully"} | select -Skip 6
+            $localgroups = net localgroup | Where-Object {$_ -notmatch "command completed successfully" -or $_ -notmatch ""} | Select-Object -Skip 6 | ForEach-Object {$_.Replace("*", "")}
+            $localadmins = net localgroup Administrators | Where-Object {$_ -notmatch "command completed successfully"} | Select-Object -Skip 6
 
-            foreach ($LA in $LocalAdmin) {
-                if (-not ([string]::IsNullOrWhiteSpace($LA))) {
+            foreach ($localadmin in $localadmins) {
+                if ($localadmin) {
                     [pscustomobject] @{
                         Id                = "V-76707", "V-76719"
                         ComputerName      = $env:COMPUTERNAME
                         AccessType        = "Local Administrator"
-                        User              = $LA
+                        User              = $localadmin
                         SecurityGroup     = ""
                         ObjectClass       = ""
                         DistinguishedName = "N/A"
@@ -62,25 +62,25 @@ function Get-StgGroupMembership {
                 }
             }
 
-            foreach ($LG in $LocalGroups) {
-                if ($LG) {
+            foreach ($localgroup in $localgroups) {
+                if ($localgroup) {
                     try {
                         #Get group members of Security Groups
-                        $Members = Get-ADGroupMember $LG -ErrorAction Stop
+                        $members = Get-ADGroupMember $localgroup -ErrorAction Stop
                     } catch {
-                        $Members = @()
+                        $members = @()
                     }
 
-                    foreach ($Member in $Members) {
-                        if ($Member) {
+                    foreach ($member in $members) {
+                        if ($member) {
                             [pscustomobject] @{
                                 Id                = "V-76707", "V-76719"
                                 ComputerName      = $env:COMPUTERNAME
                                 AccessType        = "Group Membership"
-                                User              = $Member.SamAccountName
-                                SecurityGroup     = $LG
-                                ObjectClass       = $Member.objectClass.ToUpper()
-                                DistinguishedName = $Member.DistinguishedName
+                                User              = $member.SamAccountName
+                                SecurityGroup     = $localgroup
+                                ObjectClass       = $member.objectClass.ToUpper()
+                                DistinguishedName = $member.DistinguishedName
                             }
                         }
                     }

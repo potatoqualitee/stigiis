@@ -46,16 +46,16 @@ function Get-StgFso {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $FSOKey = "HKCR:\CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}"
+            $key = "HKCR:\CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}"
             New-PSDrive -PSProvider Registry -root HKEY_CLASSES_ROOT -Name HKCR | Out-Null
 
-            $ComponentEnabled = if (Test-Path $FSOKey) {
-                "Enabled"
+            if (Test-Path $key) {
+                $enabled = $true
             } else {
-                "Disabled"
+                $enabled = $flase
             }
 
-            if (Test-Path $FSOKey) {
+            if (Test-Path $key) {
                 $compliant = $false
                 $notes = "Key exists. If component is NOT required for operations, run: regsvr32 scrrun.dll /u to unregister this library. Note: If the File System Object component is required for operations and has supporting documentation signed by the ISSO, this is not a finding."
             } else {
@@ -66,8 +66,8 @@ function Get-StgFso {
             [pscustomobject] @{
                 Id           = "V-76767"
                 ComputerName = $env:COMPUTERNAME
-                Key          = $FSOKey
-                Value        = $ComponentEnabled
+                Key          = $key
+                Enabled      = $enabled
                 Compliant    = $compliant
                 Notes        = $notes
             }
@@ -77,7 +77,7 @@ function Get-StgFso {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Key, Value, Compliant, Notes |
+                    Select-DefaultView -Property Id, ComputerName, Key, Enabled, Compliant, Notes |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_
