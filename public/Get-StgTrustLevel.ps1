@@ -1,10 +1,10 @@
 function Get-StgTrustLevel {
     <#
     .SYNOPSIS
-        Configure and verify .NET Trust Level settings for vulnerability 76805.
+        Get .NET Trust Level settings for vulnerability 76805.
 
     .DESCRIPTION
-        Configure and verify .NET Trust Level settings for vulnerability 76805.
+        Get .NET Trust Level settings for vulnerability 76805.
 
     .PARAMETER ComputerName
         The target server.

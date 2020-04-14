@@ -1,10 +1,10 @@
 function Get-StgAppPoolEventLog {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Event Log settings for vulnerability 76873.
+        Get Application Pool Event Log settings for vulnerability 76873.
 
     .DESCRIPTION
-        Configure and verify Application Pool Event Log settings for vulnerability 76873.
+        Get Application Pool Event Log settings for vulnerability 76873.
 
     .PARAMETER ComputerName
         The target server.

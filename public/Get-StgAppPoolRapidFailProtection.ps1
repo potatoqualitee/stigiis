@@ -1,10 +1,10 @@
 function Get-StgAppPoolRapidFailProtection {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Rapid-Fail Protection settings for vulnerability 76879.
+        Get Application Pool Rapid-Fail Protection settings for vulnerability 76879.
 
     .DESCRIPTION
-        Configure and verify Application Pool Rapid-Fail Protection settings for vulnerability 76879.
+        Get Application Pool Rapid-Fail Protection settings for vulnerability 76879.
 
     .PARAMETER ComputerName
         The target server.

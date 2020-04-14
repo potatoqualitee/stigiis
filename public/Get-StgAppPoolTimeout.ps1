@@ -1,10 +1,10 @@
 function Get-StgAppPoolTimeout {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Time-Out settings for vulnerability 76839.
+        Get Application Pool Time-Out settings for vulnerability 76839.
 
     .DESCRIPTION
-        Configure and verify Application Pool Time-Out settings for vulnerability 76839.
+        Get Application Pool Time-Out settings for vulnerability 76839.
 
     .PARAMETER ComputerName
         The target server.

@@ -1,10 +1,10 @@
 function Get-StgTlsSetting {
     <#
     .SYNOPSIS
-        Check, configure, and verify SSL/TLS registry keys for vulnerability 76759.
+        Get SSL/TLS registry keys for vulnerability 76759.
 
     .DESCRIPTION
-        Check, configure, and verify SSL/TLS registry keys for vulnerability 76759.
+        Get SSL/TLS registry keys for vulnerability 76759.
 
         Transport Layer Security (TLS) encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2-approved TLS version, and all non-FIPS-approved SSL versions must be disabled. FIPS 140-2-approved TLS versions include TLS V1.1 or greater. NIST SP 800-52 specifies the preferred configurations for government systems.
 

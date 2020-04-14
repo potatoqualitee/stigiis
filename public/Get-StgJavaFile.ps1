@@ -1,10 +1,10 @@
 function Get-StgJavaFile {
     <#
     .SYNOPSIS
-        Remove all *.jpp,*.java files for vulnerability 76717.
+        Get all *.jpp,*.java files for vulnerability 76717.
 
     .DESCRIPTION
-        Remove all *.jpp,*.java files for vulnerability 76717.
+        Get all *.jpp,*.java files for vulnerability 76717.
 
     .PARAMETER ComputerName
         The target server.

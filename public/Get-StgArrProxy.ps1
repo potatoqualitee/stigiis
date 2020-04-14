@@ -1,10 +1,10 @@
 function Get-StgArrProxy {
     <#
     .SYNOPSIS
-        Disable proxy settings for Application Request Routing feature for vulnerability 76703.
+        Get proxy settings for Application Request Routing feature for vulnerability 76703.
 
     .DESCRIPTION
-        Disable proxy settings for Application Request Routing feature for vulnerability 76703.
+        Get proxy settings for Application Request Routing feature for vulnerability 76703.
 
     .PARAMETER ComputerName
         The target server.

@@ -1,10 +1,10 @@
 function Get-StgCgiIsapi {
     <#
     .SYNOPSIS
-        Configure and verify CGI and ISAPI module settings for vulnerability 76769.
+        Get CGI and ISAPI module settings for vulnerability 76769.
 
     .DESCRIPTION
-        Configure and verify CGI and ISAPI module settings for vulnerability 76769.
+        Get CGI and ISAPI module settings for vulnerability 76769.
 
         By allowing unspecified file extensions to execute, the web servers attack surface is significantly increased. This increased risk can be reduced by only allowing specific ISAPI extensions or CGI extensions to run on the web server.
 

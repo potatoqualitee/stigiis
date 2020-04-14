@@ -1,10 +1,10 @@
 function Get-StgAnonymousAuth {
     <#
     .SYNOPSIS
-        Configure and verify Anonymous Authentication settings for vulnerability 76811.
+        Get Anonymous Authentication settings for vulnerability 76811.
 
     .DESCRIPTION
-        Configure and verify Anonymous Authentication settings for vulnerability 76811.
+        Get Anonymous Authentication settings for vulnerability 76811.
 
     .PARAMETER ComputerName
         The target server.

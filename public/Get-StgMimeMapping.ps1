@@ -1,10 +1,10 @@
 function Get-StgMimeMapping {
     <#
     .SYNOPSIS
-        Remove required MIME mappings for vulnerability 76711 & 76797.
+        Verify MIME mappings for vulnerability 76711 & 76797.
 
     .DESCRIPTION
-        Remove required MIME mappings for vulnerability 76711 & 76797.
+        Verify MIME mappings for vulnerability 76711 & 76797.
 
     .PARAMETER ComputerName
         The target server.

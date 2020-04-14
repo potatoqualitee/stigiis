@@ -1,10 +1,10 @@
 function Get-StgHighBit {
     <#
     .SYNOPSIS
-        Configure and verify Allow High-Bit Characters settings for vulnerability 76823.
+        Get Allow High-Bit Characters settings for vulnerability 76823.
 
     .DESCRIPTION
-        Configure and verify Allow High-Bit Characters settings for vulnerability 76823.
+        Get Allow High-Bit Characters settings for vulnerability 76823.
 
     .PARAMETER ComputerName
         The target server.

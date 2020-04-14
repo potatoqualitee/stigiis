@@ -1,10 +1,10 @@
 function Get-StgContentLength {
     <#
     .SYNOPSIS
-        Configure and verify Maximum Content Length settings for vulnerability 76819.
+        Get Maximum Content Length settings for vulnerability 76819.
 
     .DESCRIPTION
-        Configure and verify Maximum Content Length settings for vulnerability 76819.
+        Get Maximum Content Length settings for vulnerability 76819.
 
     .PARAMETER ComputerName
         The target server.

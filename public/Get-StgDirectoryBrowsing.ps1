@@ -1,10 +1,10 @@
 function Get-StgDirectoryBrowsing {
     <#
     .SYNOPSIS
-        Configure and verify Directory Browsing properties for vulnerability 76733 & 76829.
+        Get Directory Browsing properties for vulnerability 76733 & 76829.
 
     .DESCRIPTION
-        Configure and verify Directory Browsing properties for vulnerability 76733 & 76829.
+        Get Directory Browsing properties for vulnerability 76733 & 76829.
 
     .PARAMETER ComputerName
         The target server.

@@ -1,10 +1,10 @@
 function Get-StgDefaultDocument {
     <#
     .SYNOPSIS
-        Configure and verify Default Document settings for vulnerability 76831.
+        Get Default Document settings for vulnerability 76831.
 
     .DESCRIPTION
-        Configure and verify Default Document settings for vulnerability 76831.
+        Get Default Document settings for vulnerability 76831.
 
     .PARAMETER ComputerName
         The target server.

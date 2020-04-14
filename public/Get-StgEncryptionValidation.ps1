@@ -1,10 +1,10 @@
 function Get-StgEncryptionValidation {
     <#
     .SYNOPSIS
-        Configure and verify Validation and Encryption properties for vulnerability 76731.
+        Get Validation and Encryption properties for vulnerability 76731.
 
     .DESCRIPTION
-        Configure and verify Validation and Encryption properties for vulnerability 76731.
+        Get Validation and Encryption properties for vulnerability 76731.
 
     .PARAMETER ComputerName
         The target server.

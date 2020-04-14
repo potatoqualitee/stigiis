@@ -1,10 +1,10 @@
 function Get-StgUrlRequestLimit {
     <#
     .SYNOPSIS
-        Configure and verify URL Request Limit settings for vulnerability 76817.
+        Get URL Request Limit settings for vulnerability 76817.
 
     .DESCRIPTION
-        Configure and verify URL Request Limit settings for vulnerability 76817.
+        Get URL Request Limit settings for vulnerability 76817.
 
     .PARAMETER ComputerName
         The target server.

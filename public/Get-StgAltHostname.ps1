@@ -1,10 +1,10 @@
 function Get-StgAltHostname {
 <#
     .SYNOPSIS
-        Configure and verify Alternate Hostname settings for vulnerability 76883.
+        Get Alternate Hostname settings for vulnerability 76883.
 
     .DESCRIPTION
-        Configure and verify Alternate Hostname settings for vulnerability 76883.
+        Get Alternate Hostname settings for vulnerability 76883.
 
         When using static HTML pages, a Content-Location header is added to the response. The Internet Information Server (IIS) Content-Location may reference the IP address of the server, rather than the Fully Qualified Domain Name (FQDN) or Hostname. This header may expose internal IP addresses that are usually hidden or masked behind a Network Address Translation (NAT) firewall or proxy server. There is a value that can be modified in the IIS metabase to change the default behavior from exposing IP addresses, to sending the FQDN instead.
 

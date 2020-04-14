@@ -1,10 +1,10 @@
 function Get-StgIndexConfiguration {
 <#
     .SYNOPSIS
-        Configure and verify Indexing configurations for vulnerability 76735.
+        Get Indexing configurations for vulnerability 76735.
 
     .DESCRIPTION
-        Configure and verify Indexing configurations for vulnerability 76735.
+        Get Indexing configurations for vulnerability 76735.
 
     .PARAMETER ComputerName
         The target server.

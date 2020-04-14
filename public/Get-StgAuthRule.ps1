@@ -1,10 +1,10 @@
 function Get-StgAuthRule {
     <#
     .SYNOPSIS
-        Configure and verify Authorization Rules settings for vulnerability 76771.
+        Get Authorization Rules settings for vulnerability 76771.
 
     .DESCRIPTION
-        Configure and verify Authorization Rules settings for vulnerability 76771.
+        Get Authorization Rules settings for vulnerability 76771.
 
     .PARAMETER ComputerName
         The target server.

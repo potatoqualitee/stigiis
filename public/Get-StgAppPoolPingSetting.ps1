@@ -1,10 +1,10 @@
 function Get-StgAppPoolPingSetting {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Ping settings for vulnerability 76877.
+        Get Application Pool Ping settings for vulnerability 76877.
 
     .DESCRIPTION
-        Configure and verify Application Pool Ping settings for vulnerability 76877.
+        Get Application Pool Ping settings for vulnerability 76877.
 
     .PARAMETER ComputerName
         The target server.

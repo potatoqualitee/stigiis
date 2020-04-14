@@ -1,10 +1,10 @@
 function Get-StgPrintService {
     <#
     .SYNOPSIS
-        Configure and verify Print Services settings for vulnerability 76753.
+        Get Print Services settings for vulnerability 76753.
 
     .DESCRIPTION
-        Configure and verify Print Services settings for vulnerability 76753.
+        Get Print Services settings for vulnerability 76753.
 
     .PARAMETER ComputerName
         The target server.

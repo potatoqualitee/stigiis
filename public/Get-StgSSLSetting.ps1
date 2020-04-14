@@ -1,10 +1,10 @@
 function Get-StgSSLSetting {
     <#
     .SYNOPSIS
-        Check, configure, and verify site SSL settings for vulnerability 76679, 76779, & 76781.
+        Get site SSL settings for vulnerability 76679, 76779, & 76781.
 
     .DESCRIPTION
-        Check, configure, and verify site SSL settings for vulnerability 76679, 76779, & 76781.
+        Get site SSL settings for vulnerability 76679, 76779, & 76781.
 
     .PARAMETER ComputerName
         The target server.

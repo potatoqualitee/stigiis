@@ -1,10 +1,10 @@
 function Get-StgAppPoolRapidFailInterval {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Rapid-Fail Interval settings for vulnerability 76881.
+        Get Application Pool Rapid-Fail Interval settings for vulnerability 76881.
 
     .DESCRIPTION
-        Configure and verify Application Pool Rapid-Fail Interval settings for vulnerability 76881.
+        Get Application Pool Rapid-Fail Interval settings for vulnerability 76881.
 
     .PARAMETER ComputerName
         The target server.

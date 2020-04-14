@@ -1,10 +1,10 @@
 function Get-StgAppPoolRecycleVirtualMemory {
 <#
     .SYNOPSIS
-        Configure and verify Application Pool Virtual Memory Recycling settings for vulnerability 76869.
+        Get Application Pool Virtual Memory Recycling settings for vulnerability 76869.
 
     .DESCRIPTION
-        Configure and verify Application Pool Virtual Memory Recycling settings for vulnerability 76869.
+        Get Application Pool Virtual Memory Recycling settings for vulnerability 76869.
 
     .PARAMETER ComputerName
         The target server.

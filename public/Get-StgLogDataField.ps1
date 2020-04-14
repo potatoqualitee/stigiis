@@ -1,10 +1,10 @@
 function Get-StgLogDataField {
     <#
     .SYNOPSIS
-        Add STIG required data fields to the logging feature, including currently active fields for vulnerability 76681 & 76783.
+        Get STIG required data fields to the logging feature, including currently active fields for vulnerability 76681 & 76783.
 
     .DESCRIPTION
-        Add STIG required data fields to the logging feature, including currently active fields for vulnerability 76681 & 76783.
+        Get STIG required data fields to the logging feature, including currently active fields for vulnerability 76681 & 76783.
 
     .PARAMETER ComputerName
         The target server.

@@ -1,10 +1,10 @@
 function Get-StgClientCertificate {
     <#
     .SYNOPSIS
-        Check, configure, and verify site SSL settings for vulnerability 76809, 76851, & 76861.
+        Get site SSL settings for vulnerability 76809, 76851, & 76861.
 
     .DESCRIPTION
-        Check, configure, and verify site SSL settings for vulnerability 76809, 76851, & 76861.
+        Get site SSL settings for vulnerability 76809, 76851, & 76861.
 
         Protecting the confidentiality and integrity of received information requires that application servers take measures to employ approved cryptography in order to protect the information during transmission over the network. This is usually achieved through the use of Transport Layer Security (TLS), SSL VPN, or IPsec tunnel. The web server must utilize approved encryption when receiving transmitted data.
 

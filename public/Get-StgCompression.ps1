@@ -1,10 +1,10 @@
 function Get-StgCompression {
     <#
     .SYNOPSIS
-        Configure and verify HTTP Cookies and Session Compression settings for vulnerability 76859.
+        Get HTTP Cookies and Session Compression settings for vulnerability 76859.
 
     .DESCRIPTION
-        Configure and verify HTTP Cookies and Session Compression settings for vulnerability 76859.
+        Get HTTP Cookies and Session Compression settings for vulnerability 76859.
 
     .PARAMETER ComputerName
         The target server.

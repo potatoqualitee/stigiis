@@ -1,10 +1,10 @@
 function Get-StgLogCustom {
     <#
     .SYNOPSIS
-        Check, configure, and verify Custom Logging Fields for vulnerabilities 76687, 76689, 76789, & 76791.
+        Get Custom Logging Fields for vulnerabilities 76687, 76689, 76789, & 76791.
 
     .DESCRIPTION
-        Check, configure, and verify Custom Logging Fields for vulnerabilities 76687, 76689, 76789, & 76791.
+        Get Custom Logging Fields for vulnerabilities 76687, 76689, 76789, & 76791.
 
     .PARAMETER ComputerName
         The target server.

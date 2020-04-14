@@ -1,10 +1,10 @@
 function Get-StgLogSetting {
     <#
     .SYNOPSIS
-        Check, configure, and verify baseline logging setting for vulnerability 76683 & 76785.
+        Get baseline logging setting for vulnerability 76683 & 76785.
 
     .DESCRIPTION
-        Check, configure, and verify baseline logging setting for vulnerability 76683 & 76785.
+        Get baseline logging setting for vulnerability 76683 & 76785.
 
     .PARAMETER ComputerName
         The target server.

@@ -1,10 +1,10 @@
 function Get-StgSessionSecurity {
     <#
     .SYNOPSIS
-        Configure and verify Session Security settings for vulnerability 76757 & 76855.
+        Get Session Security settings for vulnerability 76757 & 76855.
 
     .DESCRIPTION
-        Configure and verify Session Security settings for vulnerability 76757 & 76855.
+        Get Session Security settings for vulnerability 76757 & 76855.
 
     .PARAMETER ComputerName
         The target server.

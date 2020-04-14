@@ -1,10 +1,10 @@
 function Get-StgDebugSetting {
     <#
-.SYNOPSIS
-    Configure and verify Debug Behavior settings for vulnerability 76837.
+    .SYNOPSIS
+        Get Debug Behavior settings for vulnerability 76837.
 
-.DESCRIPTION
-    Configure and verify Debug Behavior settings for vulnerability 76837.
+    .DESCRIPTION
+        Get Debug Behavior settings for vulnerability 76837.
 
     .PARAMETER ComputerName
         The target server.

@@ -1,10 +1,10 @@
 function Get-StgUnlistedFileExtension {
     <#
     .SYNOPSIS
-        Configure and verify Allow Unlisted File Extensions settings for vulnerability 76827.
+        Get Allow Unlisted File Extensions settings for vulnerability 76827.
 
     .DESCRIPTION
-        Configure and verify Allow Unlisted File Extensions settings for vulnerability 76827.
+        Get Allow Unlisted File Extensions settings for vulnerability 76827.
 
     .PARAMETER ComputerName
         The target server.

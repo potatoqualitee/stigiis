@@ -1,10 +1,10 @@
 function Get-StgSessionTimeout {
     <#
     .SYNOPSIS
-        Configure and verify Session Time-Out settings for vulnerability 76841.
+        Get Session Time-Out settings for vulnerability 76841.
 
     .DESCRIPTION
-        Configure and verify Session Time-Out settings for vulnerability 76841.
+        Get Session Time-Out settings for vulnerability 76841.
 
     .PARAMETER ComputerName
         The target server.

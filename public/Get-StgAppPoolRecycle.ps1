@@ -1,10 +1,10 @@
 function Get-StgAppPoolRecycle {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Recycling settings for vulnerability 76867.
+        Get Application Pool Recycling settings for vulnerability 76867.
 
     .DESCRIPTION
-        Configure and verify Application Pool Recycling settings for vulnerability 76867.
+        Get Application Pool Recycling settings for vulnerability 76867.
 
     .PARAMETER ComputerName
         The target server.

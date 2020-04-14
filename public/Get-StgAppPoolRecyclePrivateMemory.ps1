@@ -1,10 +1,10 @@
 function Get-StgAppPoolRecyclePrivateMemory {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Private Memory Recycling settings for vulnerability 76871.
+        Get Application Pool Private Memory Recycling settings for vulnerability 76871.
 
     .DESCRIPTION
-        Configure and verify Application Pool Private Memory Recycling settings for vulnerability 76871.
+        Get Application Pool Private Memory Recycling settings for vulnerability 76871.
 
     .PARAMETER ComputerName
         The target server.

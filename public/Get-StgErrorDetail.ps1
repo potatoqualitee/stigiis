@@ -1,10 +1,10 @@
 function Get-StgV-76737-76835 {
     <#
     .SYNOPSIS
-        Configure and verify HTTP Error Detail properties for vulnerability 76737 & 76835.
+        Get HTTP Error Detail properties for vulnerability 76737 & 76835.
 
     .DESCRIPTION
-        Configure and verify HTTP Error Detail properties for vulnerability 76737 & 76835.
+        Get HTTP Error Detail properties for vulnerability 76737 & 76835.
 
         HTTP error pages contain information that could enable an attacker to gain access to an information system. Failure to prevent the sending of HTTP error pages with full information to remote requesters exposes internal configuration information to potential attackers.
 

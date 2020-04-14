@@ -1,10 +1,10 @@
 function Get-StgMaxQueryString {
     <#
     .SYNOPSIS
-        Configure and verify Maximum Query String settings for vulnerability 76821.
+        Get Maximum Query String settings for vulnerability 76821.
 
     .DESCRIPTION
-        Configure and verify Maximum Query String settings for vulnerability 76821.
+        Get Maximum Query String settings for vulnerability 76821.
 
     .PARAMETER ComputerName
         The target server.

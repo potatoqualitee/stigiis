@@ -1,10 +1,10 @@
 function Get-StgWebDav {
     <#
     .SYNOPSIS
-        Remove Windows feature Web-DAV-Publishing for vulnerability 76713 & 76803.
+        Get Windows feature Web-DAV-Publishing for vulnerability 76713 & 76803.
 
     .DESCRIPTION
-        Remove Windows feature Web-DAV-Publishing for vulnerability 76713 & 76803.
+        Get Windows feature Web-DAV-Publishing for vulnerability 76713 & 76803.
 
     .PARAMETER ComputerName
         The target server.

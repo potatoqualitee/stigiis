@@ -1,10 +1,10 @@
 function Get-StgDoubleEscape {
     <#
     .SYNOPSIS
-        Configure and verify Allow Double Escaping settings for vulnerability 76825.
+        Get Allow Double Escaping settings for vulnerability 76825.
 
     .DESCRIPTION
-        Configure and verify Allow Double Escaping settings for vulnerability 76825.
+        Get Allow Double Escaping settings for vulnerability 76825.
 
     .PARAMETER ComputerName
         The target server.

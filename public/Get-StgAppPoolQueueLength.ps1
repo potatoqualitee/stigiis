@@ -1,10 +1,10 @@
 function Get-StgAppPoolQueueLength {
     <#
     .SYNOPSIS
-        Configure and verify Application Pool Queue Length settings for vulnerability 76875.
+        Get Application Pool Queue Length settings for vulnerability 76875.
 
     .DESCRIPTION
-        Configure and verify Application Pool Queue Length settings for vulnerability 76875.
+        Get Application Pool Queue Length settings for vulnerability 76875.
 
     .PARAMETER ComputerName
         The target server.
