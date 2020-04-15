@@ -46,6 +46,8 @@ function Set-StgDefaultDocument {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/defaultDocument"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
+
             foreach ($webname in $webnames) {
                 $preconfigDefaultDocumentEnabled = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Enabled
                 if ($preconfigDefaultDocumentEnabled -eq $false) {

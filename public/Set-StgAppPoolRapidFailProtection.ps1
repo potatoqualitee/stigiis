@@ -45,6 +45,7 @@ function Set-StgAppPoolRapidFailProtection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "failure.rapidFailProtection"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $pools = (Get-IISAppPool).Name
 
             foreach ($pool in $pools) {

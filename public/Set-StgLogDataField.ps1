@@ -38,7 +38,6 @@ function Set-StgLogDataField {
         [parameter(Mandatory, ValueFromPipeline)]
         [PSFComputer[]]$ComputerName,
         [PSCredential]$Credential,
-        [string[]]$webnames = (Get-Website).Name,
         [switch]$EnableException
     )
     begin {
@@ -69,7 +68,9 @@ function Set-StgLogDataField {
             $replace = $collectionstring.Replace(" ", ",")
 
             #Set all necessary log fields
-            $null = Set-WebConfigurationProperty -Filter "System.Applicationhost/Sites/SiteDefaults/logfile" -Name "LogExtFileFlags" -Value $replace
+            $filterpath = "System.Applicationhost/Sites/SiteDefaults/logfile"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
+            $null = Set-WebConfigurationProperty -Filter $filterpath -Name "LogExtFileFlags" -Value $replace
 
             #All fields presented after new properties have been set
             $postFields = (Get-WebConfiguration -Filter System.Applicationhost/Sites/SiteDefaults/logfile).LogExtFileFlags.Split(",")

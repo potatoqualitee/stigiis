@@ -46,6 +46,7 @@ function Set-StgAppPoolEventLog {
 
         $scriptblock = {
             $filterpath = "recycling.logEventOnRecycle"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $pools = (Get-IISAppPool).Name
 
             foreach ($pool in $pools) {

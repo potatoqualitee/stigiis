@@ -48,6 +48,7 @@ function Set-StgV-76737-76835 {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/httpErrors"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
 
             foreach ($webname in $webnames) {
                 $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name ErrorMode

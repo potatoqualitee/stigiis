@@ -44,6 +44,10 @@ function Set-StgAuthRule {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/authorization/allow"
+
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:system.web/authorization" -Wait
+
             $Settings = "[@roles='' and @users='*' and @verbs='']"
             $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Users
 

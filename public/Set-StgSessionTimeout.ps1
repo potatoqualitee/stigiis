@@ -46,6 +46,7 @@ function Set-StgSessionTimeout {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             foreach ($webname in $webnames) {
                 $preconfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name TimeOut
                 if (-not ([int]([timespan]$preconfig.Value).TotalMinutes -le 20)) {

@@ -46,6 +46,7 @@ function Set-StgHighBit {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
 
             foreach ($webname in $webnames) {
                 $preconfig = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name allowHighBitCharacters

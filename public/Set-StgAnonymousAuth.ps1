@@ -45,6 +45,7 @@ function Set-StgAnonymousAuth {
         $scriptblock = {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.webServer/security/authentication/anonymousAuthentication"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Enabled
 
             $null = Set-WebConfigurationProperty -PSPath $pspath -Filter $filterpath -Name Enabled -Value "False"

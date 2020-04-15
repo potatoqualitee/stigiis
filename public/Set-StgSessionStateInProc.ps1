@@ -47,6 +47,7 @@ function Set-StgSessionStateInProc {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/sessionState"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Mode
             $null = Set-WebConfigurationProperty -Filter $filterpath -Name Mode -Value "InProc"
             $postconfig = Get-WebConfigurationProperty -Filter $filterpath -Name Mode

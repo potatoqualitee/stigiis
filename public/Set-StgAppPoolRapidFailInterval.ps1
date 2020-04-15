@@ -45,6 +45,7 @@ function Set-StgAppPoolRapidFailInterval {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "failure.rapidFailProtectionInterval"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $ProtectionInterval = "00:05:00"
             $pools = (Get-IISAppPool).Name
 

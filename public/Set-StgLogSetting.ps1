@@ -46,6 +46,7 @@ function Set-StgLogSetting {
         $scriptblock = {
             $webpath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.applicationHost/sites/sitedefaults/logfile"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $logtarget = "logTargetW3C"
             $logvalues = "File,ETW"
 

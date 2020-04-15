@@ -46,6 +46,7 @@ function Set-StgCgiIsapi {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.webserver/security/isapiCgiRestriction"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
 
             $preconfigcgi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedCgisAllowed"
             $preconfigisapi = Get-WebConfigurationProperty -Filter $filterpath -Name "notListedIsapisAllowed"
