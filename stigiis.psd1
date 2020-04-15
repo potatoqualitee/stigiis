@@ -122,7 +122,6 @@
         'Set-StgMaxConnection',
         'Set-StgMaxQueryString',
         'Set-StgMimeMapping',
-        'Set-StgPrintService',
         'Set-StgSessionSecurity',
         'Set-StgSessionStateCookie',
         'Set-StgSessionStateInProc',

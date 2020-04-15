@@ -1,4 +1,4 @@
-function Set-StgPrintService {
+function Uninstall-StgPrintService {
     <#
     .SYNOPSIS
         Configure and verify Print Services settings for vulnerability 76753.
@@ -24,12 +24,12 @@ function Set-StgPrintService {
         License: MIT https://opensource.org/licenses/MIT
 
     .EXAMPLE
-        PS C:\> Set-StgPrintService -ComputerName web01
+        PS C:\> Uninstall-StgPrintService -ComputerName web01
 
         Updates specific setting to be compliant on web01
 
     .EXAMPLE
-        PS C:\> Set-StgPrintService -ComputerName web01 -Credential ad\webadmin
+        PS C:\> Uninstall-StgPrintService -ComputerName web01 -Credential ad\webadmin
 
         Logs into web01 as ad\webadmin and updates the necessary setting
 
@@ -44,22 +44,23 @@ function Set-StgPrintService {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $PrintServices = @("Print-Services", "Print-Internet")
-            $PrintFeatures = Get-WindowsFeature -Name $PrintServices
+            $printservices = @("Print-Services", "Print-Internet")
 
-            if ($PrintFeatures) {
-                $PrintFeatures | Uninstall-WindowsFeature
+            if ($printfeatures) {
+                $null = Get-WindowsFeature -Name $PrintService | Uninstall-WindowsFeature
             }
 
-            if ($Feature.InstallState -eq "Available") {
+            $printfeatures = Get-WindowsFeature -Name $printservices
+
+            if ($printfeatures.InstallState -eq "Available") {
                 $compliant = $true
                 $notes = $null
             } else {
                 $compliant = $false
-                $notes = "Remove $($Feature.Name) Windows Feature"
+                $notes = "Remove $($printfeatures.Name) Windows Feature"
             }
 
-            foreach ($Feature in $PrintFeatures) {
+            foreach ($Feature in $printfeatures) {
                 [pscustomobject] @{
                     Id           = "V-76753"
                     ComputerName = $env:COMPUTERNAME
