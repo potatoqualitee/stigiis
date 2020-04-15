@@ -94,15 +94,13 @@ function Set-StgSSLSetting {
                 )
 
                 #Check SSL setting compliance
-                $compliant = @(
-                    if ($postconfig -eq "SSL: Required | Client Certificates: Accept") {
-                        $true
-                    } elseif ($postconfig -eq "SSL: Required | Client Certificates: Require") {
-                        $true
-                    } else {
-                        $false
-                    }
-                )
+                if ($postconfig -eq "SSL: Required | Client Certificates: Accept") {
+                    $compliant = $true
+                } elseif ($postconfig -eq "SSL: Required | Client Certificates: Require") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
 
                 [pscustomobject] @{
                     Id        = "V-76679", "V-76779", "V-76781"

@@ -129,13 +129,11 @@ function Set-StgClientCertificate {
                 )
 
                 #Check SSL setting compliance
-                $compliant = @(
-                    if ($postconfig -eq "SSL: Required | Client Certificates: Require" -or $postconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
-                        $true
-                    } else {
-                        $false
-                    }
-                )
+                if ($postconfig -eq "SSL: Required | Client Certificates: Require" -or $postconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
 
                 [pscustomobject] @{
                     Id           = "V-76861"
