@@ -68,7 +68,7 @@ function Get-StgJavaFile {
                     ComputerName = $env:COMPUTERNAME
                     Files        = "No files found"
                     Compliant    = $true
-                    Notes        = $notes
+                    Notes        = $null
                 }
             }
         }

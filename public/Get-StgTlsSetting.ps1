@@ -45,7 +45,7 @@ function Get-StgTlsSetting {
     )
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
-        $sriptblock = {
+        $scriptblock = {
             $notes = $null
             #TLS registry keys
             $regkeys0 = @(
@@ -66,9 +66,11 @@ function Get-StgTlsSetting {
             foreach ($key0 in $regkeys0) {
                 $STIGValue0 = "0"
                 $keyValue0 = (Get-ItemProperty $key0 -ErrorAction SilentlyContinue).DisabledByDefault
-                $keything = Get-Item $key0
+                $keything = Get-Item $key0 -ErrorAction SilentlyContinue
                 if ($keything) {
                     $ValueType0 = $keything.GetValueKind("DisabledByDefault")
+                } else {
+                    $ValueType0 = $null
                 }
 
                 #Check compliance of each key according to STIG
@@ -80,6 +82,7 @@ function Get-StgTlsSetting {
                         $compliant0 = $false
                     }
                 } else {
+                    $compliant0 = $false
                     $notes = "Incorrect Value Type"
                 }
 
@@ -100,10 +103,12 @@ function Get-StgTlsSetting {
                 $STIGValue1 = "1"
 
                 #Get current key property values
-                $keyValue1 = (Get-ItemProperty $key1).DisabledByDefault
-                $keything = Get-Item $key1
+                $keyValue1 = (Get-ItemProperty $key1 -ErrorAction SilentlyContinue).DisabledByDefault
+                $keything = Get-Item $key1 -ErrorAction SilentlyContinue
                 if ($keything) {
                     $ValueType1 = $keything.GetValueKind("DisabledByDefault")
+                } else {
+                    $ValueType1 = $null
                 }
 
                 #Check compliance of each key according to STIG
@@ -114,6 +119,7 @@ function Get-StgTlsSetting {
                         $compliant1 = $false
                     }
                 } else {
+                    $compliant1 = $false
                     $notes = "Incorrect Value Type"
                 }
 

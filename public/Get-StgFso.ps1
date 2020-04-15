@@ -47,7 +47,7 @@ function Get-StgFso {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $key = "HKCR:\CLSID\{0D43FE01-F093-11CF-8940-00A0C9054228}"
-            New-PSDrive -PSProvider Registry -root HKEY_CLASSES_ROOT -Name HKCR | Out-Null
+            New-PSDrive -PSProvider Registry -root HKEY_CLASSES_ROOT -Name HKCR -ErrorAction SilentlyContinue | Out-Null
 
             if (Test-Path $key) {
                 $enabled = $true

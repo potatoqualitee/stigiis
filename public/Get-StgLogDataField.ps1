@@ -38,7 +38,6 @@ function Get-StgLogDataField {
         [parameter(Mandatory, ValueFromPipeline)]
         [PSFComputer[]]$ComputerName,
         [PSCredential]$Credential,
-        [string[]]$webnames = (Get-Website).Name,
         [switch]$EnableException
     )
     begin {

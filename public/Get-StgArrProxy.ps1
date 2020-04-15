@@ -6,6 +6,8 @@ function Get-StgArrProxy {
     .DESCRIPTION
         Get proxy settings for Application Request Routing feature for vulnerability 76703.
 
+        A web server should be primarily a web server or a proxy server but not both, for the same reasons that other multi-use servers are not recommended. Scanning for web servers that will also proxy requests into an otherwise protected network is a very common attack making the attack anonymous.
+
     .PARAMETER ComputerName
         The target server.
 
@@ -44,22 +46,25 @@ function Get-StgArrProxy {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $WebPath = "MACHINE/WEBROOT/APPHOST"
-            $webnames = (Get-Website).Name
-            foreach ($webname in $webnames) {
-                try {
-                    $proxyvalue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
+            $webs = (Get-Website).Name
+            $proxyvalue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
 
-                    [pscustomobject] @{
-                        Id           = "V-76703"
-                        ComputerName = $env:COMPUTERNAME
-                        Value        = $proxyvalue
-                    }
-                } catch {
-                    [pscustomobject] @{
-                        Id           = "V-76703"
-                        ComputerName = $env:COMPUTERNAME
-                        Value        = "N/A: Application Request Routing not available"
-                    }
+            # gotta be one or th other
+            if ($webs.Count -gt 1 -and $proxyvalue) {
+                [pscustomobject]@{
+                    Id           = "V-76703"
+                    ComputerName = $env:COMPUTERNAME
+                    Proxies      = $proxy
+                    Webs         = $webs
+                    Compliant    = $false
+                }
+            } else {
+                [pscustomobject]@{
+                    Id           = "V-76703"
+                    ComputerName = $env:COMPUTERNAME
+                    Proxies      = $proxy
+                    Webs         = $webs
+                    Compliant    = $true
                 }
             }
         }
@@ -68,7 +73,7 @@ function Get-StgArrProxy {
         foreach ($computer in $ComputerName) {
             try {
                 Invoke-Command2 -ComputerName $computer -Credential $credential -ScriptBlock $scriptblock |
-                    Select-DefaultView -Property Id, ComputerName, Value |
+                    Select-DefaultView -Property Id, ComputerName, Proxies, Webs, Compliant |
                     Select-Object -Property * -ExcludeProperty PSComputerName, RunspaceId
             } catch {
                 Stop-PSFFunction -Message "Failure on $computer" -ErrorRecord $_

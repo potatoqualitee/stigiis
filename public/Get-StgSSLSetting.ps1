@@ -48,32 +48,28 @@ function Get-StgSSLSetting {
                 $postflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
 
                 #Post-configuration data results
-                $config = @(
-                    if ($postflags -eq "Ssl" ) {
-                        "SSL: Required | Client Certificates: Ignore"
-                    } elseif ($postflags -eq "Ssl,SslNegotiateCert" ) {
-                        "SSL: Required | Client Certificates: Accept"
-                    } elseif ($postflags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
-                        "SSL: Required | Client Certificates: Require"
-                    } elseif ($postflags -eq "SslNegotiateCert" ) {
-                        "SSL: Not Required | Client Certificates: Accept"
-                    } elseif ($postflags -eq "SslNegotiateCert,SslRequireCert" ) {
-                        "SSL: Not Required | Client Certificates: Require"
-                    } else {
-                        "SSL: Not Required | Client Certificates: Ignore"
-                    }
-                )
+                if ($postflags -eq "Ssl" ) {
+                    $config = "SSL: Required | Client Certificates: Ignore"
+                } elseif ($postflags -eq "Ssl,SslNegotiateCert" ) {
+                    $config = "SSL: Required | Client Certificates: Accept"
+                } elseif ($postflags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
+                    $config = "SSL: Required | Client Certificates: Require"
+                } elseif ($postflags -eq "SslNegotiateCert" ) {
+                    $config = "SSL: Not Required | Client Certificates: Accept"
+                } elseif ($postflags -eq "SslNegotiateCert,SslRequireCert" ) {
+                    $config = "SSL: Not Required | Client Certificates: Require"
+                } else {
+                    $config = "SSL: Not Required | Client Certificates: Ignore"
+                }
 
                 #Check SSL setting compliance
-                $compliant = @(
-                    if ($config -eq "SSL: Required | Client Certificates: Accept") {
-                        $true
-                    } elseif ($config -eq "SSL: Required | Client Certificates: Require") {
-                        $true
-                    } else {
-                        $false
-                    }
-                )
+                if ($config -eq "SSL: Required | Client Certificates: Accept") {
+                    $compliant = $true
+                } elseif ($config -eq "SSL: Required | Client Certificates: Require") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
 
                 [pscustomobject] @{
                     Id        = "V-76679", "V-76779", "V-76781"

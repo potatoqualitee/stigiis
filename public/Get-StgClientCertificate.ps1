@@ -53,7 +53,7 @@ function Get-StgClientCertificate {
                 $flags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
 
                 #Pre-configuration data results
-                $ = @(
+                $preconfig = @(
                     if ($flags -eq "Ssl" ) {
                         "SSL: Required | Client Certificates: Ignore"
                     } elseif ($flags -eq "Ssl,SslNegotiateCert" ) {
@@ -87,13 +87,11 @@ function Get-StgClientCertificate {
 
 
                 #Check SSL setting compliance
-                $compliant = @(
-                    if ($flags -eq "SSL: Required | Client Certificates: Require" -or $flags -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
-                        $true
-                    } else {
-                        $false
-                    }
-                )
+                if ($preconfig -eq "SSL: Required | Client Certificates: Require" -or $preconfig -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
+                    $compliant = $true
+                } else {
+                    $compliant = $false
+                }
 
                 [pscustomobject] @{
                     Id           = "V-76861"
@@ -103,59 +101,6 @@ function Get-StgClientCertificate {
                     Compliant    = $compliant
                     Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
                 }
-            }
-
-            #Pre-configuration SSL values for server
-            $flags = Get-WebConfigurationProperty -Filter "system.webserver/security/access" -Name SSLFlags
-
-            #Pre-configuration data results
-            # should be a switch but it's already written >_<
-            $flags = @(
-                if ($flags -eq "Ssl" ) {
-                    "SSL: Required | Client Certificates: Ignore"
-                } elseif ($flags -eq "Ssl,SslNegotiateCert" ) {
-                    "SSL: Required | Client Certificates: Accept"
-                } elseif ($flags -eq "Ssl,SslRequireCert" ) {
-                    "SSL: Required | Client Certificates: Require"
-                } elseif ($flags -eq "Ssl,Ssl128" ) {
-                    "SSL: Required | Client Certificates: Ignore | SSL: 128"
-                } elseif ($flags -eq "Ssl,SslNegotiateCert,SslRequireCert" ) {
-                    "SSL: Required | Client Certificates: Require"
-                } elseif ($flags -eq "Ssl,SslNegotiateCert,Ssl128" ) {
-                    "SSL: Required | Client Certificates: Accept | SSL: 128"
-                } elseif ($flags -eq "Ssl,SslRequireCert,Ssl128" -or $flags -eq "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
-                    "SSL: Required | Client Certificates: Require | SSL: 128"
-                } elseif ($flags -eq "SslNegotiateCert" ) {
-                    "SSL: Not Required | Client Certificates: Accept"
-                } elseif ($flags -eq "SslNegotiateCert,SslRequireCert" -or $flags -eq "SslRequireCert") {
-                    "SSL: Not Required | Client Certificates: Require"
-                } elseif ($flags -eq "SslRequireCert,Ssl128") {
-                    "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                } elseif ($flags -eq "SslNegotiateCert,Ssl128" ) {
-                    "SSL: Not Required | Client Certificates: Accept | SSL: 128"
-                } elseif ($flags -eq "SslNegotiateCert,SslRequireCert,Ssl128" ) {
-                    "SSL: Not Required | Client Certificates: Require | SSL: 128"
-                } elseif ($flags -eq "Ssl128" ) {
-                    "SSL: Not Required | Client Certificates: Ignore | SSL: 128"
-                } else {
-                    "SSL: Not Required | Client Certificates: Ignore"
-                }
-            )
-
-            #Check SSL setting compliance
-            if ($flags -eq "SSL: Required | Client Certificates: Require" -or $flags -eq "SSL: Required | Client Certificates: Require | SSL: 128") {
-                $compliant = $true
-            } else {
-                $compliant = $false
-            }
-
-            [pscustomobject] @{
-                Id           = "V-76809", "V-76851"
-                ComputerName = $env:COMPUTERNAME
-                SiteName     = $env:COMPUTERNAME
-                Value        = $flags
-                Compliant    = $compliant
-                Notes        = "Configuring the Client Certificates settings to Require breaks SolarWinds Web GUI"
             }
         }
     }
