@@ -44,11 +44,11 @@ function Remove-StgJavaFile {
     begin {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
-            $javafiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
+            $javafiles = Get-ChildItem -Path "$env:SystemDrive\*" -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
 
             if ($javafiles) {
                 $javafiles | Remove-Item -Force
-                $postfiles = Get-ChildItem -Path $env:SystemDrive -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
+                $postfiles = Get-ChildItem -Path "$env:SystemDrive\*" -File -Include *.jpp, *.java -Recurse -Force -ErrorAction SilentlyContinue
 
                 if (-not ($postfiles)) {
                     $compliant = $true
