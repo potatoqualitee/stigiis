@@ -44,6 +44,7 @@ function Set-StgMaxConnection {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.applicationHost/sites/siteDefaults"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $maxconnections = Get-WebConfigurationProperty -Filter $filterpath -Name Limits
 
             if ($maxconnections.MaxConnections -gt 0) {

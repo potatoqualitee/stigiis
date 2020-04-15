@@ -47,6 +47,10 @@ function Set-StgCompression {
             $pspath = "MACHINE/WEBROOT"
             $filerpathCookies = "system.web/httpCookies"
             $filerpathCompression = "system.web/sessionState"
+
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filerpathCookies" -Wait
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filerpathCompression" -Wait
+
             $preconfigCookies = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCookies -Name requireSSL
             $preconfigCompression = Get-WebConfigurationProperty -PSPath $pspath -Filter $filerpathCompression -Name compressionEnabled
 

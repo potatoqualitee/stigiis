@@ -45,6 +45,7 @@ function Set-StgAppPoolTimeout {
         $scriptblock = {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $filterpath = "system.applicationHost/applicationPools/applicationPoolDefaults/processModel"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $preconfig = Get-WebConfigurationProperty -Filter $filterpath -Name idleTimeOut
 
             if (-not ([int]([timespan]$preconfig.Value).TotalMinutes -le 20)) {

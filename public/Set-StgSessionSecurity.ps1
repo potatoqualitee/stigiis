@@ -45,6 +45,7 @@ function Set-StgSessionSecurity {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/asp/session"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $preconfig = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure
             $null = Set-WebConfigurationProperty -Filter $filterpath -Name KeepSessionIdSecure -Value $true
             $postconfig = Get-WebConfigurationProperty -Filter $filterpath  -Name KeepSessionIdSecure

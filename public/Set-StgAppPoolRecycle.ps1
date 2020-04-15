@@ -45,6 +45,7 @@ function Set-StgAppPoolRecycle {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.requests"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $RequestsDefault = 100000
             $pools = (Get-IISAppPool).Name
 

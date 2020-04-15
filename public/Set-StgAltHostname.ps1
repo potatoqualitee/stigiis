@@ -48,6 +48,7 @@ function Set-StgAltHostname {
             $pspath = "MACHINE/WEBROOT/APPHOST"
             $webnames = (Get-Website).Name
             $filterpath = "system.webserver/serverRuntime"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
 
             foreach ($webname in $webnames) {
                 $hostname = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name alternateHostname).Value

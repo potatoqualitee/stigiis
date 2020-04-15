@@ -46,6 +46,7 @@ function Set-StgMaxQueryString {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             [int]$MaxQueryString = 2048
 
             foreach ($webname in $webnames) {

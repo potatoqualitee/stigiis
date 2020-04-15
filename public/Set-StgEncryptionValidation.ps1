@@ -45,6 +45,8 @@ function Set-StgEncryptionValidation {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "system.web/machineKey"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
+
             $preconfigValidation = Get-WebConfigurationProperty -Filter $filterpath -Name Validation
             $preconfigEncryption = Get-WebConfigurationProperty -Filter $filterpath -Name Decryption
 

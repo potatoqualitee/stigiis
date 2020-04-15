@@ -45,6 +45,7 @@ function Set-StgAppPoolQueueLength {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "queueLength"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $QLength = 1000
             $pools = (Get-IISAppPool).Name
 

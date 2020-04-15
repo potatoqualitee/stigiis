@@ -50,7 +50,9 @@ function Set-StgClientCertificate {
             $webnames = (Get-Website).Name
             foreach ($webname in $webnames) {
                 #Pre-configuration SSL values for sites
-                $preflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
+                $filterpath = "system.webserver/security/access"
+                Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
+                $preflags = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name SSLFlags
 
                 if ($preflags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $preflags -ne "Ssl,SslNegotiateCert" -or $preflags -ne "Ssl,SslNegotiateCert,Ssl128" -or $preflags -ne "Ssl,SslNegotiateCert,SslRequireCert,Ssl128") {
                     #Set SSL requirements

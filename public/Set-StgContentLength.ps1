@@ -46,6 +46,7 @@ function Set-StgContentLength {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.webServer/security/requestFiltering/requestLimits"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $MaxContentLength = 30000000
 
             foreach ($webname in $webnames) {

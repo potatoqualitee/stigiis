@@ -46,6 +46,7 @@ function Set-StgTrustLevel {
         $scriptblock = {
             $webnames = (Get-Website).Name
             $filterpath = "system.web/trust"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             foreach ($webname in $webnames) {
                 $preconfig = (Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name Level).Value
 

@@ -46,8 +46,10 @@ function Set-StgSSLSetting {
         $scriptblock = {
             foreach ($webname in $webnames) {
 
+                $filterpath = "system.webserver/security/access"
+                Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
                 #Pre-configuration SSL values
-                $preflags = Get-WebConfigurationProperty -Location $webname -Filter "system.webserver/security/access" -Name SSLFlags
+                $preflags = Get-WebConfigurationProperty -Location $webname -Filter $filterpath -Name SSLFlags
 
                 if ($preflags -ne "Ssl,SslNegotiateCert,SslRequireCert" -or $preflags -ne "Ssl,SslNegotiateCert") {
                     #Set SSL requirements

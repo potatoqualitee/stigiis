@@ -45,11 +45,13 @@ function Set-StgArrProxy {
         $scriptblock= {
             $WebPath = "MACHINE/WEBROOT/APPHOST"
             $webnames = (Get-Website).Name
+            $filterpath = "system.webServer/proxy"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             foreach($webname in $webnames) {
                 try {
                     #Disable proxy for Application Request Routing
-                    $null = Set-WebConfigurationProperty -Location $WebPath -Filter "system.webServer/proxy" -Name "Enabled" -Value "False"
-                    $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter "system.webServer/proxy" -Name "Enabled"
+                    $null = Set-WebConfigurationProperty -Location $WebPath -Filter $filterpath -Name "Enabled" -Value "False"
+                    $ProxyValue = Get-WebConfigurationProperty -PSPath $WebPath -Filter $filterpath -Name "Enabled"
 
                     [pscustomobject] @{
                         Id = "V-76703"

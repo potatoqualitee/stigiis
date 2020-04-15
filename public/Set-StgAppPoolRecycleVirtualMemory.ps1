@@ -44,6 +44,7 @@ function Set-StgAppPoolRecycleVirtualMemory {
         . "$script:ModuleRoot\private\Set-Defaults.ps1"
         $scriptblock = {
             $filterpath = "recycling.periodicRestart.memory"
+            Start-Process -FilePath "$env:windir\system32\inetsrv\appcmd.exe" -ArgumentList "unlock", "config", "-section:$filterpath" -Wait
             $default = 1GB
             $pools = (Get-IISAppPool).Name
 
