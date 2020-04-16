@@ -8,7 +8,7 @@
     ModuleVersion     = '0.0.1'
 
     # ID used to uniquely identify this module
-    GUID              = 'dcef37ea-2803-4048-9fff-1f8f0c4b6786'
+    GUID              = 'c99bc132-c483-4a5f-ba03-5f2943ac8135'
 
     # Author of this module
     Author            = 'Chrissy LeMaire'
