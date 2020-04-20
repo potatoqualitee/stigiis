@@ -12,3 +12,7 @@ Install-Module stigiis -Scope CurrentUser
 ## Dependencies
 
 - PSFramework - For PowerShell goodness
+
+## Thanks
+
+Super thanks to [@Average-Bear](https://github.com/Average-Bear/) for the code found in [Configure-StigIIS](https://github.com/Average-Bear/Configure-StigIIS).
